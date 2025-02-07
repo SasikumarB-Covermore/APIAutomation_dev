@@ -1,0 +1,8 @@
+{
+    "javascript.suggestionActions.enabled": false,
+    "window.density.editorTabHeight": "compact",
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "workbench.editor.doubleClickTabToToggleEditorGroupSizes": "expand",
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    "workbench.editor.wrapTabs": true
+}
