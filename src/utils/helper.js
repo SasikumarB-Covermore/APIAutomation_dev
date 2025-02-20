@@ -1,0 +1,601 @@
+// src/utils/helper.js
+const { faker } = require('@faker-js/faker');
+const dynamicDate = require("../utils/apiClient");
+const { addDays } = require('date-fns');
+const { generateCommonData, generateCommonRefineQouteData, generateCommonIssuePolicyData } = require("../utils/dataGenerator");
+const numeral = require('numeral')
+const { expect } = require('@playwright/test');  // Import expect
+const {
+  getTravelPayloadForQuote,
+  getTravelPayloadForRefineQuote,
+  getTravelPayloadForIssuePolicy,
+  getTravelPayloadForUpdateTraveller,
+} = require("../utils/payloadStructures");
+
+const path = require('path');
+const fs = require("fs");
+const { tr } = require('date-fns/locale');
+
+function generateTravelDataNTimes(numAdults = 1, numChild = 0, row) {
+  return generateData(numAdults, numChild, row);
+}
+
+
+function generateRefineQouteTravelDataNTimes(numAdults = 1, numChild = 0, row) {
+  return generateRefineQouteData(numAdults, numChild, row);
+}
+
+function generateIssuePolicyTravelDataNTimes(numAdults = 1, numChild = 0, row) {
+  return generateIssuePolicyData(numAdults, numChild, row);
+}
+
+function generateData(numAdults, numChild, row) {
+  const quotePayload = [];
+  const updatePayload = [];
+  let isPrimary;
+  if (numAdults > 0) {
+    addPayloadsForGroup(numAdults, 'adult', quotePayload, updatePayload, row);
+  }
+
+  if (numChild > 0) {
+    isPrimary = false;
+    addPayloadsForGroup(numChild, 'child', quotePayload, updatePayload, row, isPrimary);
+  }
+
+  return [quotePayload, updatePayload];
+}
+
+function generateRefineQouteData(numAdults, numChild, row) {
+  const quotePayload = [];
+  const updatePayload = [];
+  let isPrimary;
+  if (numAdults > 0) {
+    addPayloadsForGroupRefineQoute(numAdults, 'adult', quotePayload, updatePayload, row);
+  }
+
+  if (numChild > 0) {
+    isPrimary = false;
+    addPayloadsForGroupRefineQoute(numChild, 'child', quotePayload, updatePayload, row, isPrimary);
+  }
+
+  return [quotePayload, updatePayload];
+}
+
+function generateIssuePolicyData(numAdults, numChild, row) {
+  const quotePayload = [];
+  const updatePayload = [];
+  let isPrimary;
+  if (numAdults > 0) {
+    addPayloadsForGroupIssuePolicy(numAdults, 'adult', quotePayload, updatePayload, row);
+  }
+
+  if (numChild > 0) {
+    isPrimary = false;
+    addPayloadsForGroupIssuePolicy(numChild, 'child', quotePayload, updatePayload, row, isPrimary);
+  }
+
+  return [quotePayload, updatePayload];
+}
+
+function addPayloadsForGroup(count, type, quotePayload, updatePayload, row, isPrimary) {
+  for (let i = 1; i <= count; i++) {
+    const identifier = `${type}${i}`;
+    const commonData = generateCommonData(identifier, row, isPrimary);
+    quotePayload.push(flattenObject(getTravelPayloadForQuote(commonData)));
+    updatePayload.push(flattenObject(getTravelPayloadForUpdateTraveller(commonData)));
+  }
+}
+
+function addPayloadsForGroupRefineQoute(count, type, quotePayload, updatePayload, row, isPrimary) {
+  for (let i = 1; i <= count; i++) {
+    const identifier = `${type}${i}`;
+    const commonData = generateCommonRefineQouteData(identifier, row, isPrimary);
+    quotePayload.push(flattenObject(getTravelPayloadForRefineQuote(commonData)));
+    updatePayload.push(flattenObject(getTravelPayloadForUpdateTraveller(commonData)));
+  }
+}
+
+function addPayloadsForGroupIssuePolicy(count, type, quotePayload, updatePayload, row, isPrimary) {
+  for (let i = 1; i <= count; i++) {
+    const identifier = `${type}${i}`;
+    const commonData = generateCommonIssuePolicyData(identifier, row, isPrimary);
+    quotePayload.push(flattenObject(getTravelPayloadForIssuePolicy(commonData)));
+    updatePayload.push(flattenObject(getTravelPayloadForUpdateTraveller(commonData)));
+  }
+}
+
+// Flatten any array-like structure to plain objects
+function flattenObject(obj) {
+  return Object.keys(obj).reduce((acc, key) => {
+    acc[key] = obj[key];
+    return acc;
+  }, {});
+}
+
+function extractAddOnsFromPayload(requestPayload) {
+  let prolicyLevelAddOns = requestPayload["additionalCovers"]
+  let travelLevelAddOns = (requestPayload["travellers"] != {}) ? requestPayload["travellers"][0]["additionalCovers"] : []
+  return {
+    prolicyLevelAddOns,
+    travelLevelAddOns
+  };
+}
+
+function extractAddOnsFromAPIResponse(row, responseBody) {
+  const productID = row.productID;
+  const excess = row.excess;
+  // Ensure the productID and excess exist in the responseBody
+  if (!responseBody.product[productID]) {
+    throw new Error(`Product ID ${productID} not found in the response`);
+  }
+
+  if (!responseBody.product[productID].excess[excess]) {
+    throw new Error(`Excess ${excess} not found for Product ID ${productID}`);
+  }
+
+  const durationKey = Object.keys(responseBody.product[productID].excess[excess].duration)[0];
+  const policyAddOnsList = responseBody.product[productID].excess[excess].duration[durationKey].additionalCoverPrices;
+
+  // Extract traveller-level covers from response dynamically
+  let responseTravelCodes = responseBody.product[productID].excess[excess].duration[durationKey].travellers.flatMap(traveller =>
+    traveller.additionalCoverPrices
+  );
+  const jsonKey = (item) => JSON.stringify(item);
+  const travelAddOnsList = removeDuplicatesByKey(responseTravelCodes, jsonKey);
+
+  return { travelAddOnsList, policyAddOnsList }
+}
+
+function parseAPIResponse(row, responseBody) {
+  const productID = row.productID;
+  const excess = row.excess;
+  // Ensure the productID and excess exist in the responseBody
+  if (!responseBody.product[productID]) {
+    throw new Error(`Product ID ${productID} not found in the response`);
+  }
+
+  if (!responseBody.product[productID].excess[excess]) {
+    throw new Error(`Excess ${excess} not found for Product ID ${productID}`);
+  }
+
+  const durationKey = Object.keys(responseBody.product[productID].excess[excess].duration)[0];
+  // Extract traveller-level covers from response dynamically
+  let reponseProduct = responseBody.product[productID].excess[excess].duration[durationKey]
+  return reponseProduct
+}
+
+
+function removeDuplicatesByKey(inputArray, keyFunction) {
+  const unique = [];
+  const obj = {};
+  inputArray.forEach(item => {
+    let key = keyFunction(item)
+    if (!obj[key]) {
+      unique.push(item);
+      obj[key] = item;
+    }
+  });
+  return unique;
+}
+
+
+
+function createQuotePayload(sessionToken, row, payLoadQuote, policyAddOns) {
+  return {
+    sessionToken: sessionToken,
+    isResident: row.isResident,
+    productID: row.productID,
+    multiTripDuration: row.multiTripDuration,
+    excess: row.excess,
+    trip: {
+      departureDate: row.departureDate,
+      returnDate: row.returnDate,
+      destinationCountryCodes: [row.destinationCountryCodes]
+    },
+    travellers: payLoadQuote,
+    additionalCovers: policyAddOns
+  }
+}
+
+function validateTheAddOnsPrice(itemToMatch, itemsArray) {
+  return itemsArray.find(item =>
+    item.code === itemToMatch.code &&
+    item.price.displayPrice === itemToMatch.price
+  );
+}
+
+
+
+function calculateDepartureDate(leadTime) {
+  const currentDate = new Date();
+
+  // Calculate departure date by adding leadTime to the current date
+  const parsedLeadTime = parseInt(leadTime, 10);
+  const deptDate = new Date(currentDate);
+  deptDate.setDate(currentDate.getDate() + parsedLeadTime);
+
+
+  // Format the departure date as YYYY-MM-DD
+  return deptDate.toISOString().split('T')[0];
+}
+
+function calculateReturnDate(departureDate, duration) {
+  const depDate = new Date(departureDate); // Ensure departureDate is a Date object
+
+  if (duration <= 1) {
+    return depDate.toISOString().split('T')[0]; // Return the same day in YYYY-MM-DD format
+  } else {
+    const retnDate = new Date(depDate);
+
+    retnDate.setTime(retnDate.getTime() + (duration - 1) * 24 * 60 * 60 * 1000); // Add days in milliseconds
+
+    return retnDate.toISOString().split('T')[0]; // Return formatted return date
+  }
+}
+
+
+// Function to create the payload based on various conditions
+function createPayload(row, payLoadQuote, policyAddOns = [], emcOptions = null) {
+
+  const departureDate = calculateDepartureDate(row.leadTime);
+
+  const returnDate = calculateReturnDate(departureDate, row.duration);
+
+  if (!Array.isArray(payLoadQuote)) {
+    console.warn('Warning: payLoadQuote is not an array. Wrapping it in an array.');
+    payLoadQuote = [payLoadQuote];
+  }
+
+
+  // Default payload structure
+  let payload = {
+    issuer: {
+      code: "MBN0002",
+      userName: "qat",
+      externalStoreCode: ""
+    },
+    trip: {
+      destinationCountryCodes: [row.destinationCountryCodes],
+      startDate: departureDate,
+      endDate: returnDate
+    },
+    travellers: payLoadQuote,
+    purchasePath: "Leisure_Medibank",
+    isResident: row.isResident,
+  };
+
+  // If add-ons are present, add them to the payload
+  if (policyAddOns && policyAddOns.length > 0) {
+
+    payload.additionalCovers = policyAddOns;
+  }
+
+  // If EMC options are provided, update travellers' details
+  if (emcOptions) {
+    payload.travellers = payload.travellers.map(traveller => {
+      if (traveller.identifier === emcOptions.identifier) {
+        return {
+          ...traveller,
+          emcAccepted: emcOptions.emcAccepted,
+          assessmentID: emcOptions.assessmentID
+        };
+      }
+      return traveller;
+    });
+  }
+
+  if (row.discount !== undefined) {
+    payload["promoCodes"] = [row.promoCode ? row.promoCode : ""]
+  }
+  return payload;
+}
+
+
+// Function to create the payload for Refine Quote 
+function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [], emcOptions = null, responseBody) {
+
+  const departureDate = calculateDepartureDate(row.leadTime);
+
+  const returnDate = calculateReturnDate(departureDate, row.duration);
+
+  if (!Array.isArray(payLoadRefineQuote)) {
+    console.warn('Warning: payLoadRefineQuote is not an array. Wrapping it in an array.');
+    payLoadRefineQuote = [payLoadRefineQuote];
+  }
+
+
+  // Default payload structure
+  let payload = {
+    issuer: {
+      code: "MBN0002",
+      userName: "qat",
+      externalStoreCode: ""
+    },
+    products: [
+      {
+        productCode: row.productCode,
+        planCode: row.planCode
+      }
+    ],
+    quoteId: responseBody.quoteId,
+    sessionId: responseBody.sessionId,
+    isResident: true
+  };
+
+  //Create Paload based on planName (Domestic or International)
+  let additionalCoverAddons = [];
+  let premiumMatrix = [];
+  let productArray = responseBody.quoteSummary.products;
+  for (let i = 0; i < Object.keys(productArray).length; i++) {
+    if (row.planName.includes("Dom")) {
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        let CODE = responseBody.quoteSummary.products[i].additionalCoverAddons[0].code;
+        let OPTIONS = [responseBody.quoteSummary.products[i].additionalCoverAddons[0].options[0]];
+        let ADDONDURATION = [responseBody.quoteSummary.products[i].availableCoverAddons[0].addOnDuration];
+        additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
+        let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
+        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
+        let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
+        let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
+        let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
+        let isSelected = true;
+        let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
+        premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+      }
+    } else if (row.planName.includes("Int")) {
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        let availableCoverAddonsArray = responseBody.quoteSummary.products[i].availableCoverAddons;
+        for (let k = 0; k < Object.keys(availableCoverAddonsArray).length; k++) {
+          if (responseBody.quoteSummary.products[i].availableCoverAddons[k].code == "CRS") {
+            let code = responseBody.quoteSummary.products[i].availableCoverAddons[k].code;
+            let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[k].applyAtLevel;
+            let name = responseBody.quoteSummary.products[i].availableCoverAddons[k].name;
+            let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[k].helpText;
+            let options = [responseBody.quoteSummary.products[i].availableCoverAddons[k].options[0]];
+            let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[k].addOnDuration];
+            additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+          }
+        }
+        let premiumMatrixArray = responseBody.quoteSummary.products[i].premiumMatrix;
+        //console.log(responseBody.quoteSummary.products[i].name + "Product premiumMatrix count " + premiumMatrixArray);
+        for (let j = 0; j < Object.keys(premiumMatrixArray).length; j++) {
+          if (row.excess == responseBody.quoteSummary.products[i].premiumMatrix[j].excess && row.duration == (responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays ?? 1)) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[j].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[j].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[j].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          }
+        }
+      }
+    }
+  }
+
+  payload.products[0].additionalCoverAddons = additionalCoverAddons;
+  payload.products[0].premiumMatrix = premiumMatrix;
+  var travalersArray = responseBody.quoteSummary.travellers;
+  let travellers = [];
+  for (let i = 0; i < Object.keys(travalersArray).length; i++) {
+    let age = JSON.stringify(travalersArray[i].age);
+    let dateOfBirth = travalersArray[i].dateOfBirth;
+    let isPrimary = JSON.stringify(travalersArray[i].isPrimary);
+    let treatAsAdult = JSON.stringify(travalersArray[i].treatAsAdult);
+    let gender = faker.person.sexType().substring(0, 1);
+    let title = JSON.stringify(travalersArray[i].gender) === 'm' ? 'Mr' : 'Ms';
+    let firstName = 'Test_' + faker.person.firstName(gender);
+    let lastName = 'Test_' + faker.person.lastName();
+    let memberID = "";
+    let externalCustomerId = "";
+    travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId })
+  }
+  payload.travellers = travellers;
+
+  // If EMC options are provided, update travellers' details
+  if (emcOptions) {
+    payload.travellers = payload.travellers.map(traveller => {
+      if (traveller.identifier === emcOptions.identifier) {
+        return {
+          ...traveller,
+          emcAccepted: emcOptions.emcAccepted,
+          assessmentID: emcOptions.assessmentID
+        };
+      }
+      return traveller;
+    });
+  }
+
+  if (row.discount !== undefined) {
+    payload["promoCodes"] = [row.promoCode ? row.promoCode : ""]
+  }
+  return payload;
+}
+
+// Function to create the payload for Refine Quote 
+function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phonePayLoad, emailAddress, policyAddOns = [], emcOptions = null, responseBody) {
+  const departureDate = calculateDepartureDate(row.leadTime);
+
+  const returnDate = calculateReturnDate(departureDate, row.duration);
+
+  if (!Array.isArray(payLoadRefineQuote)) {
+    console.warn('Warning: payLoadRefineQuote is not an array. Wrapping it in an array.');
+    payLoadRefineQuote = [payLoadRefineQuote];
+  }
+
+  // Default payload structure
+  let payload = {
+    issuer: {
+      code: "MBN0002",
+      userName: "qat",
+      externalStoreCode: ""
+    },
+    contact: {
+      address: addrPayLoad,
+      phone: [
+        {
+          type: phonePayLoad.type,
+          number: phonePayLoad.number
+        }
+      ],
+      email: emailAddress,
+      optInMarketing: false,
+    },
+    payment: {
+      date: dynamicDate.timeStamp,
+      amount: responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium,
+      referenceNumber: faker.string.uuid(),
+      paymentType: "CreditCard",
+      cardType: null,
+      nameOfCardholder: null,
+      TransactionId: null
+    },
+    products: [
+      {
+        productCode: responseBody.quoteSummary.products[0].productCode,
+        planCode: responseBody.quoteSummary.products[0].planCode
+      }
+    ],
+    quoteId: responseBody.quoteId,
+    sessionId: responseBody.sessionId,
+    declarationsAccepted: true,
+    commissionConsultant: "qat"
+  };
+
+  //Create Paload based on planName (Domestic or International)
+  let additionalCoverAddons = [];
+  let premiumMatrix = [];
+  let productArray = responseBody.quoteSummary.products;
+  for (let i = 0; i < Object.keys(productArray).length; i++) {
+    if (row.planName.includes("Dom")) {
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        let CODE = responseBody.quoteSummary.products[i].additionalCoverAddons[0].code;
+        let OPTIONS = [responseBody.quoteSummary.products[i].additionalCoverAddons[0].options[0]];
+        let ADDONDURATION = responseBody.quoteSummary.products[i].additionalCoverAddons[0].addOnDuration;
+        additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
+        if (row.LUGG == responseBody.quoteSummary.products[i].availableCoverAddons[0].code) {
+          let code = responseBody.quoteSummary.products[i].availableCoverAddons[0].code;
+          let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[0].applyAtLevel;
+          let name = responseBody.quoteSummary.products[i].availableCoverAddons[0].name;
+          let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[0].helpText;
+          let options = responseBody.quoteSummary.products[i].availableCoverAddons[0].options;
+          let addOnDuration = responseBody.quoteSummary.products[i].availableCoverAddons[0].addOnDuration;
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
+
+        let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
+        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
+        let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
+        let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
+        let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
+        let isSelected = true;
+        let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
+        premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+      }
+    } else if (row.planName.includes("Int")) {
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        let additionalCoverAddonsArray = responseBody.quoteSummary.products[i].additionalCoverAddons;
+        for (let k = 0; k < Object.keys(additionalCoverAddonsArray).length; k++) {
+          if (responseBody.quoteSummary.products[i].additionalCoverAddons[k].code == "CRS") {
+            let code = responseBody.quoteSummary.products[i].additionalCoverAddons[k].code;
+            let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[k].applyAtLevel;
+            let name = responseBody.quoteSummary.products[i].additionalCoverAddons[k].name;
+            let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[k].helpText;
+            let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[k].options[0]];
+            let addOnDuration = responseBody.quoteSummary.products[i].additionalCoverAddons[k].addOnDuration;
+            additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+          }
+        }
+        let premiumMatrixArray = responseBody.quoteSummary.products[i].premiumMatrix;
+        //console.log(responseBody.quoteSummary.products[i].name + "Product premiumMatrix count " + premiumMatrixArray);
+        for (let j = 0; j < Object.keys(premiumMatrixArray).length; j++) {
+          if (row.excess == responseBody.quoteSummary.products[i].premiumMatrix[j].excess && row.duration == (responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays ?? 1)) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[j].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[j].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[j].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          }
+        }
+      }
+    }
+  }
+  payload.products[0].additionalCoverAddons = additionalCoverAddons;
+  payload.products[0].premiumMatrix = premiumMatrix;
+  //console.log("Check LUGG Add on form Data sheet " + row.LUGG);
+  var travalersArray = responseBody.quoteSummary.travellers;
+  //console.log("helper payload " + JSON.stringify(travalersArray));
+  let travellers = [];
+  for (let i = 0; i < Object.keys(travalersArray).length; i++) {
+    let age = JSON.stringify(travalersArray[i].age);
+    let dateOfBirth = travalersArray[i].dateOfBirth;
+    let isPrimary = JSON.stringify(travalersArray[i].isPrimary);
+    let treatAsAdult = JSON.stringify(travalersArray[i].treatAsAdult);
+    let gender = faker.person.sexType().substring(0, 1);
+    let title = JSON.stringify(travalersArray[i].gender) === 'm' ? 'Mr' : 'Ms';
+    let firstName = 'Test_' + faker.person.firstName(gender);
+    let lastName = 'Test_' + faker.person.lastName();
+    let memberID = "";
+    let externalCustomerId = "";
+    travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId })
+  }
+  //console.log("helper payload " + JSON.stringify(travellers));
+  payload.travellers = travellers;
+
+
+  // If add-ons are present, add them to the payload
+  if (policyAddOns && policyAddOns.length > 0) {
+
+    payload.additionalCovers = policyAddOns;
+  }
+
+  // If EMC options are provided, update travellers' details
+  if (emcOptions) {
+    payload.travellers = payload.travellers.map(traveller => {
+      if (traveller.identifier === emcOptions.identifier) {
+        return {
+          ...traveller,
+          emcAccepted: emcOptions.emcAccepted,
+          assessmentID: emcOptions.assessmentID
+        };
+      }
+      return traveller;
+    });
+  }
+
+  if (row.discount !== undefined) {
+    payload["promoCodes"] = [row.promoCode ? row.promoCode : ""]
+  }
+  return payload;
+}
+
+
+function validateResponseStatus(response, validStatusCodes) {
+  const statusCode = response.status();
+
+  // Assert that the response status is in the valid range
+  expect(response.ok(), `Expected response is OK HTTP status: ${statusCode}`).toBeTruthy();
+
+}
+module.exports = {
+  generateTravelDataNTimes,
+  generateRefineQouteTravelDataNTimes,
+  generateIssuePolicyTravelDataNTimes,
+  flattenObject,
+  createQuotePayload,
+  extractAddOnsFromPayload,
+  extractAddOnsFromAPIResponse,
+  validateTheAddOnsPrice,
+  createPayload,
+  createPayloadForRefineQuote,
+  createPayloadForIssuePolicy,
+  validateResponseStatus,
+  //validateProductDetails,
+  parseAPIResponse,
+  calculateDepartureDate,
+  calculateReturnDate
+};
