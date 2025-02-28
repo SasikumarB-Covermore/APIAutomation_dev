@@ -1,0 +1,989 @@
+{
+  "testName": "Feature_1",
+  "testFileName": "02_create_insurance_policy_with_addon.spec.js",
+  "scenarios": [
+    {
+      "scenario": "Scenario_1: Get Quote for D",
+      "payload": {
+        "issuer": {
+          "code": "MBN0002",
+          "userName": "qat",
+          "externalStoreCode": ""
+        },
+        "trip": {
+          "destinationCountryCodes": [
+            "AUS"
+          ],
+          "startDate": "2025-02-26",
+          "endDate": "2025-02-28"
+        },
+        "travellers": [
+          {
+            "dateOfBirth": "1982-02-24",
+            "age": 43,
+            "isPrimary": true,
+            "treatAsAdult": true
+          },
+          {
+            "dateOfBirth": "1981-02-24",
+            "age": 44,
+            "isPrimary": false,
+            "treatAsAdult": true
+          },
+          {
+            "dateOfBirth": "2013-02-24",
+            "age": 12,
+            "isPrimary": false,
+            "treatAsAdult": false
+          }
+        ],
+        "purchasePath": "Leisure_Medibank",
+        "isResident": "true"
+      },
+      "response": {
+        "sessionId": "3c785aa4-9755-4eb5-9f7c-74d46f20b842",
+        "quoteId": 7720095,
+        "externalReferenceId": null,
+        "currencyCode": "AUD",
+        "cultureCode": "en-AU",
+        "quoteSummary": {
+          "purchasePath": "Leisure_Medibank",
+          "quoteDate": "2025-02-24T19:53:36Z",
+          "trip": {
+            "tripCost": "0",
+            "startDate": "2025-02-26",
+            "endDate": "2025-02-28",
+            "destinationAreaCode": "AU2",
+            "destinationAreaName": "Australia",
+            "destinationCountryCodes": [
+              "AUS"
+            ],
+            "destinationAirportCodes": null,
+            "departureAirportCodes": null,
+            "destinationType": "Domestic",
+            "primaryCountryCode": "AUS",
+            "travelClass": null
+          },
+          "travellers": [
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 43,
+              "dateOfBirth": "1982-02-24",
+              "gender": null,
+              "isPrimary": true,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": true,
+              "additionalCoverAddons": null,
+              "emc": null
+            },
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 44,
+              "dateOfBirth": "1981-02-24",
+              "gender": null,
+              "isPrimary": false,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": true,
+              "additionalCoverAddons": null,
+              "emc": null
+            },
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 12,
+              "dateOfBirth": "2013-02-24",
+              "gender": null,
+              "isPrimary": false,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": false,
+              "additionalCoverAddons": null,
+              "emc": null
+            }
+          ],
+          "products": [
+            {
+              "purchasePath": "Leisure_Medibank",
+              "productCode": "MBC",
+              "productName": "Comprehensive",
+              "planCode": "D",
+              "name": "Dom-ST",
+              "planName": "Comprehensive",
+              "destinationType": "Domestic",
+              "tripType": "Single Trip",
+              "enabled": true,
+              "minAdults": 1,
+              "maxAdults": 4,
+              "minChildren": 0,
+              "maxChildren": 6,
+              "minDuration": 5,
+              "maxDuration": 366,
+              "minAge": 0,
+              "maxAge": 99,
+              "pdsUrl": "http://policy.poweredbycovermore.com/partners/MBAU/files/documents/pds/PDS_MBC.pdf",
+              "isEmcAvailable": true,
+              "adultChargeRate": 1,
+              "childChargeRate": 0,
+              "excesses": null,
+              "maxDurationDays": null,
+              "additionalCoverAddons": [
+                {
+                  "price": 0,
+                  "addOnDuration": null,
+                  "options": [
+                    {
+                      "description": "$10,000",
+                      "value": "5271"
+                    }
+                  ],
+                  "helpText": "",
+                  "name": "Cancellation Variation",
+                  "applyAtLevel": "Policy",
+                  "code": "CANX"
+                }
+              ],
+              "availableCoverAddons": [
+                {
+                  "code": "LUGG",
+                  "applyAtLevel": "Traveller",
+                  "name": "Increase Luggage Item Limits",
+                  "helpText": "",
+                  "options": [
+                    {
+                      "value": "500",
+                      "description": "$500"
+                    },
+                    {
+                      "value": "1500",
+                      "description": "$1,500"
+                    },
+                    {
+                      "value": "2500",
+                      "description": "$2,500"
+                    },
+                    {
+                      "value": "3500",
+                      "description": "$3,500"
+                    },
+                    {
+                      "value": "4500",
+                      "description": "$4,500"
+                    }
+                  ],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "29.00"
+                },
+                {
+                  "code": "MTCL",
+                  "applyAtLevel": "Policy",
+                  "name": "Motorcycle / Moped Riding",
+                  "helpText": "",
+                  "options": [
+                    {
+                      "value": "0",
+                      "description": "Yes"
+                    },
+                    {
+                      "value": "0",
+                      "description": "No"
+                    }
+                  ],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "47.00"
+                },
+                {
+                  "code": "WNTS",
+                  "applyAtLevel": "Policy",
+                  "name": "Snow Skiing And Snowboarding",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "196.00"
+                },
+                {
+                  "code": "EMCT3",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "362.00"
+                },
+                {
+                  "code": "EMCT5",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 5 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "0.00"
+                },
+                {
+                  "code": "EMCT6",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 6 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "310.00"
+                },
+                {
+                  "code": "EMCT7",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 7 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "516.00"
+                },
+                {
+                  "code": "EMCT8",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 8 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "542.00"
+                },
+                {
+                  "code": "EMCT9",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 9 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "600.00"
+                },
+                {
+                  "code": "EMCT10",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 10 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "870.00"
+                },
+                {
+                  "code": "CANX",
+                  "applyAtLevel": "Policy",
+                  "name": "Cancellation Variation",
+                  "helpText": "",
+                  "options": [
+                    {
+                      "value": "5271",
+                      "description": "$10,000"
+                    },
+                    {
+                      "value": "30818",
+                      "description": "$Unlimited"
+                    }
+                  ],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "73.00"
+                }
+              ],
+              "declarations": null,
+              "appliedDiscounts": [],
+              "premiumMatrix": [
+                {
+                  "excess": 50,
+                  "maxDurationDays": null,
+                  "totalGrossPremium": "199.00",
+                  "totalAdjustedGrossPremium": "199.00",
+                  "premiumPerDay": "66.33",
+                  "isSelected": true,
+                  "commission": "73.63"
+                }
+              ],
+              "keySellingPoints": null,
+              "benefits": null
+            },
+            {
+              "purchasePath": "Leisure_Medibank",
+              "productCode": "MBC",
+              "productName": "Comprehensive",
+              "planCode": "DMF",
+              "name": "Dom-AMT-Family",
+              "planName": "Comprehensive",
+              "destinationType": "Domestic",
+              "tripType": "Annual Multi Trip",
+              "enabled": true,
+              "minAdults": 2,
+              "maxAdults": 2,
+              "minChildren": 0,
+              "maxChildren": 6,
+              "minDuration": 15,
+              "maxDuration": 30,
+              "minAge": 0,
+              "maxAge": 99,
+              "pdsUrl": "http://policy.poweredbycovermore.com/partners/MBAU/files/documents/pds/PDS_MBC.pdf",
+              "isEmcAvailable": true,
+              "adultChargeRate": 1,
+              "childChargeRate": 0,
+              "excesses": null,
+              "maxDurationDays": null,
+              "additionalCoverAddons": [
+                {
+                  "price": 0,
+                  "addOnDuration": null,
+                  "options": [
+                    {
+                      "description": "$10,000",
+                      "value": "5271"
+                    }
+                  ],
+                  "helpText": "",
+                  "name": "Cancellation Variation",
+                  "applyAtLevel": "Policy",
+                  "code": "CANX"
+                }
+              ],
+              "availableCoverAddons": [
+                {
+                  "code": "LUGG",
+                  "applyAtLevel": "Traveller",
+                  "name": "Increase Luggage Item Limits",
+                  "helpText": "",
+                  "options": [
+                    {
+                      "value": "500",
+                      "description": "$500"
+                    },
+                    {
+                      "value": "1500",
+                      "description": "$1,500"
+                    },
+                    {
+                      "value": "2500",
+                      "description": "$2,500"
+                    },
+                    {
+                      "value": "3500",
+                      "description": "$3,500"
+                    },
+                    {
+                      "value": "4500",
+                      "description": "$4,500"
+                    }
+                  ],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "75.00"
+                },
+                {
+                  "code": "MTCL",
+                  "applyAtLevel": "Policy",
+                  "name": "Motorcycle / Moped Riding",
+                  "helpText": "",
+                  "options": [
+                    {
+                      "value": "0",
+                      "description": "Yes"
+                    },
+                    {
+                      "value": "0",
+                      "description": "No"
+                    }
+                  ],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "41.00"
+                },
+                {
+                  "code": "WNTS",
+                  "applyAtLevel": "Policy",
+                  "name": "Snow Skiing And Snowboarding",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "138.00"
+                },
+                {
+                  "code": "EMCT3",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "332.00"
+                },
+                {
+                  "code": "EMCT5",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 5 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "0.00"
+                },
+                {
+                  "code": "EMCT6",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 6 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "284.00"
+                },
+                {
+                  "code": "EMCT7",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 7 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "470.00"
+                },
+                {
+                  "code": "EMCT8",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 8 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "494.00"
+                },
+                {
+                  "code": "EMCT9",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 9 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "548.00"
+                },
+                {
+                  "code": "EMCT10",
+                  "applyAtLevel": "Traveller",
+                  "name": "EMC Tier 10 (Approval Required)",
+                  "helpText": "",
+                  "options": [],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "794.00"
+                },
+                {
+                  "code": "CANX",
+                  "applyAtLevel": "Policy",
+                  "name": "Cancellation Variation",
+                  "helpText": "",
+                  "options": [
+                    {
+                      "value": "5271",
+                      "description": "$10,000"
+                    },
+                    {
+                      "value": "30818",
+                      "description": "$Unlimited"
+                    }
+                  ],
+                  "addOnDuration": {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  },
+                  "price": "89.00"
+                }
+              ],
+              "declarations": null,
+              "appliedDiscounts": [],
+              "premiumMatrix": [
+                {
+                  "excess": 50,
+                  "maxDurationDays": 15,
+                  "totalGrossPremium": "355.00",
+                  "totalAdjustedGrossPremium": "355.00",
+                  "premiumPerDay": null,
+                  "isSelected": true,
+                  "commission": "131.35"
+                },
+                {
+                  "excess": 50,
+                  "maxDurationDays": 30,
+                  "totalGrossPremium": "487.00",
+                  "totalAdjustedGrossPremium": "487.00",
+                  "premiumPerDay": null,
+                  "isSelected": false,
+                  "commission": "180.19"
+                }
+              ],
+              "keySellingPoints": null,
+              "benefits": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "Scenario_2: Refine Quote for D",
+      "payload": {
+        "issuer": {
+          "code": "MBN0002",
+          "userName": "qat",
+          "externalStoreCode": ""
+        },
+        "products": [
+          {
+            "productCode": "MBC",
+            "planCode": "D",
+            "additionalCoverAddons": [
+              {
+                "CODE": "CANX",
+                "OPTIONS": [
+                  {
+                    "description": "$10,000",
+                    "value": "5271"
+                  }
+                ],
+                "ADDONDURATION": [
+                  {
+                    "startDate": "2025-02-26",
+                    "endDate": "2025-02-28"
+                  }
+                ]
+              }
+            ],
+            "premiumMatrix": [
+              {
+                "excess": 50,
+                "maxDurationDays": null,
+                "totalGrossPremium": "199.00",
+                "totalAdjustedGrossPremium": "199.00",
+                "premiumPerDay": "66.33",
+                "isSelected": true,
+                "commission": "73.63"
+              }
+            ]
+          }
+        ],
+        "quoteId": 7720095,
+        "sessionId": "3c785aa4-9755-4eb5-9f7c-74d46f20b842",
+        "isResident": true,
+        "travellers": [
+          {
+            "age": "43",
+            "dateOfBirth": "1982-02-24",
+            "isPrimary": "true",
+            "treatAsAdult": "true",
+            "title": "Ms",
+            "firstName": "Test_Columbus",
+            "lastName": "Test_Batz",
+            "gender": "m",
+            "memberID": "",
+            "externalCustomerId": ""
+          },
+          {
+            "age": "44",
+            "dateOfBirth": "1981-02-24",
+            "isPrimary": "false",
+            "treatAsAdult": "true",
+            "title": "Ms",
+            "firstName": "Test_Rebeca",
+            "lastName": "Test_Leannon",
+            "gender": "m",
+            "memberID": "",
+            "externalCustomerId": ""
+          },
+          {
+            "age": "12",
+            "dateOfBirth": "2013-02-24",
+            "isPrimary": "false",
+            "treatAsAdult": "false",
+            "title": "Ms",
+            "firstName": "Test_Garret",
+            "lastName": "Test_Price",
+            "gender": "m",
+            "memberID": "",
+            "externalCustomerId": ""
+          }
+        ]
+      },
+      "response": {
+        "sessionId": "3c785aa4-9755-4eb5-9f7c-74d46f20b842",
+        "quoteId": 7720095,
+        "externalReferenceId": "",
+        "currencyCode": "AUD",
+        "cultureCode": "en-AU",
+        "quoteSummary": {
+          "purchasePath": "Leisure_Medibank",
+          "quoteDate": "2025-02-24T19:53:34Z",
+          "trip": {
+            "tripCost": null,
+            "startDate": "2025-02-26",
+            "endDate": "2025-02-28",
+            "destinationAreaCode": "AU2",
+            "destinationAreaName": "Australia",
+            "destinationCountryCodes": [
+              "AUS"
+            ],
+            "destinationAirportCodes": null,
+            "departureAirportCodes": null,
+            "destinationType": "Domestic",
+            "primaryCountryCode": "AUS",
+            "travelClass": null
+          },
+          "travellers": [
+            {
+              "title": "Ms",
+              "firstName": "Test_Columbus",
+              "surname": null,
+              "age": 43,
+              "dateOfBirth": "1982-02-24",
+              "gender": "m",
+              "isPrimary": true,
+              "memberId": "",
+              "externalCustomerId": "",
+              "treatAsAdult": true,
+              "additionalCoverAddons": [],
+              "emc": null
+            },
+            {
+              "title": "Ms",
+              "firstName": "Test_Rebeca",
+              "surname": null,
+              "age": 44,
+              "dateOfBirth": "1981-02-24",
+              "gender": "m",
+              "isPrimary": false,
+              "memberId": "",
+              "externalCustomerId": "",
+              "treatAsAdult": true,
+              "additionalCoverAddons": [],
+              "emc": null
+            },
+            {
+              "title": "Ms",
+              "firstName": "Test_Garret",
+              "surname": null,
+              "age": 12,
+              "dateOfBirth": "2013-02-24",
+              "gender": "m",
+              "isPrimary": false,
+              "memberId": "",
+              "externalCustomerId": "",
+              "treatAsAdult": false,
+              "additionalCoverAddons": [],
+              "emc": null
+            }
+          ],
+          "products": [
+            {
+              "purchasePath": "Leisure_Medibank",
+              "productCode": "MBC",
+              "productName": "Comprehensive",
+              "planCode": "D",
+              "name": "Dom-ST",
+              "planName": "Comprehensive",
+              "destinationType": "Domestic",
+              "tripType": "Single Trip",
+              "enabled": true,
+              "minAdults": 1,
+              "maxAdults": 4,
+              "minChildren": 0,
+              "maxChildren": 6,
+              "minDuration": 5,
+              "maxDuration": 366,
+              "minAge": 0,
+              "maxAge": 99,
+              "pdsUrl": "http://policy.poweredbycovermore.com/partners/MBAU/files/documents/pds/PDS_MBC.pdf",
+              "isEmcAvailable": true,
+              "adultChargeRate": 1,
+              "childChargeRate": 0,
+              "excesses": null,
+              "maxDurationDays": null,
+              "additionalCoverAddons": [
+                {
+                  "code": "CANX",
+                  "name": "Cancellation Variation",
+                  "helpText": "",
+                  "applyAtLevel": "Policy",
+                  "options": [
+                    {
+                      "value": "5271",
+                      "description": "$10,000"
+                    }
+                  ],
+                  "addOnDuration": [
+                    {
+                      "startDate": "2025-02-26",
+                      "endDate": "2025-02-28"
+                    }
+                  ],
+                  "price": 73
+                }
+              ],
+              "availableCoverAddons": null,
+              "declarations": null,
+              "appliedDiscounts": [],
+              "premiumMatrix": [
+                {
+                  "excess": 50,
+                  "maxDurationDays": null,
+                  "totalGrossPremium": "199.00",
+                  "totalAdjustedGrossPremium": "199.00",
+                  "premiumPerDay": "66.33",
+                  "isSelected": true,
+                  "commission": "73.63"
+                }
+              ],
+              "keySellingPoints": null,
+              "benefits": [
+                {
+                  "id": 356,
+                  "name": "Cancellation and Amendment Fees",
+                  "value": "Choice of $10,000 or $Unlimited",
+                  "helpText": ""
+                },
+                {
+                  "id": 358,
+                  "name": "Luggage and Personal Effects",
+                  "value": "$15,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 359,
+                  "name": "Travel Documents, Credit Card and Travellers Chqs",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 360,
+                  "name": "Rental Car Insurance Excess",
+                  "value": "$10,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 361,
+                  "name": "Travel Delay Expenses",
+                  "value": "$2,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 362,
+                  "name": "Missed Connections",
+                  "value": "$3,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 364,
+                  "name": "Loss of Income",
+                  "value": "$2,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 365,
+                  "name": "Permanent Disability",
+                  "value": "$10,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 366,
+                  "name": "Accidental Death",
+                  "value": "$10,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 367,
+                  "name": "Personal Liability",
+                  "value": "$5,000,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 368,
+                  "name": "Overseas Medical and Hospital Expenses",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 369,
+                  "name": "Delayed Luggage Allowance",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 370,
+                  "name": "Theft of Cash",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 371,
+                  "name": "Resumption of Journey",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 372,
+                  "name": "Hospital Cash Allowance",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 374,
+                  "name": "Additional Expenses",
+                  "value": "$10,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 382,
+                  "name": "Overseas Dental Expenses",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 383,
+                  "name": "Camera or video camera",
+                  "value": "$3,500",
+                  "helpText": ""
+                },
+                {
+                  "id": 384,
+                  "name": "Laptop computer",
+                  "value": "$4,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 385,
+                  "name": "Tablet computer",
+                  "value": "$3,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 386,
+                  "name": "Drone (with or without camera)",
+                  "value": "$1,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 387,
+                  "name": "Artificial limb, removable dental appliance, dentures or medical device e.g. hearing aids, CPAP machine",
+                  "value": "$5,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 388,
+                  "name": "Item Limit: Jewellery",
+                  "value": "$1,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 389,
+                  "name": "Item Limit: Watch or any other item",
+                  "value": "$1,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 390,
+                  "name": "Phone or smart watch",
+                  "value": "$2,000",
+                  "helpText": ""
+                },
+                {
+                  "id": 391,
+                  "name": "Alternative Transport Expenses",
+                  "value": "-",
+                  "helpText": ""
+                },
+                {
+                  "id": 400,
+                  "name": "Meals",
+                  "value": "$75 per day, to a maximum of $500",
+                  "helpText": ""
+                },
+                {
+                  "id": 401,
+                  "name": "Pet Cat or Dog Boarding",
+                  "value": "$500",
+                  "helpText": ""
+                },
+                {
+                  "id": 402,
+                  "name": "Airport Parking",
+                  "value": "$500",
+                  "helpText": ""
+                },
+                {
+                  "id": 403,
+                  "name": "Insurance Excess Cover on Your Personal Vehicle",
+                  "value": "$2,500",
+                  "helpText": ""
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "Scenario_3: IssuePolicy for D",
+      "error": "Cannot read properties of undefined (reading 'options')"
+    }
+  ],
+  "hasError": true
+}

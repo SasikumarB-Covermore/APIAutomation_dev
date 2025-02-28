@@ -311,31 +311,8 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
       userName: "qat",
       externalStoreCode: ""
     },
-
-    //travellers: payLoadRefineQuote,
     products: [
       {
-        // additionalCoverAddons: [
-        //   {
-        //     CODE: responseBody.quoteSummary.products[0].additionalCoverAddons[0].code,
-        //     OPTIONS: [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]],
-        //     ADDONDURATION: [
-        //       responseBody.quoteSummary.products[0].availableCoverAddons[0].addOnDuration
-        //     ]
-
-        //   }
-        // ],
-        // premiumMatrix: [
-        //   {
-        //     excess: row.excess,
-        //     maxDurationDays: null,
-        //     totalGrossPremium: "210.00",
-        //     totalAdjustedGrossPremium: "210.00",
-        //     premiumPerDay: "6.56",
-        //     isSelected: true,
-        //     commission: "77.70"
-        //   }
-        // ],
         productCode: row.productCode,
         planCode: row.planCode
       }
@@ -348,470 +325,326 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   //Create Paload based on planName (Domestic or International)
   let additionalCoverAddons = [];
   let premiumMatrix = [];
-  if (row.planName == "Dom-ST") {
-    console.log("*****Refine quote pauload for " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "D") {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].availableCoverAddons[0].addOnDuration];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "DM") {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].availableCoverAddons[0].addOnDuration];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
-    console.log("additionalCoverAddons for Dom-ST " + JSON.stringify(additionalCoverAddons));
-  } else if (row.planName == "Dom-AMT-Family") {
-    console.log("*****Refine quote pauload for " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "DMF" && row.duration == 15) {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].availableCoverAddons[0].addOnDuration];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "DMF" && row.duration == 30) {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].availableCoverAddons[0].addOnDuration];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
-  } else if (row.planName == "Int-ST") {
-    console.log("*****Refine quote pauload for " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "MCA" && row.excess == 0) {
-      let code = responseBody.quoteSummary.products[0].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[0].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[0].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[0].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCA" && row.excess == 100) {
-      let code = responseBody.quoteSummary.products[0].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[0].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[0].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[0].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+  let productArray = responseBody.quoteSummary.products;
+  for (let i = 0; i < Object.keys(productArray).length; i++) {
+    if (row.planName.includes("Dom")) {
+      //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name);
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
 
-    } else if (row.productCode == "MBC" && row.planCode == "MCA" && row.excess == 250) {
-      let code = responseBody.quoteSummary.products[0].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[0].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[0].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[0].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBM" && row.planCode == "MMA" && row.excess == 0) {
-      let code = responseBody.quoteSummary.products[1].availableCoverAddons[3].code;
-      let applyAtLevel = responseBody.quoteSummary.products[1].availableCoverAddons[3].applyAtLevel;
-      let name = responseBody.quoteSummary.products[1].availableCoverAddons[3].name;
-      let helpText = responseBody.quoteSummary.products[1].availableCoverAddons[3].helpText;
-      let options = [responseBody.quoteSummary.products[1].availableCoverAddons[3].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[1].availableCoverAddons[3].addOnDuration];
-      let excess = responseBody.quoteSummary.products[1].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[1].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[1].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[1].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[1].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[1].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBM" && row.planCode == "MMA" && row.excess == 100) {
-      let code = responseBody.quoteSummary.products[1].availableCoverAddons[3].code;
-      let applyAtLevel = responseBody.quoteSummary.products[1].availableCoverAddons[3].applyAtLevel;
-      let name = responseBody.quoteSummary.products[1].availableCoverAddons[3].name;
-      let helpText = responseBody.quoteSummary.products[1].availableCoverAddons[3].helpText;
-      let options = [responseBody.quoteSummary.products[1].availableCoverAddons[3].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[1].availableCoverAddons[3].addOnDuration];
-      let excess = responseBody.quoteSummary.products[1].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[1].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[1].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[1].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[1].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[1].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBM" && row.planCode == "MMA" && row.excess == 250) {
-      let code = responseBody.quoteSummary.products[1].availableCoverAddons[3].code;
-      let applyAtLevel = responseBody.quoteSummary.products[1].availableCoverAddons[3].applyAtLevel;
-      let name = responseBody.quoteSummary.products[1].availableCoverAddons[3].name;
-      let helpText = responseBody.quoteSummary.products[1].availableCoverAddons[3].helpText;
-      let options = [responseBody.quoteSummary.products[1].availableCoverAddons[3].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[1].availableCoverAddons[3].addOnDuration];
-      let excess = responseBody.quoteSummary.products[1].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[1].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[1].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[1].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[1].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[1].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
+        // let avilableCoverAddonsAddonArray = responseBody.quoteSummary.products[i].availableCoverAddons;
+        // for (let l = 0; l < Object.keys(avilableCoverAddonsAddonArray).length; l++) {
+        //   console.log("TTTT " + row.CANX + " == " + JSON.stringify(responseBody.quoteSummary.products[i].availableCoverAddons[l].code));
+        //   let canxOptionArray = responseBody.quoteSummary.products[i].availableCoverAddons[l].options;
+        //   for (let o = 0; o < Object.keys(canxOptionArray).length; o++) {
+        //     console.log("ccc " + row.CANX + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[o].description);
+        //     if (row.CANX == responseBody.quoteSummary.products[i].availableCoverAddons[l].options[o].description && responseBody.quoteSummary.products[i].availableCoverAddons[l].code != "EMCT") {
+        //       console.log(" cancel add on");
+        //       let CODE = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
+        //       let OPTIONS = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[o]];
+        //       let ADDONDURATION = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
+        //       additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
+        //     }
+        //   }
+        //   let mtclOptionArray = responseBody.quoteSummary.products[i].availableCoverAddons[l].options;
+        //   for (let n = 0; n < Object.keys(mtclOptionArray).length; n++) {
+        //     //console.log(" #### MTCL Add on " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].description);
+        //     if (row.MTCL == responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].description && responseBody.quoteSummary.products[i].availableCoverAddons[l].code != "EMCT") {
+        //       //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+        //       //console.log("%%% " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].value);
+        //       let code = responseBody.quoteSummary.products[i].availableCoverAddons[l].code;
+        //       let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[l].applyAtLevel;
+        //       let name = responseBody.quoteSummary.products[i].availableCoverAddons[l].name;
+        //       let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[l].helpText;
+        //       let options = [responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n]];
+        //       let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
+        //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        //     }
+        //   }
+        //   //console.log(" #### WNTS Add on " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+        //   if (row.WNTS == responseBody.quoteSummary.products[i].availableCoverAddons[l].code && responseBody.quoteSummary.products[i].availableCoverAddons[l].code != "EMCT") {
+        //     //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+        //     //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+        //     let code = responseBody.quoteSummary.products[i].availableCoverAddons[l].code;
+        //     let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[l].applyAtLevel;
+        //     let name = responseBody.quoteSummary.products[i].availableCoverAddons[l].name;
+        //     let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[l].helpText;
+        //     let options = [
+        //       {
+        //         value: 1,
+        //         description: "Yes"
+        //       }
+        //     ];
+        //     let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
+        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        //   }
 
-  } else if (row.planName == "Int-AMT-Single") {
-    console.log("*****Refine quote pauload for " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 0 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-      console.log("$$$$$ additionalCoverAddons for Int-AMT-Single/MBC/MCM/0/30 " + JSON.stringify(additionalCoverAddons));
-      console.log("$$$$$ premiumMatrix for Int-AMT-Single/MBC/MCM/0/30 " + JSON.stringify(premiumMatrix));
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 0 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 0 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 100 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[3].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[3].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[3].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[3].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[3].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[3].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 100 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[4].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[4].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[4].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[4].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[4].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[4].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 100 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[5].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[5].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[5].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[5].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[5].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[5].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[5].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 250 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[6].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[6].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[6].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[6].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[6].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[6].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[6].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 250 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[7].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[7].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[7].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[7].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[7].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[7].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[7].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 250 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[2].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[8].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[8].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[8].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[8].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[8].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[8].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[8].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
+        // }
+        if (row.CANX == "$10000") {
+          let code = "CANX";
+          let applyAtLevel = "Policy";
+          let name = "Cancellation Variation";
+          let helpText = null;
+          let options = [
+            {
+              value: 5271,
+              description: "$10,000",
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        } else if (row.CANX == "$Unlimited") {
+          let code = "CANX";
+          let applyAtLevel = "Policy";
+          let name = "Cancellation Variation";
+          let helpText = null;
+          let options = [
+            {
+              value: 5271,
+              description: "$10,000",
+            }
+          ];
+          let addOnDuration = [{
+            startDate: row.departureDate,
+            endDate: row.returnDate
+          }];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
+        if (row.MTCL == "Yes") {
+          //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+          //console.log("%%% " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].value);
+          let code = "MTCL";
+          let applyAtLevel = "Policy";
+          let name = "Motorcycle / Moped Riding";
+          let helpText = null;
+          let options = [
+            {
+              value: 0,
+              description: "Yes"
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
+        if (row.WNTS == "WNTS") {
+          //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+          //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+          let code = "WNTS";
+          let applyAtLevel = "Policy";
+          let name = "Snow Skiing And Snowboarding";
+          let helpText = null;
+          let options = [
+            {
+              value: 1,
+              description: "Yes"
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
 
-  } else if (row.planName == "Int-AMT-Family") {
-    console.log("*****Refine quote pauload for " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 0 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 0 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 0 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 100 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[3].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[3].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[3].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[3].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[3].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 100 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[4].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[4].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[4].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[4].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[4].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[4].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 100 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[5].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[5].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[5].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[5].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[5].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[5].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 250 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[6].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[6].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[6].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[6].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[6].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[6].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 250 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[7].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[7].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[7].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[7].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[7].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[7].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 250 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[2].availableCoverAddons[4].code;
-      let applyAtLevel = responseBody.quoteSummary.products[2].availableCoverAddons[4].applyAtLevel;
-      let name = responseBody.quoteSummary.products[2].availableCoverAddons[4].name;
-      let helpText = responseBody.quoteSummary.products[2].availableCoverAddons[4].helpText;
-      let options = [responseBody.quoteSummary.products[2].availableCoverAddons[4].options[0]];
-      let addOnDuration = [responseBody.quoteSummary.products[2].availableCoverAddons[4].addOnDuration];
-      let excess = responseBody.quoteSummary.products[2].premiumMatrix[8].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[2].premiumMatrix[8].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[8].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[2].premiumMatrix[8].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[2].premiumMatrix[8].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[2].premiumMatrix[8].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+        let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
+        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
+        let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
+        let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
+        let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
+        let isSelected = true;
+        let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
+        premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+      }
+    } else if (row.planName.includes("Int")) {
+      console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
+
+      // if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+      //   let availableCoverAddonsArray = responseBody.quoteSummary.products[i].availableCoverAddons;
+      //   for (let k = 0; k < Object.keys(availableCoverAddonsArray).length; k++) {
+      //     if (responseBody.quoteSummary.products[i].availableCoverAddons[k].code == "CRS") {
+      //       let code = responseBody.quoteSummary.products[i].availableCoverAddons[k].code;
+      //       let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[k].applyAtLevel;
+      //       let name = responseBody.quoteSummary.products[i].availableCoverAddons[k].name;
+      //       let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[k].helpText;
+      //       let options = [responseBody.quoteSummary.products[i].availableCoverAddons[k].options[0]];
+      //       let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[k].addOnDuration];
+      //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //     }
+      //   }
+      //   let premiumMatrixArray = responseBody.quoteSummary.products[i].premiumMatrix;
+      //   //console.log(responseBody.quoteSummary.products[i].name + "Product premiumMatrix count " + premiumMatrixArray);
+      //   for (let j = 0; j < Object.keys(premiumMatrixArray).length; j++) {
+      //     if (row.excess == responseBody.quoteSummary.products[i].premiumMatrix[j].excess && row.duration == (responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays ?? 1)) {
+      //       let excess = responseBody.quoteSummary.products[i].premiumMatrix[j].excess;
+      //       let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays;
+      //       let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalGrossPremium;
+      //       let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalAdjustedGrossPremium;
+      //       let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[j].premiumPerDay;
+      //       let isSelected = true;
+      //       let commission = responseBody.quoteSummary.products[i].premiumMatrix[j].commission;
+      //       premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+      //     }
+      //   }
+      // }
     }
   }
+
   payload.products[0].additionalCoverAddons = additionalCoverAddons;
   payload.products[0].premiumMatrix = premiumMatrix;
-  //console.log("Check LUGG Add on form Data sheet " + row.LUGG);
   var travalersArray = responseBody.quoteSummary.travellers;
-  //console.log("helper payload " + JSON.stringify(travalersArray));
   let travellers = [];
+  let additionalCoverAddonsForTraveller = [];
+  for (let i = 0; i < Object.keys(productArray).length; i++) {
+    if (row.planName.includes("Dom")) {
+      //console.log("!!! Data sheet plan name " + row.planName);
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        //console.log("@@@ Data sheet product code " + row.productCode + "@@@ response body product code " + responseBody.quoteSummary.products[i].productCode);
+        //console.log("@@@ Data sheet plan code " + row.planCode + "@@@ response body plan code " + responseBody.quoteSummary.products[i].planCode);
+        // let availableCoverAddonsAddonArray = responseBody.quoteSummary.products[i].availableCoverAddons;
+        // for (let l = 0; l < Object.keys(availableCoverAddonsAddonArray).length; l++) {
+        //   let luggOptionArray = responseBody.quoteSummary.products[i].availableCoverAddons[l].options;
+        //   for (let m = 0; m < Object.keys(luggOptionArray).length; m++) {
+        //     //console.log("$$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+        //     if (row.LUGG == responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value) {
+        //       //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+        //       //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+
+        //       let code = responseBody.quoteSummary.products[i].availableCoverAddons[l].code;
+        //       let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[l].applyAtLevel;
+        //       let name = responseBody.quoteSummary.products[i].availableCoverAddons[l].name;
+        //       let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[l].helpText;
+        //       let options = [responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m]];
+        //       let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
+        //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+        //     }
+        //   }
+        // }
+        if (row.LUGG != 0) {
+          if (row.LUGG == 500) {
+            // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+            //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+            let code = "LUGG";
+            let applyAtLevel = "Traveller";
+            let name = "Increase Luggage Item Limits";
+            let helpText = null;
+            let options = [
+              {
+                value: row.LUGG,
+                description: "$" + row.LUGG
+              }
+            ];
+            let addOnDuration = [
+              {
+                startDate: row.departureDate,
+                endDate: row.returnDate
+              }
+            ];
+            additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+          } else if (row.LUGG == 1500) {
+            // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+            //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+            let code = "LUGG";
+            let applyAtLevel = "Traveller";
+            let name = "Increase Luggage Item Limits";
+            let helpText = null;
+            let options = [
+              {
+                value: row.LUGG,
+                description: "$" + row.LUGG
+              }
+            ];
+            let addOnDuration = [
+              {
+                startDate: row.departureDate,
+                endDate: row.returnDate
+              }
+            ];
+            additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+          } else if (row.LUGG == 2500) {
+            // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+            //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+            let code = "LUGG";
+            let applyAtLevel = "Traveller";
+            let name = "Increase Luggage Item Limits";
+            let helpText = null;
+            let options = [
+              {
+                value: row.LUGG,
+                description: "$" + row.LUGG
+              }
+            ];
+            let addOnDuration = [
+              {
+                startDate: row.departureDate,
+                endDate: row.returnDate
+              }
+            ];
+            additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+          } else if (row.LUGG == 3500) {
+            // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+            //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+            let code = "LUGG";
+            let applyAtLevel = "Traveller";
+            let name = "Increase Luggage Item Limits";
+            let helpText = null;
+            let options = [
+              {
+                value: row.LUGG,
+                description: "$" + row.LUGG
+              }
+            ];
+            let addOnDuration = [
+              {
+                startDate: row.departureDate,
+                endDate: row.returnDate
+              }
+            ];
+            additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+          } else if (row.LUGG == 4500) {
+            // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+            //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+            let code = "LUGG";
+            let applyAtLevel = "Traveller";
+            let name = "Increase Luggage Item Limits";
+            let helpText = null;
+            let options = [
+              {
+                value: row.LUGG,
+                description: "$" + row.LUGG
+              }
+            ];
+            let addOnDuration = [
+              {
+                startDate: row.departureDate,
+                endDate: row.returnDate
+              }
+            ];
+            additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+          }
+        }
+
+      }
+    }
+  }
+
   for (let i = 0; i < Object.keys(travalersArray).length; i++) {
     let age = JSON.stringify(travalersArray[i].age);
     let dateOfBirth = travalersArray[i].dateOfBirth;
@@ -823,15 +656,18 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
     let lastName = 'Test_' + faker.person.lastName();
     let memberID = "";
     let externalCustomerId = "";
-    travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId })
+    //console.log(typeof additionalCoverAddonsForTraveller + " !== " + 'undefined' && additionalCoverAddonsForTraveller.length + " >>>> " + 0)
+    additionalCoverAddons = additionalCoverAddonsForTraveller;
+    if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
+    } else {
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
+    }
+
   }
-  //console.log("helper payload " + JSON.stringify(travellers));
+
+  //travellers.push(additionalCoverAddons);
   payload.travellers = travellers;
-
-  // if (policyAddOns && policyAddOns.length > 0) {
-
-  //   payload.additionalCovers = policyAddOns;
-  // }
 
   // If EMC options are provided, update travellers' details
   if (emcOptions) {
@@ -891,17 +727,8 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
       nameOfCardholder: null,
       TransactionId: null
     },
-    //travellers: payLoadRefineQuote,
     products: [
       {
-        // additionalCoverAddons: [
-        //   {
-        //     CODE: responseBody.quoteSummary.products[0].additionalCoverAddons[0].code,
-        //     OPTIONS: [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]],
-        //     ADDONDURATION: responseBody.quoteSummary.products[0].additionalCoverAddons[0].addOnDuration
-        //   }
-        // ],
-        //premiumMatrix: [responseBody.quoteSummary.products[0].premiumMatrix[0]],
         productCode: responseBody.quoteSummary.products[0].productCode,
         planCode: responseBody.quoteSummary.products[0].planCode
       }
@@ -915,460 +742,170 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   //Create Paload based on planName (Domestic or International)
   let additionalCoverAddons = [];
   let premiumMatrix = [];
-  if (row.planName == "Dom-ST") {
-    console.log("#####Issue Policy pauload for " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "D") {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].addOnDuration[0]];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION })
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "DM") {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].addOnDuration[0]];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
-    console.log("additionalCoverAddons for Dom-ST " + JSON.stringify(additionalCoverAddons));
-  } else if (row.planName == "Dom-AMT-Family") {
-    console.log("#####Issue Policy pauload for  " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "DMF" && row.duration == 15) {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].addOnDuration[0]];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "DMF" && row.duration == 30) {
-      let CODE = responseBody.quoteSummary.products[0].additionalCoverAddons[0].code;
-      let OPTIONS = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].options[0]];
-      let ADDONDURATION = [responseBody.quoteSummary.products[0].additionalCoverAddons[0].addOnDuration[0]];
-      additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
-  } else if (row.planName == "Int-ST") {
-    console.log("#####Issue Policy pauload for  " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "MCA" && row.excess == 0) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCA" && row.excess == 100) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
 
-    } else if (row.productCode == "MBC" && row.planCode == "MCA" && row.excess == 250) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBM" && row.planCode == "MMA" && row.excess == 0) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBM" && row.planCode == "MMA" && row.excess == 100) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBM" && row.planCode == "MMA" && row.excess == 250) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
+  let productArray = responseBody.quoteSummary.products;
+  for (let i = 0; i < Object.keys(productArray).length; i++) {
+    if (row.planName.includes("Dom")) {
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        // let CODE = responseBody.quoteSummary.products[i].additionalCoverAddons[0].code;
+        // let OPTIONS = [responseBody.quoteSummary.products[i].additionalCoverAddons[0].options[0]];
+        // let ADDONDURATION = responseBody.quoteSummary.products[i].additionalCoverAddons[0].addOnDuration;
+        // additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
 
-  } else if (row.planName == "Int-AMT-Single") {
-    console.log("#####Issue Policy pauload for  " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 0 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 0 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 0 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 100 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[3].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[3].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[3].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[3].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[3].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[3].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 100 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[4].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[4].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[4].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[4].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[4].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[4].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 100 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[5].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[5].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[5].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[5].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[5].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[5].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 250 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[6].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[6].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[6].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[6].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[6].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[6].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 250 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[7].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[7].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[7].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[7].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[7].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[7].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCM" && row.excess == 250 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[8].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[8].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[8].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[8].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[8].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[8].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    }
+        // let productAdditionalCoverAddonsArray = responseBody.quoteSummary.products[i].additionalCoverAddons;
+        // for (let l = 0; l < Object.keys(productAdditionalCoverAddonsArray).length; l++) {
+        //   //console.log("222 " + row.CANX + " == " + responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0].description);
+        //   if (responseBody.quoteSummary.products[i].additionalCoverAddons[l].code != "EMCT") {
+        //     if (row.CANX == responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0].description) {
+        //       let code = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
+        //       let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[l].applyAtLevel;
+        //       let name = responseBody.quoteSummary.products[i].additionalCoverAddons[l].name;
+        //       let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[l].helpText;
+        //       let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0]];
+        //       let addOnDuration = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].addOnDuration];
+        //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        //     }
+        //   }
 
-  } else if (row.planName == "Int-AMT-Family") {
-    console.log("#####Issue Policy pauload for  " + row.planName);
-    if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 0 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[0].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[0].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[0].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[0].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[0].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 0 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[1].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[1].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[1].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[1].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[1].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 0 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[2].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[2].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[2].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[2].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[2].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 100 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[3].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[3].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[3].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[3].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[3].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[3].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 100 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[4].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[4].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[4].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[4].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[4].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[4].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 100 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[5].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[5].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[5].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[5].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[5].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[5].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 250 && row.duration == 30) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[6].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[6].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[6].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[6].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[6].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[6].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 250 && row.duration == 45) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[7].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[7].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[7].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[7].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[7].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[7].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-    } else if (row.productCode == "MBC" && row.planCode == "MCMF" && row.excess == 250 && row.duration == 60) {
-      let code = responseBody.quoteSummary.products[0].additionalCoverAddons[1].code;
-      let applyAtLevel = responseBody.quoteSummary.products[0].additionalCoverAddons[1].applyAtLevel;
-      let name = responseBody.quoteSummary.products[0].additionalCoverAddons[1].name;
-      let helpText = responseBody.quoteSummary.products[0].additionalCoverAddons[1].helpText;
-      let options = [responseBody.quoteSummary.products[0].additionalCoverAddons[1].options[0]];
-      let addOnDuration = responseBody.quoteSummary.products[0].additionalCoverAddons[1].addOnDuration;
-      let excess = responseBody.quoteSummary.products[0].premiumMatrix[8].excess;
-      let maxDurationDays = responseBody.quoteSummary.products[0].premiumMatrix[8].maxDurationDays;
-      let totalGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[8].totalGrossPremium;
-      let totalAdjustedGrossPremium = responseBody.quoteSummary.products[0].premiumMatrix[8].totalAdjustedGrossPremium;
-      let premiumPerDay = responseBody.quoteSummary.products[0].premiumMatrix[8].premiumPerDay;
-      let isSelected = true;
-      let commission = responseBody.quoteSummary.products[0].premiumMatrix[8].commission;
-      additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+        //   if (row.MTCL == responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0].description && responseBody.quoteSummary.products[i].additionalCoverAddons[l].code != "EMCT") {
+        //     let code = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
+        //     let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[l].applyAtLevel;
+        //     let name = responseBody.quoteSummary.products[i].additionalCoverAddons[l].name;
+        //     let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[l].helpText;
+        //     let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0]];
+        //     let addOnDuration = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].addOnDuration];
+        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        //   }
+        //   if (row.WNTS == responseBody.quoteSummary.products[i].additionalCoverAddons[l].code && responseBody.quoteSummary.products[i].additionalCoverAddons[l].code != "EMCT") {
+        //     let code = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
+        //     let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[l].applyAtLevel;
+        //     let name = responseBody.quoteSummary.products[i].additionalCoverAddons[l].name;
+        //     let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[l].helpText;
+        //     let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0]];
+        //     let addOnDuration = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].addOnDuration];
+        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        //   }
+
+        // }
+        console.log(row.CANX + " == 10000");
+        if (row.CANX == "10000") {
+          let code = "CANX";
+          let applyAtLevel = "Policy";
+          let name = "Cancellation Variation";
+          let helpText = null;
+          let options = [
+            {
+              value: 5271,
+              description: "$10,000",
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        } else if (row.CANX == "7Unlimited") {
+          let code = "CANX";
+          let applyAtLevel = "Policy";
+          let name = "Cancellation Variation";
+          let helpText = null;
+          let options = [
+            {
+              value: 5271,
+              description: "$10,000",
+            }
+          ];
+          let addOnDuration = [{
+            startDate: row.departureDate,
+            endDate: row.returnDate
+          }];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
+        console.log(row.MTCL + " == $10000");
+        if (row.MTCL == "Yes") {
+          //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+          //console.log("%%% " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].value);
+          let code = "MTCL";
+          let applyAtLevel = "Policy";
+          let name = "Motorcycle / Moped Riding";
+          let helpText = null;
+          let options = [
+            {
+              value: 0,
+              description: "Yes"
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
+        console.log(row.WNTS + " == WNTS");
+        if (row.WNTS == "WNTS") {
+          //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+          //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+          let code = "WNTS";
+          let applyAtLevel = "Policy";
+          let name = "Snow Skiing And Snowboarding";
+          let helpText = null;
+          let options = [
+            {
+              value: 1,
+              description: "Yes"
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
+
+        let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
+        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
+        let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
+        let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
+        let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
+        let isSelected = true;
+        let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
+        premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+      }
+    } else if (row.planName.includes("Int")) {
+      if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+        let additionalCoverAddonsArray = responseBody.quoteSummary.products[i].additionalCoverAddons;
+        for (let k = 0; k < Object.keys(additionalCoverAddonsArray).length; k++) {
+          if (responseBody.quoteSummary.products[i].additionalCoverAddons[k].code == "CRS") {
+            let code = responseBody.quoteSummary.products[i].additionalCoverAddons[k].code;
+            let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[k].applyAtLevel;
+            let name = responseBody.quoteSummary.products[i].additionalCoverAddons[k].name;
+            let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[k].helpText;
+            let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[k].options[0]];
+            let addOnDuration = responseBody.quoteSummary.products[i].additionalCoverAddons[k].addOnDuration;
+            additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+          }
+        }
+        let premiumMatrixArray = responseBody.quoteSummary.products[i].premiumMatrix;
+        //console.log(responseBody.quoteSummary.products[i].name + "Product premiumMatrix count " + premiumMatrixArray);
+        for (let j = 0; j < Object.keys(premiumMatrixArray).length; j++) {
+          if (row.excess == responseBody.quoteSummary.products[i].premiumMatrix[j].excess && row.duration == (responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays ?? 1)) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[j].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[j].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[j].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          }
+        }
+      }
     }
   }
   payload.products[0].additionalCoverAddons = additionalCoverAddons;
@@ -1376,6 +913,116 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   //console.log("Check LUGG Add on form Data sheet " + row.LUGG);
   var travalersArray = responseBody.quoteSummary.travellers;
   //console.log("helper payload " + JSON.stringify(travalersArray));
+
+  let additionalCoverAddonsForTraveller = [];
+  if (row.LUGG != 0) {
+    if (row.LUGG == 500) {
+      // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      let code = "LUGG";
+      let applyAtLevel = "Traveller";
+      let name = "Increase Luggage Item Limits";
+      let helpText = null;
+      let options = [
+        {
+          value: row.LUGG,
+          description: "$" + row.LUGG
+        }
+      ];
+      let addOnDuration = [
+        {
+          startDate: row.departureDate,
+          endDate: row.returnDate
+        }
+      ];
+      additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+    } else if (row.LUGG == 1500) {
+      // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      let code = "LUGG";
+      let applyAtLevel = "Traveller";
+      let name = "Increase Luggage Item Limits";
+      let helpText = null;
+      let options = [
+        {
+          value: row.LUGG,
+          description: "$" + row.LUGG
+        }
+      ];
+      let addOnDuration = [
+        {
+          startDate: row.departureDate,
+          endDate: row.returnDate
+        }
+      ];
+      additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+    } else if (row.LUGG == 2500) {
+      // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      let code = "LUGG";
+      let applyAtLevel = "Traveller";
+      let name = "Increase Luggage Item Limits";
+      let helpText = null;
+      let options = [
+        {
+          value: row.LUGG,
+          description: "$" + row.LUGG
+        }
+      ];
+      let addOnDuration = [
+        {
+          startDate: row.departureDate,
+          endDate: row.returnDate
+        }
+      ];
+      additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+    } else if (row.LUGG == 3500) {
+      // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      let code = "LUGG";
+      let applyAtLevel = "Traveller";
+      let name = "Increase Luggage Item Limits";
+      let helpText = null;
+      let options = [
+        {
+          value: row.LUGG,
+          description: "$" + row.LUGG
+        }
+      ];
+      let addOnDuration = [
+        {
+          startDate: row.departureDate,
+          endDate: row.returnDate
+        }
+      ];
+      additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+    } else if (row.LUGG == 4500) {
+      // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      let code = "LUGG";
+      let applyAtLevel = "Traveller";
+      let name = "Increase Luggage Item Limits";
+      let helpText = null;
+      let options = [
+        {
+          value: row.LUGG,
+          description: "$" + row.LUGG
+        }
+      ];
+      let addOnDuration = [
+        {
+          startDate: row.departureDate,
+          endDate: row.returnDate
+        }
+      ];
+      additionalCoverAddonsForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+
+    }
+  }
   let travellers = [];
   for (let i = 0; i < Object.keys(travalersArray).length; i++) {
     let age = JSON.stringify(travalersArray[i].age);
@@ -1388,8 +1035,29 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
     let lastName = 'Test_' + faker.person.lastName();
     let memberID = "";
     let externalCustomerId = "";
-    travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId })
+    additionalCoverAddons = additionalCoverAddonsForTraveller;
+    if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
+    } else {
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
+    }
   }
+  // for (let i = 0; i < Object.keys(productArray).length; i++) {
+  //   if (row.planName.includes("Dom")) {
+  //     if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
+  //       let availableCoverAddonsAddonArray = responseBody.quoteSummary.products[i].availableCoverAddons;
+  //       for (let l = 0; l < Object.keys(availableCoverAddonsAddonArray).length; l++) {
+  // let luggOptionArray = responseBody.quoteSummary.travellers[0].additionalCoverAddons[0].code;
+  //for (let m = 0; m < Object.keys(luggOptionArray).length; m++) {
+  //console.log("$$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+
+
+  //}
+  //}
+  //}
+
+  //}
+  //}
   //console.log("helper payload " + JSON.stringify(travellers));
   payload.travellers = travellers;
 
@@ -1428,49 +1096,6 @@ function validateResponseStatus(response, validStatusCodes) {
   expect(response.ok(), `Expected response is OK HTTP status: ${statusCode}`).toBeTruthy();
 
 }
-
-
-/**
- * Function to validate product details in the response.
- *//*
-function validateProductDetails(responseBody, row) {
-const product = responseBody.product[row.productID];
-if (!product) {
-throw new Error(`Product with ID ${row.productID} not found in response.`);
-}
-if (!product.id.toString().includes(row.productID.toString())) {
-throw new Error(`Product ID does not match: expected ${row.productID}, got ${product.id}`);
-}
-if (product.code !== row.productCode) {
-throw new Error(`Product code does not match: expected ${row.productCode}, got ${product.code}`);
-}
-if (product.planCode !== row.planCode) {
-throw new Error(`Plan code does not match: expected ${row.planCode}, got ${product.planCode}`);
-}
-if (product.pdsUrl !== row.pdsUrl) {
-throw new Error(`PDS URL does not match: expected ${row.pdsUrl}, got ${product.pdsUrl}`);
-}
-}*/
-
-// function validateProductDetails(responseBody, row) {
-//   const product = responseBody.product[row.productID];
-
-//   // Use expect for the product existence check
-//   expect(product,`Product details are returned`).toBeDefined();  // No need for a custom message here unless it fails
-
-//   // Use expect for the product ID match
-//   expect(product.id.toString(), `ProductID returned is ${product.id}`).toContain(row.productID.toString());
-
-//   // Use expect for the product code match
-//   expect(product.code,`ProductCode returned is ${product.code}`).toBe(row.productCode);
-
-//   // Use expect for the plan code match
-//   expect(product.planCode,`Plan code returned is ${product.planCode}`).toBe(row.planCode);
-
-//   // Use expect for the PDS URL match and handle undefined or empty values
-//   const actualPdsUrl = product.pdsUrl || 'undefined/empty';
-//   expect(actualPdsUrl,`Url for pds returned is ${product.pdsUrl}`).toBe(row.pdsUrl);
-// }
 
 
 module.exports = {
