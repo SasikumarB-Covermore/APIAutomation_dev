@@ -27,10 +27,10 @@ const { savePolicyNumber } = require('../../utils/fileReader.js')
 const { generateAustralianAddress, phoneNumbers } = require('../../utils/dataGenerator')
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
 const { generateAddOns } = require('../../utils/addonsGenerator.js')
-import { PriceCalculator } from '../../pricing/priceCalculator.js';
-import { PriceValidator } from '../../utils/priceValidator.js';
+// import { PriceCalculator } from '../../pricing/priceCalculator.js';
+// import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
-const { createQuote, createRefineQuote, createIssuePolicy, updateTravellers, closeSession } = require("../../utils/apiClient.js");
+const { createQuote, createRefineQuote, createIssuePolicy } = require("../../utils/apiClient.js");
 const policyNumbers = []
 const filePath = getDataFilePath()
 const sheetName = 'WL_With_AddOn'
@@ -108,6 +108,7 @@ test.describe('', async () => {
       await test.step(`Scenario_1: Get Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to quote API for ${row.planCode}`, async () => {
           payload = createPayload(row, payLoadQuote, [], null);
+          console.log("create quote payload body " + JSON.stringify(payload));
           response = await createQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();

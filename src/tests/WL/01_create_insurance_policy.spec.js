@@ -99,7 +99,7 @@ test.describe("", async () => {
 
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Create quote responsebody for without addon " + JSON.stringify(responseBody));
+          //console.log("Create quote responsebody for without addon " + JSON.stringify(responseBody));
           currentTestDetails.scenarios.push({
             scenario: `Scenario_1: Get Quote for ${row.planCode}`,
             payload,
@@ -135,7 +135,7 @@ test.describe("", async () => {
 
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Refine quote responsebody for without addon " + JSON.stringify(responseBody));
+          //console.log("Refine quote responsebody for without addon " + JSON.stringify(responseBody));
           currentTestDetails.scenarios.push({
             scenario: `Scenario_2: Refine Quote for ${row.planCode}`,
             payload,
@@ -160,7 +160,7 @@ test.describe("", async () => {
             payload,
             response: responseBody,
           });
-          console.log("Issue Policy response " + JSON.stringify(responseBody));
+          //console.log("Issue Policy response " + JSON.stringify(responseBody));
           console.log("Sending POST request for Issue Policy API for Success");
         }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
       });
