@@ -328,7 +328,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   let premiumMatrix = [];
   let productArray = responseBody.quoteSummary.products;
   for (let i = 0; i < Object.keys(productArray).length; i++) {
-    console.log(row.planName.includes("Int"));
+    console.log(row.planName.includes("Dom"));
     if (row.planName.includes("Dom")) {
       console.log("1!!!! Plan name from Respose body " + responseBody.quoteSummary.products[i].name + " and plam name from data sheet " + row.planName);
       console.log(")) " + row.planName + " == " + responseBody.quoteSummary.products[i].name + " && " + row.productCode + " == " + responseBody.quoteSummary.products[i].productCode + " && " + row.planCode + " == " + responseBody.quoteSummary.products[i].planCode);
@@ -630,7 +630,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   var travalersArray = responseBody.quoteSummary.travellers;
   let travellers = [];
   let additionalCoverAddonsForTraveller = [];
-  let EMCForTraveller = [];
+  //let EMCForTraveller = [];
   for (let i = 0; i < Object.keys(productArray).length; i++) {
 
     //console.log("!!! Data sheet plan name " + row.planName);
@@ -765,112 +765,112 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
 
         }
       }
-      if (row.EMC != 0) {
-        if (row.EMC == "EMCT3") {
-          // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-          //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-          let code = "EMCT3";
-          let applyAtLevel = "Traveller";
-          let name = "EMC (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      // if (row.EMC != 0) {
+      //   if (row.EMC == "EMCT3") {
+      //     // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //     //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      //     let code = "EMCT3";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
 
-        } else if (row.EMC == "EMCT5") {
-          // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-          //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-          let code = "EMCT5";
-          let applyAtLevel = "Traveller";
-          let name = "EMC Tier 5 (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //   } else if (row.EMC == "EMCT5") {
+      //     // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //     //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      //     let code = "EMCT5";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC Tier 5 (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
 
-        } else if (row.EMC == "EMCT6") {
-          // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-          //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-          let code = "EMCT6";
-          let applyAtLevel = "Traveller";
-          let name = "EMC Tier 6 (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //   } else if (row.EMC == "EMCT6") {
+      //     // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
+      //     //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
+      //     let code = "EMCT6";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC Tier 6 (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
 
-        } else if (row.EMC == "EMCT7") {
-          let code = "EMCT7";
-          let applyAtLevel = "Traveller";
-          let name = "EMC Tier 7 (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //   } else if (row.EMC == "EMCT7") {
+      //     let code = "EMCT7";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC Tier 7 (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
 
-        } else if (row.EMC == "EMCT8") {
-          let code = "EMCT8";
-          let applyAtLevel = "Traveller";
-          let name = "EMC Tier 8 (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //   } else if (row.EMC == "EMCT8") {
+      //     let code = "EMCT8";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC Tier 8 (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
 
-        } else if (row.EMC == "EMCT9") {
-          let code = "EMCT9";
-          let applyAtLevel = "Traveller";
-          let name = "EMC Tier 9 (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //   } else if (row.EMC == "EMCT9") {
+      //     let code = "EMCT9";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC Tier 9 (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
 
-        } else if (row.EMC == "EMCT10") {
-          let code = "EMCT10";
-          let applyAtLevel = "Traveller";
-          let name = "EMC Tier 10 (Approval Required)";
-          let helpText = "";
-          let options = [];
-          let addOnDuration = [
-            {
-              startDate: row.departureDate,
-              endDate: row.returnDate
-            }
-          ];
-          EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        }
-      }
+      //   } else if (row.EMC == "EMCT10") {
+      //     let code = "EMCT10";
+      //     let applyAtLevel = "Traveller";
+      //     let name = "EMC Tier 10 (Approval Required)";
+      //     let helpText = "";
+      //     let options = [];
+      //     let addOnDuration = [
+      //       {
+      //         startDate: row.departureDate,
+      //         endDate: row.returnDate
+      //       }
+      //     ];
+      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      //   }
+      // }
 
     }
 
@@ -894,12 +894,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
     } else {
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
     }
-    additionalCoverAddons = EMCForTraveller;
-    if (typeof EMCForTraveller !== 'undefined' && EMCForTraveller.length > 0) {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
-    } else {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
-    }
+
   }
 
   //travellers.push(additionalCoverAddons);

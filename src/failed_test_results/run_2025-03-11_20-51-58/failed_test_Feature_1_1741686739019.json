@@ -1,6 +1,6 @@
 {
   "testName": "Feature_1",
-  "testFileName": "06_create_insurance_policy_with_emc.spec.js",
+  "testFileName": "02_create_insurance_policy_with_addon.spec.js",
   "scenarios": [
     {
       "scenario": "Scenario_1: Get Quote for D",
@@ -14,25 +14,25 @@
           "destinationCountryCodes": [
             "AUS"
           ],
-          "startDate": "2025-03-12",
+          "startDate": "2025-03-14",
           "endDate": "2025-03-14"
         },
         "travellers": [
           {
-            "dateOfBirth": "1979-03-10",
-            "age": 46,
+            "dateOfBirth": "1983-03-11",
+            "age": 42,
             "isPrimary": true,
             "treatAsAdult": true
           },
           {
-            "dateOfBirth": "1980-03-10",
-            "age": 45,
+            "dateOfBirth": "2012-03-11",
+            "age": 13,
             "isPrimary": false,
-            "treatAsAdult": true
+            "treatAsAdult": false
           },
           {
-            "dateOfBirth": "2023-03-10",
-            "age": 2,
+            "dateOfBirth": "2016-03-11",
+            "age": 9,
             "isPrimary": false,
             "treatAsAdult": false
           }
@@ -42,16 +42,16 @@
       },
       "response": {
         "sessionId": null,
-        "quoteId": 7734425,
+        "quoteId": 7734663,
         "externalReferenceId": null,
         "currencyCode": "AUD",
         "cultureCode": "en-AU",
         "quoteSummary": {
           "purchasePath": "Leisure_Medibank",
-          "quoteDate": "2025-03-11T01:23:47Z",
+          "quoteDate": "2025-03-11T20:52:05Z",
           "trip": {
             "tripCost": "0",
-            "startDate": "2025-03-12",
+            "startDate": "2025-03-14",
             "endDate": "2025-03-14",
             "destinationAreaCode": "AU2",
             "destinationAreaName": "Australia",
@@ -69,8 +69,8 @@
               "title": null,
               "firstName": null,
               "surname": null,
-              "age": 46,
-              "dateOfBirth": "1979-03-10",
+              "age": 42,
+              "dateOfBirth": "1983-03-11",
               "gender": null,
               "isPrimary": true,
               "memberId": null,
@@ -83,13 +83,13 @@
               "title": null,
               "firstName": null,
               "surname": null,
-              "age": 45,
-              "dateOfBirth": "1980-03-10",
+              "age": 13,
+              "dateOfBirth": "2012-03-11",
               "gender": null,
               "isPrimary": false,
               "memberId": null,
               "externalCustomerId": null,
-              "treatAsAdult": true,
+              "treatAsAdult": false,
               "additionalCoverAddons": null,
               "emc": null
             },
@@ -97,8 +97,8 @@
               "title": null,
               "firstName": null,
               "surname": null,
-              "age": 2,
-              "dateOfBirth": "2023-03-10",
+              "age": 9,
+              "dateOfBirth": "2016-03-11",
               "gender": null,
               "isPrimary": false,
               "memberId": null,
@@ -179,7 +179,7 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
                   "price": "29.00"
@@ -200,7 +200,7 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
                   "price": "47.00"
@@ -212,10 +212,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "226.00"
+                  "price": "113.00"
                 },
                 {
                   "code": "CANX",
@@ -233,10 +233,10 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "73.00"
+                  "price": "43.00"
                 },
                 {
                   "code": "EMCT3",
@@ -245,10 +245,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "362.00"
+                  "price": "181.00"
                 },
                 {
                   "code": "EMCT5",
@@ -257,7 +257,7 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
                   "price": "0.00"
@@ -269,10 +269,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "310.00"
+                  "price": "155.00"
                 },
                 {
                   "code": "EMCT7",
@@ -281,10 +281,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "516.00"
+                  "price": "258.00"
                 },
                 {
                   "code": "EMCT8",
@@ -293,10 +293,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "542.00"
+                  "price": "271.00"
                 },
                 {
                   "code": "EMCT9",
@@ -305,10 +305,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "600.00"
+                  "price": "300.00"
                 },
                 {
                   "code": "EMCT10",
@@ -317,10 +317,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "870.00"
+                  "price": "435.00"
                 }
               ],
               "declarations": null,
@@ -329,11 +329,11 @@
                 {
                   "excess": 50,
                   "maxDurationDays": null,
-                  "totalGrossPremium": "355.00",
-                  "totalAdjustedGrossPremium": "355.00",
-                  "premiumPerDay": "118.33",
+                  "totalGrossPremium": "184.00",
+                  "totalAdjustedGrossPremium": "184.00",
+                  "premiumPerDay": "184.00",
                   "isSelected": true,
-                  "commission": "131.35"
+                  "commission": "68.08"
                 }
               ],
               "keySellingPoints": null,
@@ -409,7 +409,7 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
                   "price": "75.00"
@@ -430,7 +430,7 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
                   "price": "41.00"
@@ -442,10 +442,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "138.00"
+                  "price": "69.00"
                 },
                 {
                   "code": "CANX",
@@ -463,10 +463,10 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "89.00"
+                  "price": "52.00"
                 },
                 {
                   "code": "EMCT3",
@@ -475,10 +475,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "332.00"
+                  "price": "166.00"
                 },
                 {
                   "code": "EMCT5",
@@ -487,7 +487,7 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
                   "price": "0.00"
@@ -499,10 +499,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "284.00"
+                  "price": "142.00"
                 },
                 {
                   "code": "EMCT7",
@@ -511,10 +511,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "470.00"
+                  "price": "235.00"
                 },
                 {
                   "code": "EMCT8",
@@ -523,10 +523,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "494.00"
+                  "price": "247.00"
                 },
                 {
                   "code": "EMCT9",
@@ -535,10 +535,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "548.00"
+                  "price": "274.00"
                 },
                 {
                   "code": "EMCT10",
@@ -547,10 +547,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
+                    "startDate": "2025-03-14",
                     "endDate": "2025-03-14"
                   },
-                  "price": "794.00"
+                  "price": "397.00"
                 }
               ],
               "declarations": null,
@@ -559,20 +559,20 @@
                 {
                   "excess": 50,
                   "maxDurationDays": 15,
-                  "totalGrossPremium": "355.00",
-                  "totalAdjustedGrossPremium": "355.00",
+                  "totalGrossPremium": "185.00",
+                  "totalAdjustedGrossPremium": "185.00",
                   "premiumPerDay": null,
                   "isSelected": true,
-                  "commission": "131.35"
+                  "commission": "68.45"
                 },
                 {
                   "excess": 50,
                   "maxDurationDays": 30,
-                  "totalGrossPremium": "487.00",
-                  "totalAdjustedGrossPremium": "487.00",
+                  "totalGrossPremium": "251.00",
+                  "totalAdjustedGrossPremium": "251.00",
                   "premiumPerDay": null,
                   "isSelected": false,
-                  "commission": "180.19"
+                  "commission": "92.87"
                 }
               ],
               "keySellingPoints": null,
@@ -583,8 +583,389 @@
       }
     },
     {
-      "scenario": "Scenario_2: Get Quote for D",
-      "error": "Expected response is OK HTTP status: 400  expect(received).toBeTruthy()  Received: false"
+      "scenario": "Scenario_2: Refine Quote for D",
+      "payload": {
+        "issuer": {
+          "code": "MBN0001",
+          "userName": "qat",
+          "externalStoreCode": ""
+        },
+        "products": [
+          {
+            "productCode": "MBC",
+            "planCode": "D",
+            "tripTypeCode": "SingleTrip",
+            "additionalCoverAddons": [
+              {
+                "code": "CANX",
+                "applyAtLevel": "Policy",
+                "name": "Cancellation Variation",
+                "helpText": null,
+                "options": [
+                  {
+                    "value": 5271,
+                    "description": "$10,000"
+                  }
+                ],
+                "addOnDuration": [
+                  {
+                    "startDate": "2025-02-22",
+                    "endDate": "2025-02-22"
+                  }
+                ]
+              },
+              {
+                "code": "MTCL",
+                "applyAtLevel": "Policy",
+                "name": "Motorcycle / Moped Riding",
+                "helpText": null,
+                "options": [
+                  {
+                    "value": 0,
+                    "description": "Yes"
+                  }
+                ],
+                "addOnDuration": [
+                  {
+                    "startDate": "2025-02-22",
+                    "endDate": "2025-02-22"
+                  }
+                ]
+              }
+            ],
+            "premiumMatrix": [
+              {
+                "excess": 50,
+                "maxDurationDays": null,
+                "totalGrossPremium": "184.00",
+                "totalAdjustedGrossPremium": "184.00",
+                "premiumPerDay": "184.00",
+                "isSelected": true,
+                "commission": "68.08"
+              }
+            ]
+          }
+        ],
+        "quoteId": 7734663,
+        "sessionId": null,
+        "isResident": true,
+        "travellers": [
+          {
+            "age": "42",
+            "dateOfBirth": "1983-03-11",
+            "isPrimary": "true",
+            "treatAsAdult": "true",
+            "title": "Ms",
+            "firstName": "Test_Billy",
+            "lastName": "Test_Kerluke",
+            "gender": "f",
+            "memberID": "",
+            "externalCustomerId": "",
+            "additionalCoverAddons": [
+              {
+                "code": "LUGG",
+                "applyAtLevel": "Traveller",
+                "name": "Increase Luggage Item Limits",
+                "helpText": null,
+                "options": [
+                  {
+                    "value": "500",
+                    "description": "$500"
+                  }
+                ],
+                "addOnDuration": [
+                  {
+                    "startDate": "2025-02-22",
+                    "endDate": "2025-02-22"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "age": "13",
+            "dateOfBirth": "2012-03-11",
+            "isPrimary": "false",
+            "treatAsAdult": "false",
+            "title": "Ms",
+            "firstName": "Test_Damion",
+            "lastName": "Test_Heathcote",
+            "gender": "f",
+            "memberID": "",
+            "externalCustomerId": "",
+            "additionalCoverAddons": [
+              {
+                "code": "LUGG",
+                "applyAtLevel": "Traveller",
+                "name": "Increase Luggage Item Limits",
+                "helpText": null,
+                "options": [
+                  {
+                    "value": "500",
+                    "description": "$500"
+                  }
+                ],
+                "addOnDuration": [
+                  {
+                    "startDate": "2025-02-22",
+                    "endDate": "2025-02-22"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "age": "9",
+            "dateOfBirth": "2016-03-11",
+            "isPrimary": "false",
+            "treatAsAdult": "false",
+            "title": "Ms",
+            "firstName": "Test_Abby",
+            "lastName": "Test_Rice",
+            "gender": "f",
+            "memberID": "",
+            "externalCustomerId": "",
+            "additionalCoverAddons": [
+              {
+                "code": "LUGG",
+                "applyAtLevel": "Traveller",
+                "name": "Increase Luggage Item Limits",
+                "helpText": null,
+                "options": [
+                  {
+                    "value": "500",
+                    "description": "$500"
+                  }
+                ],
+                "addOnDuration": [
+                  {
+                    "startDate": "2025-02-22",
+                    "endDate": "2025-02-22"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "sessionId": "e3cbfb54-4af7-4eb4-bef5-f3fd8da7d93f",
+        "quoteId": 7734663,
+        "externalReferenceId": "",
+        "currencyCode": "AUD",
+        "cultureCode": "en-AU",
+        "quoteSummary": {
+          "purchasePath": "Leisure_Medibank",
+          "quoteDate": "2025-03-11T20:52:04Z",
+          "trip": {
+            "tripCost": null,
+            "startDate": "2025-03-14",
+            "endDate": "2025-03-14",
+            "destinationAreaCode": "AU2",
+            "destinationAreaName": "Australia",
+            "destinationCountryCodes": [
+              "AUS"
+            ],
+            "destinationAirportCodes": null,
+            "departureAirportCodes": null,
+            "destinationType": "Domestic",
+            "primaryCountryCode": "AUS",
+            "travelClass": null
+          },
+          "travellers": [
+            {
+              "title": "Ms",
+              "firstName": "Test_Billy",
+              "surname": null,
+              "age": 42,
+              "dateOfBirth": "1983-03-11",
+              "gender": "f",
+              "isPrimary": true,
+              "memberId": "",
+              "externalCustomerId": "",
+              "treatAsAdult": true,
+              "additionalCoverAddons": [
+                {
+                  "code": "LUGG",
+                  "name": "Increase Luggage Item Limits",
+                  "helpText": "",
+                  "applyAtLevel": "Traveller",
+                  "options": [
+                    {
+                      "value": "500",
+                      "description": "$500"
+                    }
+                  ],
+                  "addOnDuration": [
+                    {
+                      "startDate": "2025-02-22",
+                      "endDate": "2025-02-22"
+                    }
+                  ],
+                  "price": 29
+                }
+              ],
+              "emc": null
+            },
+            {
+              "title": "Ms",
+              "firstName": "Test_Damion",
+              "surname": null,
+              "age": 13,
+              "dateOfBirth": "2012-03-11",
+              "gender": "f",
+              "isPrimary": false,
+              "memberId": "",
+              "externalCustomerId": "",
+              "treatAsAdult": false,
+              "additionalCoverAddons": [
+                {
+                  "code": "LUGG",
+                  "name": "Increase Luggage Item Limits",
+                  "helpText": "",
+                  "applyAtLevel": "Traveller",
+                  "options": [
+                    {
+                      "value": "500",
+                      "description": "$500"
+                    }
+                  ],
+                  "addOnDuration": [
+                    {
+                      "startDate": "2025-02-22",
+                      "endDate": "2025-02-22"
+                    }
+                  ],
+                  "price": 29
+                }
+              ],
+              "emc": null
+            },
+            {
+              "title": "Ms",
+              "firstName": "Test_Abby",
+              "surname": null,
+              "age": 9,
+              "dateOfBirth": "2016-03-11",
+              "gender": "f",
+              "isPrimary": false,
+              "memberId": "",
+              "externalCustomerId": "",
+              "treatAsAdult": false,
+              "additionalCoverAddons": [
+                {
+                  "code": "LUGG",
+                  "name": "Increase Luggage Item Limits",
+                  "helpText": "",
+                  "applyAtLevel": "Traveller",
+                  "options": [
+                    {
+                      "value": "500",
+                      "description": "$500"
+                    }
+                  ],
+                  "addOnDuration": [
+                    {
+                      "startDate": "2025-02-22",
+                      "endDate": "2025-02-22"
+                    }
+                  ],
+                  "price": 29
+                }
+              ],
+              "emc": null
+            }
+          ],
+          "products": [
+            {
+              "purchasePath": "Leisure_Medibank",
+              "productCode": "MBC",
+              "productName": "Comprehensive",
+              "planCode": "D",
+              "name": "Dom-ST",
+              "planName": "Comprehensive",
+              "destinationType": "Domestic",
+              "tripType": "Single Trip",
+              "tripTypeCode": "SingleTrip",
+              "enabled": true,
+              "minAdults": 1,
+              "maxAdults": 4,
+              "minChildren": 0,
+              "maxChildren": 6,
+              "minDuration": 5,
+              "maxDuration": 366,
+              "minAge": 0,
+              "maxAge": 99,
+              "pdsUrl": "",
+              "isEmcAvailable": true,
+              "adultChargeRate": 1,
+              "childChargeRate": 0,
+              "excesses": null,
+              "maxDurationDays": null,
+              "additionalCoverAddons": [
+                {
+                  "code": "MTCL",
+                  "name": "Motorcycle / Moped Riding",
+                  "helpText": "",
+                  "applyAtLevel": "Policy",
+                  "options": [
+                    {
+                      "value": "0",
+                      "description": "Yes"
+                    }
+                  ],
+                  "addOnDuration": [
+                    {
+                      "startDate": "2025-02-22",
+                      "endDate": "2025-02-22"
+                    }
+                  ],
+                  "price": 47
+                },
+                {
+                  "code": "CANX",
+                  "name": "Cancellation Variation",
+                  "helpText": "",
+                  "applyAtLevel": "Policy",
+                  "options": [
+                    {
+                      "value": "5271",
+                      "description": "$10,000"
+                    }
+                  ],
+                  "addOnDuration": [
+                    {
+                      "startDate": "2025-02-22",
+                      "endDate": "2025-02-22"
+                    }
+                  ],
+                  "price": 43
+                }
+              ],
+              "availableCoverAddons": null,
+              "declarations": null,
+              "appliedDiscounts": [],
+              "premiumMatrix": [
+                {
+                  "excess": 50,
+                  "maxDurationDays": null,
+                  "totalGrossPremium": "240.00",
+                  "totalAdjustedGrossPremium": "240.00",
+                  "premiumPerDay": "240.00",
+                  "isSelected": true,
+                  "commission": "88.80"
+                }
+              ],
+              "keySellingPoints": null,
+              "benefits": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "Scenario_3: IssuePolicy for D",
+      "error": "Expected response is OK HTTP status: 500  expect(received).toBeTruthy()  Received: false"
     }
   ],
   "hasError": true

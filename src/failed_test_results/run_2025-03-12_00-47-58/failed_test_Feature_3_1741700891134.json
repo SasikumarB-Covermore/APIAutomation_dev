@@ -1,9 +1,9 @@
 {
-  "testName": "Feature_1",
-  "testFileName": "06_create_insurance_policy_with_emc.spec.js",
+  "testName": "Feature_3",
+  "testFileName": "02_create_insurance_policy_with_addon.spec.js",
   "scenarios": [
     {
-      "scenario": "Scenario_1: Get Quote for D",
+      "scenario": "Scenario_1: Get Quote for DMF",
       "payload": {
         "issuer": {
           "code": "MBN0001",
@@ -14,25 +14,19 @@
           "destinationCountryCodes": [
             "AUS"
           ],
-          "startDate": "2025-03-12",
-          "endDate": "2025-03-14"
+          "startDate": "2025-03-13",
+          "endDate": "2025-04-11"
         },
         "travellers": [
           {
-            "dateOfBirth": "1978-03-10",
-            "age": 47,
+            "dateOfBirth": "1987-03-11",
+            "age": 38,
             "isPrimary": true,
             "treatAsAdult": true
           },
           {
-            "dateOfBirth": "1978-03-10",
-            "age": 47,
-            "isPrimary": false,
-            "treatAsAdult": true
-          },
-          {
-            "dateOfBirth": "2017-03-10",
-            "age": 8,
+            "dateOfBirth": "2011-03-11",
+            "age": 14,
             "isPrimary": false,
             "treatAsAdult": false
           }
@@ -42,17 +36,17 @@
       },
       "response": {
         "sessionId": null,
-        "quoteId": 7734427,
+        "quoteId": 7734830,
         "externalReferenceId": null,
         "currencyCode": "AUD",
         "cultureCode": "en-AU",
         "quoteSummary": {
           "purchasePath": "Leisure_Medibank",
-          "quoteDate": "2025-03-11T01:31:03Z",
+          "quoteDate": "2025-03-12T00:48:05Z",
           "trip": {
             "tripCost": "0",
-            "startDate": "2025-03-12",
-            "endDate": "2025-03-14",
+            "startDate": "2025-03-13",
+            "endDate": "2025-04-11",
             "destinationAreaCode": "AU2",
             "destinationAreaName": "Australia",
             "destinationCountryCodes": [
@@ -69,8 +63,8 @@
               "title": null,
               "firstName": null,
               "surname": null,
-              "age": 47,
-              "dateOfBirth": "1978-03-10",
+              "age": 38,
+              "dateOfBirth": "1987-03-11",
               "gender": null,
               "isPrimary": true,
               "memberId": null,
@@ -83,22 +77,8 @@
               "title": null,
               "firstName": null,
               "surname": null,
-              "age": 47,
-              "dateOfBirth": "1978-03-10",
-              "gender": null,
-              "isPrimary": false,
-              "memberId": null,
-              "externalCustomerId": null,
-              "treatAsAdult": true,
-              "additionalCoverAddons": null,
-              "emc": null
-            },
-            {
-              "title": null,
-              "firstName": null,
-              "surname": null,
-              "age": 8,
-              "dateOfBirth": "2017-03-10",
+              "age": 14,
+              "dateOfBirth": "2011-03-11",
               "gender": null,
               "isPrimary": false,
               "memberId": null,
@@ -179,8 +159,8 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
                   "price": "29.00"
                 },
@@ -200,8 +180,8 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
                   "price": "47.00"
                 },
@@ -212,10 +192,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "226.00"
+                  "price": "117.00"
                 },
                 {
                   "code": "CANX",
@@ -233,10 +213,10 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "73.00"
+                  "price": "43.00"
                 },
                 {
                   "code": "EMCT3",
@@ -245,10 +225,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "362.00"
+                  "price": "181.00"
                 },
                 {
                   "code": "EMCT5",
@@ -257,8 +237,8 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
                   "price": "0.00"
                 },
@@ -269,10 +249,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "310.00"
+                  "price": "155.00"
                 },
                 {
                   "code": "EMCT7",
@@ -281,10 +261,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "516.00"
+                  "price": "258.00"
                 },
                 {
                   "code": "EMCT8",
@@ -293,10 +273,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "542.00"
+                  "price": "271.00"
                 },
                 {
                   "code": "EMCT9",
@@ -305,10 +285,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "600.00"
+                  "price": "300.00"
                 },
                 {
                   "code": "EMCT10",
@@ -317,10 +297,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "870.00"
+                  "price": "435.00"
                 }
               ],
               "declarations": null,
@@ -329,11 +309,11 @@
                 {
                   "excess": 50,
                   "maxDurationDays": null,
-                  "totalGrossPremium": "355.00",
-                  "totalAdjustedGrossPremium": "355.00",
-                  "premiumPerDay": "118.33",
+                  "totalGrossPremium": "170.00",
+                  "totalAdjustedGrossPremium": "170.00",
+                  "premiumPerDay": "5.67",
                   "isSelected": true,
-                  "commission": "131.35"
+                  "commission": "62.90"
                 }
               ],
               "keySellingPoints": null,
@@ -409,8 +389,8 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
                   "price": "75.00"
                 },
@@ -430,8 +410,8 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
                   "price": "41.00"
                 },
@@ -442,10 +422,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "138.00"
+                  "price": "69.00"
                 },
                 {
                   "code": "CANX",
@@ -463,10 +443,10 @@
                     }
                   ],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "89.00"
+                  "price": "52.00"
                 },
                 {
                   "code": "EMCT3",
@@ -475,10 +455,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "332.00"
+                  "price": "166.00"
                 },
                 {
                   "code": "EMCT5",
@@ -487,8 +467,8 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
                   "price": "0.00"
                 },
@@ -499,10 +479,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "284.00"
+                  "price": "142.00"
                 },
                 {
                   "code": "EMCT7",
@@ -511,10 +491,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "470.00"
+                  "price": "235.00"
                 },
                 {
                   "code": "EMCT8",
@@ -523,10 +503,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "494.00"
+                  "price": "247.00"
                 },
                 {
                   "code": "EMCT9",
@@ -535,10 +515,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "548.00"
+                  "price": "274.00"
                 },
                 {
                   "code": "EMCT10",
@@ -547,10 +527,10 @@
                   "helpText": "",
                   "options": [],
                   "addOnDuration": {
-                    "startDate": "2025-03-12",
-                    "endDate": "2025-03-14"
+                    "startDate": "2025-03-13",
+                    "endDate": "2025-04-11"
                   },
-                  "price": "794.00"
+                  "price": "397.00"
                 }
               ],
               "declarations": null,
@@ -559,20 +539,20 @@
                 {
                   "excess": 50,
                   "maxDurationDays": 15,
-                  "totalGrossPremium": "355.00",
-                  "totalAdjustedGrossPremium": "355.00",
+                  "totalGrossPremium": "185.00",
+                  "totalAdjustedGrossPremium": "185.00",
                   "premiumPerDay": null,
                   "isSelected": true,
-                  "commission": "131.35"
+                  "commission": "68.45"
                 },
                 {
                   "excess": 50,
                   "maxDurationDays": 30,
-                  "totalGrossPremium": "487.00",
-                  "totalAdjustedGrossPremium": "487.00",
+                  "totalGrossPremium": "251.00",
+                  "totalAdjustedGrossPremium": "251.00",
                   "premiumPerDay": null,
                   "isSelected": false,
-                  "commission": "180.19"
+                  "commission": "92.87"
                 }
               ],
               "keySellingPoints": null,
@@ -583,7 +563,7 @@
       }
     },
     {
-      "scenario": "Scenario_2: Get Quote for D",
+      "scenario": "Scenario_2: Get Quote for DMF",
       "error": "Expected response is OK HTTP status: 400  expect(received).toBeTruthy()  Received: false"
     }
   ],
