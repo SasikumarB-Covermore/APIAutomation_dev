@@ -1,0 +1,11 @@
+{
+  "testName": "Feature_1",
+  "testFileName": "02_create_insurance_policy_with_addon.spec.js",
+  "scenarios": [
+    {
+      "scenario": "Scenario_1: Get Quote for MCMF",
+      "error": "Expected response is OK HTTP status: 401  expect(received).toBeTruthy()  Received: false"
+    }
+  ],
+  "hasError": true
+}

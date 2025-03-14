@@ -1,9 +1,7 @@
 // src/utils/helper.js
 const { faker } = require('@faker-js/faker');
 const dynamicDate = require("../utils/apiClient");
-const { addDays } = require('date-fns');
 const { generateCommonData, generateCommonRefineQouteData, generateCommonIssuePolicyData } = require("../utils/dataGenerator");
-const numeral = require('numeral')
 const { expect } = require('@playwright/test');  // Import expect
 const {
   getTravelPayloadForQuote,
@@ -12,9 +10,14 @@ const {
   getTravelPayloadForUpdateTraveller,
 } = require("../utils/payloadStructures");
 
-const path = require('path');
-const fs = require("fs");
-const { tr } = require('date-fns/locale');
+
+function numberWithCommas(x) {
+  x = x.toString();
+  var pattern = /(-?\d+)(\d{3})/;
+  while (pattern.test(x))
+    x = x.replace(pattern, "$1,$2");
+  return x;
+}
 
 function generateTravelDataNTimes(numAdults = 1, numChild = 0, row) {
   return generateData(numAdults, numChild, row);
@@ -178,8 +181,6 @@ function removeDuplicatesByKey(inputArray, keyFunction) {
   return unique;
 }
 
-
-
 function createQuotePayload(sessionToken, row, payLoadQuote, policyAddOns) {
   return {
     sessionToken: sessionToken,
@@ -204,8 +205,6 @@ function validateTheAddOnsPrice(itemToMatch, itemsArray) {
   );
 }
 
-
-
 function calculateDepartureDate(leadTime) {
   const currentDate = new Date();
 
@@ -213,7 +212,6 @@ function calculateDepartureDate(leadTime) {
   const parsedLeadTime = parseInt(leadTime, 10);
   const deptDate = new Date(currentDate);
   deptDate.setDate(currentDate.getDate() + parsedLeadTime);
-
 
   // Format the departure date as YYYY-MM-DD
   return deptDate.toISOString().split('T')[0];
@@ -233,7 +231,6 @@ function calculateReturnDate(departureDate, duration) {
   }
 }
 
-
 // Function to create the payload based on various conditions
 function createPayload(row, payLoadQuote, policyAddOns = [], emcOptions = null) {
 
@@ -246,12 +243,11 @@ function createPayload(row, payLoadQuote, policyAddOns = [], emcOptions = null) 
     payLoadQuote = [payLoadQuote];
   }
 
-
   // Default payload structure
   let payload = {
     issuer: {
       code: "MBN0001",
-      userName: "qat",
+      userName: "webuser",
       externalStoreCode: ""
     },
     trip: {
@@ -290,7 +286,6 @@ function createPayload(row, payLoadQuote, policyAddOns = [], emcOptions = null) 
   return payload;
 }
 
-
 // Function to create the payload for Refine Quote 
 function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [], emcOptions = null, responseBody) {
 
@@ -303,12 +298,11 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
     payLoadRefineQuote = [payLoadRefineQuote];
   }
 
-
   // Default payload structure
   let payload = {
     issuer: {
       code: "MBN0001",
-      userName: "qat",
+      userName: "webuser",
       externalStoreCode: ""
     },
     products: [
@@ -328,64 +322,15 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   let premiumMatrix = [];
   let productArray = responseBody.quoteSummary.products;
   for (let i = 0; i < Object.keys(productArray).length; i++) {
-    console.log(row.planName.includes("Dom"));
+    //console.log(row.planName.includes("Dom"));
     if (row.planName.includes("Dom")) {
-      console.log("1!!!! Plan name from Respose body " + responseBody.quoteSummary.products[i].name + " and plam name from data sheet " + row.planName);
-      console.log(")) " + row.planName + " == " + responseBody.quoteSummary.products[i].name + " && " + row.productCode + " == " + responseBody.quoteSummary.products[i].productCode + " && " + row.planCode + " == " + responseBody.quoteSummary.products[i].planCode);
+      //console.log("1!!!! Plan name from Respose body " + responseBody.quoteSummary.products[i].name + " and plam name from data sheet " + row.planName);
+      //console.log(")) " + row.planName + " == " + responseBody.quoteSummary.products[i].name + " && " + row.productCode + " == " + responseBody.quoteSummary.products[i].productCode + " && " + row.planCode + " == " + responseBody.quoteSummary.products[i].planCode);
       if (row.planName == responseBody.quoteSummary.products[i].name && row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
-        console.log("2!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
-
-        // let avilableCoverAddonsAddonArray = responseBody.quoteSummary.products[i].availableCoverAddons;
-        // for (let l = 0; l < Object.keys(avilableCoverAddonsAddonArray).length; l++) {
-        //   console.log("TTTT " + row.CANX + " == " + JSON.stringify(responseBody.quoteSummary.products[i].availableCoverAddons[l].code));
-        //   let canxOptionArray = responseBody.quoteSummary.products[i].availableCoverAddons[l].options;
-        //   for (let o = 0; o < Object.keys(canxOptionArray).length; o++) {
-        //     console.log("ccc " + row.CANX + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[o].description);
-        //     if (row.CANX == responseBody.quoteSummary.products[i].availableCoverAddons[l].options[o].description && responseBody.quoteSummary.products[i].availableCoverAddons[l].code != "EMCT") {
-        //       console.log(" cancel add on");
-        //       let CODE = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
-        //       let OPTIONS = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[o]];
-        //       let ADDONDURATION = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
-        //       additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-        //     }
-        //   }
-        //   let mtclOptionArray = responseBody.quoteSummary.products[i].availableCoverAddons[l].options;
-        //   for (let n = 0; n < Object.keys(mtclOptionArray).length; n++) {
-        //     //console.log(" #### MTCL Add on " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].description);
-        //     if (row.MTCL == responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].description && responseBody.quoteSummary.products[i].availableCoverAddons[l].code != "EMCT") {
-        //       //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-        //       //console.log("%%% " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].value);
-        //       let code = responseBody.quoteSummary.products[i].availableCoverAddons[l].code;
-        //       let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[l].applyAtLevel;
-        //       let name = responseBody.quoteSummary.products[i].availableCoverAddons[l].name;
-        //       let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[l].helpText;
-        //       let options = [responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n]];
-        //       let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
-        //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        //     }
-        //   }
-        //   //console.log(" #### WNTS Add on " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-        //   if (row.WNTS == responseBody.quoteSummary.products[i].availableCoverAddons[l].code && responseBody.quoteSummary.products[i].availableCoverAddons[l].code != "EMCT") {
-        //     //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-        //     //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-        //     let code = responseBody.quoteSummary.products[i].availableCoverAddons[l].code;
-        //     let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[l].applyAtLevel;
-        //     let name = responseBody.quoteSummary.products[i].availableCoverAddons[l].name;
-        //     let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[l].helpText;
-        //     let options = [
-        //       {
-        //         value: 1,
-        //         description: "Yes"
-        //       }
-        //     ];
-        //     let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
-        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        //   }
-
-        // }
-        console.log("1111 " + row.CANX + " == 10000");
+        //console.log("2!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
+        //console.log("1111 " + row.CANX + " == 10000");
         if (row.CANX == "10000") {
-          console.log("2222 " + row.CANX + " == 10000");
+          //console.log("2222 " + row.CANX + " == 10000");
           let code = "CANX";
           let applyAtLevel = "Policy";
           let name = "Cancellation Variation";
@@ -404,7 +349,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           ];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         } else if (row.CANX == "Unlimited") {
-          console.log(row.CANX + " == Unlimited");
+          //console.log(row.CANX + " == Unlimited");
           let code = "CANX";
           let applyAtLevel = "Policy";
           let name = "Cancellation Variation";
@@ -477,41 +422,12 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
         premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
       }
     } else if (row.planName.includes("Int")) {
-      console.log("Int !!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
-
-      // if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
-      //   let availableCoverAddonsArray = responseBody.quoteSummary.products[i].availableCoverAddons;
-      //   for (let k = 0; k < Object.keys(availableCoverAddonsArray).length; k++) {
-      //     if (responseBody.quoteSummary.products[i].availableCoverAddons[k].code == "CRS") {
-      //       let code = responseBody.quoteSummary.products[i].availableCoverAddons[k].code;
-      //       let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[k].applyAtLevel;
-      //       let name = responseBody.quoteSummary.products[i].availableCoverAddons[k].name;
-      //       let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[k].helpText;
-      //       let options = [responseBody.quoteSummary.products[i].availableCoverAddons[k].options[0]];
-      //       let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[k].addOnDuration];
-      //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      //     }
-      //   }
-      //   let premiumMatrixArray = responseBody.quoteSummary.products[i].premiumMatrix;
-      //   //console.log(responseBody.quoteSummary.products[i].name + "Product premiumMatrix count " + premiumMatrixArray);
-      //   for (let j = 0; j < Object.keys(premiumMatrixArray).length; j++) {
-      //     if (row.excess == responseBody.quoteSummary.products[i].premiumMatrix[j].excess && row.duration == (responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays ?? 1)) {
-      //       let excess = responseBody.quoteSummary.products[i].premiumMatrix[j].excess;
-      //       let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays;
-      //       let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalGrossPremium;
-      //       let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalAdjustedGrossPremium;
-      //       let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[j].premiumPerDay;
-      //       let isSelected = true;
-      //       let commission = responseBody.quoteSummary.products[i].premiumMatrix[j].commission;
-      //       premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-      //     }
-      //   }
-      // }
-      console.log("@@ " + row.planName + " == " + responseBody.quoteSummary.products[i].name + " && " + row.productCode + " == " + responseBody.quoteSummary.products[i].productCode + " && " + row.planCode == responseBody.quoteSummary.products[i].planCode);
+      //console.log("Int !!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
+      //console.log("@@ " + row.planName + " == " + responseBody.quoteSummary.products[i].name + " && " + row.productCode + " == " + responseBody.quoteSummary.products[i].productCode + " && " + row.planCode == responseBody.quoteSummary.products[i].planCode);
       if (row.planName == responseBody.quoteSummary.products[i].name && row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
-        console.log("Int 1111 " + row.CRS + " == Yes");
+        //console.log("Int 1111 " + row.CRS + " == Yes");
         if (row.CANX == "10000") {
-          console.log("2222 " + row.CANX + " == 10000");
+          //console.log("2222 " + row.CANX + " == 10000");
           let code = "CANX";
           let applyAtLevel = "Policy";
           let name = "Cancellation Variation";
@@ -531,7 +447,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
 
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         } else if (row.CANX == "Unlimited") {
-          console.log(row.CANX + " == Unlimited");
+          //console.log(row.CANX + " == Unlimited");
           let code = "CANX";
           let applyAtLevel = "Policy";
           let name = "Cancellation Variation";
@@ -552,7 +468,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
         if (row.CRS == "Yes") {
-          console.log("Int 2222 " + row.CRS + " == Yes");
+          //console.log("Int 2222 " + row.CRS + " == Yes");
           let code = "CRS";
           let applyAtLevel = "Policy";
           let name = "Cruise Cover";
@@ -632,31 +548,10 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   let additionalCoverAddonsForTraveller = [];
   //let EMCForTraveller = [];
   for (let i = 0; i < Object.keys(productArray).length; i++) {
-
     //console.log("!!! Data sheet plan name " + row.planName);
     if (row.planName == responseBody.quoteSummary.products[i].name && row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
       //console.log("@@@ Data sheet product code " + row.productCode + "@@@ response body product code " + responseBody.quoteSummary.products[i].productCode);
       //console.log("@@@ Data sheet plan code " + row.planCode + "@@@ response body plan code " + responseBody.quoteSummary.products[i].planCode);
-      // let availableCoverAddonsAddonArray = responseBody.quoteSummary.products[i].availableCoverAddons;
-      // for (let l = 0; l < Object.keys(availableCoverAddonsAddonArray).length; l++) {
-      //   let luggOptionArray = responseBody.quoteSummary.products[i].availableCoverAddons[l].options;
-      //   for (let m = 0; m < Object.keys(luggOptionArray).length; m++) {
-      //     //console.log("$$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-      //     if (row.LUGG == responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value) {
-      //       //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-      //       //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-
-      //       let code = responseBody.quoteSummary.products[i].availableCoverAddons[l].code;
-      //       let applyAtLevel = responseBody.quoteSummary.products[i].availableCoverAddons[l].applyAtLevel;
-      //       let name = responseBody.quoteSummary.products[i].availableCoverAddons[l].name;
-      //       let helpText = responseBody.quoteSummary.products[i].availableCoverAddons[l].helpText;
-      //       let options = [responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m]];
-      //       let addOnDuration = [responseBody.quoteSummary.products[i].availableCoverAddons[l].addOnDuration];
-      //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-
-      //     }
-      //   }
-      // }
       if (row.LUGG != 0) {
         if (row.LUGG == 500) {
           // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
@@ -668,7 +563,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -689,7 +584,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -710,7 +605,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -731,7 +626,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -752,7 +647,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -935,7 +830,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   let payload = {
     issuer: {
       code: "MBN0001",
-      userName: "qat",
+      userName: "webuser",
       externalStoreCode: ""
     },
     contact: {
@@ -979,47 +874,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   for (let i = 0; i < Object.keys(productArray).length; i++) {
     if (row.planName.includes("Dom")) {
       if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
-        // let CODE = responseBody.quoteSummary.products[i].additionalCoverAddons[0].code;
-        // let OPTIONS = [responseBody.quoteSummary.products[i].additionalCoverAddons[0].options[0]];
-        // let ADDONDURATION = responseBody.quoteSummary.products[i].additionalCoverAddons[0].addOnDuration;
-        // additionalCoverAddons.push({ CODE, OPTIONS, ADDONDURATION });
-
-        // let productAdditionalCoverAddonsArray = responseBody.quoteSummary.products[i].additionalCoverAddons;
-        // for (let l = 0; l < Object.keys(productAdditionalCoverAddonsArray).length; l++) {
-        //   //console.log("222 " + row.CANX + " == " + responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0].description);
-        //   if (responseBody.quoteSummary.products[i].additionalCoverAddons[l].code != "EMCT") {
-        //     if (row.CANX == responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0].description) {
-        //       let code = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
-        //       let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[l].applyAtLevel;
-        //       let name = responseBody.quoteSummary.products[i].additionalCoverAddons[l].name;
-        //       let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[l].helpText;
-        //       let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0]];
-        //       let addOnDuration = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].addOnDuration];
-        //       additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        //     }
-        //   }
-
-        //   if (row.MTCL == responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0].description && responseBody.quoteSummary.products[i].additionalCoverAddons[l].code != "EMCT") {
-        //     let code = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
-        //     let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[l].applyAtLevel;
-        //     let name = responseBody.quoteSummary.products[i].additionalCoverAddons[l].name;
-        //     let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[l].helpText;
-        //     let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0]];
-        //     let addOnDuration = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].addOnDuration];
-        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        //   }
-        //   if (row.WNTS == responseBody.quoteSummary.products[i].additionalCoverAddons[l].code && responseBody.quoteSummary.products[i].additionalCoverAddons[l].code != "EMCT") {
-        //     let code = responseBody.quoteSummary.products[i].additionalCoverAddons[l].code;
-        //     let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[l].applyAtLevel;
-        //     let name = responseBody.quoteSummary.products[i].additionalCoverAddons[l].name;
-        //     let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[l].helpText;
-        //     let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].options[0]];
-        //     let addOnDuration = [responseBody.quoteSummary.products[i].additionalCoverAddons[l].addOnDuration];
-        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        //   }
-
-        // }
-        console.log(row.CANX + " == 10000");
+        //console.log(row.CANX + " == 10000");
         if (row.CANX == "10000") {
           let code = "CANX";
           let applyAtLevel = "Policy";
@@ -1059,7 +914,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
 
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-        console.log(row.MTCL + " == $10000");
+        //console.log(row.MTCL + " == $10000");
         if (row.MTCL == "Yes") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           //console.log("%%% " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].value);
@@ -1081,7 +936,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           ];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-        console.log(row.WNTS + " == WNTS");
+        //console.log(row.WNTS + " == WNTS");
         if (row.WNTS == "WNTS") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
@@ -1115,35 +970,9 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
       }
     } else if (row.planName.includes("Int")) {
       if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
-        // let additionalCoverAddonsArray = responseBody.quoteSummary.products[i].additionalCoverAddons;
-        // for (let k = 0; k < Object.keys(additionalCoverAddonsArray).length; k++) {
-        //   if (responseBody.quoteSummary.products[i].additionalCoverAddons[k].code == "CRS") {
-        //     let code = responseBody.quoteSummary.products[i].additionalCoverAddons[k].code;
-        //     let applyAtLevel = responseBody.quoteSummary.products[i].additionalCoverAddons[k].applyAtLevel;
-        //     let name = responseBody.quoteSummary.products[i].additionalCoverAddons[k].name;
-        //     let helpText = responseBody.quoteSummary.products[i].additionalCoverAddons[k].helpText;
-        //     let options = [responseBody.quoteSummary.products[i].additionalCoverAddons[k].options[0]];
-        //     let addOnDuration = responseBody.quoteSummary.products[i].additionalCoverAddons[k].addOnDuration;
-        //     additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        //   }
-        // }
-        // let premiumMatrixArray = responseBody.quoteSummary.products[i].premiumMatrix;
-        // //console.log(responseBody.quoteSummary.products[i].name + "Product premiumMatrix count " + premiumMatrixArray);
-        // for (let j = 0; j < Object.keys(premiumMatrixArray).length; j++) {
-        //   if (row.excess == responseBody.quoteSummary.products[i].premiumMatrix[j].excess && row.duration == (responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays ?? 1)) {
-        //     let excess = responseBody.quoteSummary.products[i].premiumMatrix[j].excess;
-        //     let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[j].maxDurationDays;
-        //     let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalGrossPremium;
-        //     let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[j].totalAdjustedGrossPremium;
-        //     let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[j].premiumPerDay;
-        //     let isSelected = true;
-        //     let commission = responseBody.quoteSummary.products[i].premiumMatrix[j].commission;
-        //     premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
-        //   }
-        // }
-        console.log(row.CRS + " == Yes");
+        //console.log(row.CRS + " == Yes");
         if (row.CANX == "10000") {
-          console.log("2222 " + row.CANX + " == 10000");
+          //console.log("2222 " + row.CANX + " == 10000");
           let code = "CANX";
           let applyAtLevel = "Policy";
           let name = "Cancellation Variation";
@@ -1163,7 +992,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
 
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         } else if (row.CANX == "Unlimited") {
-          console.log(row.CANX + " == Unlimited");
+          //console.log(row.CANX + " == Unlimited");
           let code = "CANX";
           let applyAtLevel = "Policy";
           let name = "Cancellation Variation";
@@ -1178,8 +1007,6 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
             startDate: row.departureDate,
             endDate: row.returnDate
           }];
-
-
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
         // if (row.CRS == "Yes") {
@@ -1201,7 +1028,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
         //   ];
         //   additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         // }
-        console.log(row.MTCL + " == Yes");
+        //console.log(row.MTCL + " == Yes");
         if (row.MTCL == "Yes") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           //console.log("%%% " + row.MTCL + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[n].value);
@@ -1223,7 +1050,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           ];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-        console.log(row.WNTS + " == WNTS");
+        //console.log(row.WNTS + " == WNTS");
         if (row.WNTS == "WNTS") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
@@ -1274,11 +1101,11 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           let code = "LUGG";
           let applyAtLevel = "Traveller";
           let name = "Increase Luggage Item Limits";
-          let helpText = null;
+          let helpText = "";
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -1295,11 +1122,11 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           let code = "LUGG";
           let applyAtLevel = "Traveller";
           let name = "Increase Luggage Item Limits";
-          let helpText = null;
+          let helpText = "";
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -1316,11 +1143,11 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           let code = "LUGG";
           let applyAtLevel = "Traveller";
           let name = "Increase Luggage Item Limits";
-          let helpText = null;
+          let helpText = "";
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -1337,11 +1164,11 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           let code = "LUGG";
           let applyAtLevel = "Traveller";
           let name = "Increase Luggage Item Limits";
-          let helpText = null;
+          let helpText = "";
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -1358,11 +1185,11 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           let code = "LUGG";
           let applyAtLevel = "Traveller";
           let name = "Increase Luggage Item Limits";
-          let helpText = null;
+          let helpText = "";
           let options = [
             {
               value: row.LUGG,
-              description: "$" + row.LUGG
+              description: "$" + numberWithCommas(row.LUGG)
             }
           ];
           let addOnDuration = [
@@ -1396,23 +1223,6 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
     }
   }
-  // for (let i = 0; i < Object.keys(productArray).length; i++) {
-  //   if (row.planName.includes("Dom")) {
-  //     if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
-  //       let availableCoverAddonsAddonArray = responseBody.quoteSummary.products[i].availableCoverAddons;
-  //       for (let l = 0; l < Object.keys(availableCoverAddonsAddonArray).length; l++) {
-  // let luggOptionArray = responseBody.quoteSummary.travellers[0].additionalCoverAddons[0].code;
-  //for (let m = 0; m < Object.keys(luggOptionArray).length; m++) {
-  //console.log("$$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-
-
-  //}
-  //}
-  //}
-
-  //}
-  //}
-  //console.log("helper payload " + JSON.stringify(travellers));
   payload.travellers = travellers;
 
 

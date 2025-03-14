@@ -14,7 +14,7 @@ module.exports = defineConfig({
   testDir: './src/tests',
   /* Run tests in files in parallel */
 
-  timeout: 3 * 60000, //added for high volume tests for traveller
+  timeout: 5 * 60000, //added for high volume tests for traveller
 
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

@@ -1,0 +1,141 @@
+{
+  "testName": "Test_Scenario_17",
+  "testFileName": "02_create_insurance_policy_with_addon.spec.js",
+  "scenarios": [
+    {
+      "scenario": "Scenario_1: Get Quote for MMA",
+      "payload": {
+        "issuer": {
+          "code": "MBN0001",
+          "userName": "qat",
+          "externalStoreCode": ""
+        },
+        "trip": {
+          "destinationCountryCodes": [
+            "NZL"
+          ],
+          "startDate": "2025-03-24",
+          "endDate": "2025-04-04"
+        },
+        "travellers": [
+          {
+            "dateOfBirth": "1987-03-14",
+            "age": 38,
+            "isPrimary": true,
+            "treatAsAdult": true
+          },
+          {
+            "dateOfBirth": "1982-03-14",
+            "age": 43,
+            "isPrimary": false,
+            "treatAsAdult": true
+          },
+          {
+            "dateOfBirth": "1980-03-14",
+            "age": 45,
+            "isPrimary": false,
+            "treatAsAdult": true
+          },
+          {
+            "dateOfBirth": "2010-03-14",
+            "age": 15,
+            "isPrimary": false,
+            "treatAsAdult": false
+          }
+        ],
+        "purchasePath": "Leisure_Medibank",
+        "isResident": "true"
+      },
+      "response": {
+        "sessionId": null,
+        "quoteId": 7735681,
+        "externalReferenceId": null,
+        "currencyCode": "AUD",
+        "cultureCode": "en-AU",
+        "quoteSummary": {
+          "purchasePath": "Leisure_Medibank",
+          "quoteDate": "2025-03-14T17:16:00Z",
+          "trip": {
+            "tripCost": "0",
+            "startDate": "2025-03-24",
+            "endDate": "2025-04-04",
+            "destinationAreaCode": "NZ2",
+            "destinationAreaName": "NZ",
+            "destinationCountryCodes": [
+              "NZL"
+            ],
+            "destinationAirportCodes": null,
+            "departureAirportCodes": null,
+            "destinationType": "International",
+            "primaryCountryCode": "NZL",
+            "travelClass": null
+          },
+          "travellers": [
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 38,
+              "dateOfBirth": "1987-03-14",
+              "gender": null,
+              "isPrimary": true,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": true,
+              "additionalCoverAddons": null,
+              "emc": null
+            },
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 43,
+              "dateOfBirth": "1982-03-14",
+              "gender": null,
+              "isPrimary": false,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": true,
+              "additionalCoverAddons": null,
+              "emc": null
+            },
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 45,
+              "dateOfBirth": "1980-03-14",
+              "gender": null,
+              "isPrimary": false,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": true,
+              "additionalCoverAddons": null,
+              "emc": null
+            },
+            {
+              "title": null,
+              "firstName": null,
+              "surname": null,
+              "age": 15,
+              "dateOfBirth": "2010-03-14",
+              "gender": null,
+              "isPrimary": false,
+              "memberId": null,
+              "externalCustomerId": null,
+              "treatAsAdult": false,
+              "additionalCoverAddons": null,
+              "emc": null
+            }
+          ],
+          "products": []
+        }
+      }
+    },
+    {
+      "scenario": "Scenario_2: Get Quote for MMA",
+      "error": "Expected response is OK HTTP status: 400  expect(received).toBeTruthy()  Received: false"
+    }
+  ],
+  "hasError": true
+}

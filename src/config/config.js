@@ -1,4 +1,5 @@
-export const baseURL = 'https://Test3-api.travelinsurancepartners.com/v1';
+export const baseURL = 'https://Test3-api.travelinsurancepartners.com/v3';
+//export const baseURL = 'https://Preprod-api.travelinsurancepartners.com/v3';
 //export const baseURL = 'https://Staging-api.travelinsurancepartners.com/v1';
 export const defaultHeaders = {
   'Content-Type': 'application/json',
