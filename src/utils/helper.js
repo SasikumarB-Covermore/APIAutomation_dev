@@ -3,6 +3,7 @@ const { faker } = require('@faker-js/faker');
 const dynamicDate = require("../utils/apiClient");
 const { generateCommonData, generateCommonRefineQouteData, generateCommonIssuePolicyData } = require("../utils/dataGenerator");
 const { expect } = require('@playwright/test');  // Import expect
+const { emcAddOns } = require("../utils/addonsGenerator");
 const {
   getTravelPayloadForQuote,
   getTravelPayloadForRefineQuote,
@@ -246,7 +247,7 @@ function createPayload(row, payLoadQuote, policyAddOns = [], emcOptions = null) 
   // Default payload structure
   let payload = {
     issuer: {
-      code: "MBN0001",
+      code: "MBN0002",
       userName: "webuser",
       externalStoreCode: ""
     },
@@ -301,7 +302,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   // Default payload structure
   let payload = {
     issuer: {
-      code: "MBN0001",
+      code: "MBN0002",
       userName: "webuser",
       externalStoreCode: ""
     },
@@ -412,14 +413,30 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
 
-        let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
-        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
-        let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
-        let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
-        let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
-        let isSelected = true;
-        let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
-        premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+        let excessArray = responseBody.quoteSummary.products[i].premiumMatrix;
+        //console.log("Refine quote excee count " + Object.keys(excessArray).length);
+        for (let n = 0; n < Object.keys(excessArray).length; n++) {
+          //console.log("### " + row.excess + " == " + responseBody.quoteSummary.products[i].premiumMatrix[n].excess + " && " + row.planName + " !=  'Dom-ST  && " + row.duration + " == " + responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays);
+          if (row.planName == "Dom-ST" && row.excess == responseBody.quoteSummary.products[i].premiumMatrix[n].excess) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[n].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[n].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[n].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          } else if (row.planName != "Dom-ST" && row.excess == responseBody.quoteSummary.products[i].premiumMatrix[n].excess && row.duration == responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[n].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[n].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[n].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          }
+        }
       }
     } else if (row.planName.includes("Int")) {
       //console.log("Int !!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].additionalCoverAddons[0].code);
@@ -529,14 +546,32 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           ];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-        let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
-        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
-        let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
-        let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
-        let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
-        let isSelected = true;
-        let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
-        premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+
+        let excessArray = responseBody.quoteSummary.products[i].premiumMatrix;
+        //console.log("Refine quote excee count " + Object.keys(excessArray).length);
+        for (let n = 0; n < Object.keys(excessArray).length; n++) {
+          //console.log("### " + row.excess + " == " + responseBody.quoteSummary.products[i].premiumMatrix[n].excess);
+          if (row.planName == "Int-ST" && row.excess == responseBody.quoteSummary.products[i].premiumMatrix[n].excess) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[n].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[n].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[n].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          } else if (row.planName != "Int-ST" && row.excess == responseBody.quoteSummary.products[i].premiumMatrix[n].excess && row.duration == responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays) {
+            let excess = responseBody.quoteSummary.products[i].premiumMatrix[n].excess;
+            let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[n].maxDurationDays;
+            let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalGrossPremium;
+            let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[n].totalAdjustedGrossPremium;
+            let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[n].premiumPerDay;
+            let isSelected = true;
+            let commission = responseBody.quoteSummary.products[i].premiumMatrix[n].commission;
+            premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+          }
+        }
+
       }
     }
   }
@@ -546,7 +581,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
   var travalersArray = responseBody.quoteSummary.travellers;
   let travellers = [];
   let additionalCoverAddonsForTraveller = [];
-  //let EMCForTraveller = [];
+  let EMC = "";
   for (let i = 0; i < Object.keys(productArray).length; i++) {
     //console.log("!!! Data sheet plan name " + row.planName);
     if (row.planName == responseBody.quoteSummary.products[i].name && row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
@@ -660,112 +695,46 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
 
         }
       }
-      // if (row.EMC != 0) {
-      //   if (row.EMC == "EMCT3") {
-      //     // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-      //     //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-      //     let code = "EMCT3";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+      if (row.EMC != 0) {
+        if (row.EMC == "EMCT3") {
+          let disease = "Epilepsy";
+          let score = 3.8;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
 
-      //   } else if (row.EMC == "EMCT5") {
-      //     // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-      //     //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-      //     let code = "EMCT5";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC Tier 5 (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        } else if (row.EMC == "EMCT5") {
+          let disease = "Knee Dislocation";
+          let score = 1.40;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
+        } else if (row.EMC == "EMCT6") {
+          let disease = "Asthma";
+          let score = 1.43;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
+        } else if (row.EMC == "EMCT7") {
+          let disease = "Abnormal heart rhythm";
+          let score = 4.2;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
+        } else if (row.EMC == "EMCT8") {
+          let disease = "Pulmonary fibrosis";
+          let score = 5.01;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
+        } else if (row.EMC == "EMCT9") {
+          let disease = "Epilepsy	and Cellulitis";
+          let score = 6.49;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
+        } else if (row.EMC == "EMCT10") {
+          let disease = "Epilepsy, Cellulitis and Deep vein thrombosis";
+          let score = 7.97;
+          const emc = emcAddOns(disease, score)
+          EMC = emc;
+        }
+      }
 
-      //   } else if (row.EMC == "EMCT6") {
-      //     // console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
-      //     //console.log(row.planName + " $$$ " + row.productCode + " $$$ " + row.planCode + " $$$ " + row.LUGG + " == " + responseBody.quoteSummary.products[i].name + " $$$ " + responseBody.quoteSummary.products[i].productCode + " $$$ " + responseBody.quoteSummary.products[i].planCode + " $$$ " + responseBody.quoteSummary.products[i].availableCoverAddons[l].options[m].value);
-      //     let code = "EMCT6";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC Tier 6 (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-
-      //   } else if (row.EMC == "EMCT7") {
-      //     let code = "EMCT7";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC Tier 7 (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-
-      //   } else if (row.EMC == "EMCT8") {
-      //     let code = "EMCT8";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC Tier 8 (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-
-      //   } else if (row.EMC == "EMCT9") {
-      //     let code = "EMCT9";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC Tier 9 (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-
-      //   } else if (row.EMC == "EMCT10") {
-      //     let code = "EMCT10";
-      //     let applyAtLevel = "Traveller";
-      //     let name = "EMC Tier 10 (Approval Required)";
-      //     let helpText = "";
-      //     let options = [];
-      //     let addOnDuration = [
-      //       {
-      //         startDate: row.departureDate,
-      //         endDate: row.returnDate
-      //       }
-      //     ];
-      //     EMCForTraveller.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-      //   }
-      // }
 
     }
 
@@ -782,11 +751,15 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
     let lastName = 'Test_' + faker.person.lastName();
     let memberID = "";
     let externalCustomerId = "";
-    //console.log(typeof additionalCoverAddonsForTraveller + " !== " + 'undefined' && additionalCoverAddonsForTraveller.length + " >>>> " + 0)
+    //console.log("### " + EMC + " != '' && " + isPrimary + " == " + "true");
+    //console.log("#### " + isPrimary + " == " + "true");
     additionalCoverAddons = additionalCoverAddonsForTraveller;
     if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
-    } else {
+    } else if (EMC != '' && isPrimary == "true") {
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, EMC });
+    }
+    else {
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
     }
 
@@ -829,7 +802,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   // Default payload structure
   let payload = {
     issuer: {
-      code: "MBN0001",
+      code: "MBN0002",
       userName: "webuser",
       externalStoreCode: ""
     },
@@ -958,15 +931,16 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           ];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-
         let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
-        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
+        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0n].maxDurationDays;
         let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
         let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
         let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
         let isSelected = true;
         let commission = responseBody.quoteSummary.products[i].premiumMatrix[0].commission;
         premiumMatrix.push({ excess, maxDurationDays, totalGrossPremium, totalAdjustedGrossPremium, premiumPerDay, isSelected, commission });
+
+
       }
     } else if (row.planName.includes("Int")) {
       if (row.productCode == responseBody.quoteSummary.products[i].productCode && row.planCode == responseBody.quoteSummary.products[i].planCode) {
@@ -1009,25 +983,25 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           }];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-        // if (row.CRS == "Yes") {
-        //   let code = "CRS";
-        //   let applyAtLevel = "Policy";
-        //   let name = "Cruise Cover";
-        //   let helpText = null;
-        //   let options = [
-        //     {
-        //       "value": "0",
-        //       "description": "Yes"
-        //     }
-        //   ];
-        //   let addOnDuration = [
-        //     {
-        //       startDate: row.departureDate,
-        //       endDate: row.returnDate
-        //     }
-        //   ];
-        //   additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
-        // }
+        if (row.CRS == "Yes") {
+          let code = "CRS";
+          let applyAtLevel = "Policy";
+          let name = "Cruise Cover";
+          let helpText = null;
+          let options = [
+            {
+              "value": "0",
+              "description": "Yes"
+            }
+          ];
+          let addOnDuration = [
+            {
+              startDate: row.departureDate,
+              endDate: row.returnDate
+            }
+          ];
+          additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
+        }
         //console.log(row.MTCL + " == Yes");
         if (row.MTCL == "Yes") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
@@ -1074,7 +1048,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
         }
 
         let excess = responseBody.quoteSummary.products[i].premiumMatrix[0].excess;
-        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0].maxDurationDays;
+        let maxDurationDays = responseBody.quoteSummary.products[i].premiumMatrix[0n].maxDurationDays;
         let totalGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalGrossPremium;
         let totalAdjustedGrossPremium = responseBody.quoteSummary.products[i].premiumMatrix[0].totalAdjustedGrossPremium;
         let premiumPerDay = responseBody.quoteSummary.products[i].premiumMatrix[0].premiumPerDay;
@@ -1205,6 +1179,10 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
     }
   }
   let travellers = [];
+  let EMC = {
+    "emcNumber": responseBody.quoteSummary.travellers[0].emc.emcNumber,
+    "isAccepted": true
+  }
   for (let i = 0; i < Object.keys(travalersArray).length; i++) {
     let age = JSON.stringify(travalersArray[i].age);
     let dateOfBirth = travalersArray[i].dateOfBirth;
@@ -1219,6 +1197,8 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
     additionalCoverAddons = additionalCoverAddonsForTraveller;
     if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
+    } else if (EMC != '' && isPrimary == "true") {
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, EMC });
     } else {
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
     }

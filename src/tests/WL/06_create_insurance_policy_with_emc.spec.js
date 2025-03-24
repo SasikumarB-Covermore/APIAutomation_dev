@@ -62,7 +62,7 @@ test.describe("", async () => {
       defaultHeaders["X-API-KEY"] = row.APIKey;
     }
 
-    test(`Feature_${index + 1}: [${PARTNER_NAME}][${row.planName}] create a insurance policy with EMC and $${row.excess} excess amount`, async ({ request, }, testInfo) => {
+    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, State - ${row.state}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode} and ${row.excess} excess amount`, async ({ request }, testInfo) => {
 
       // Initialize currentTestDetails for each test run
       currentTestDetails = {
@@ -110,11 +110,11 @@ test.describe("", async () => {
       await test.step(`Scenario_1: Get Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to quote API for ${row.planCode}`, async () => {
           payload = createPayload(row, payLoadQuote, [], null);
-          console.log("create quote payload body " + JSON.stringify(payload));
+          console.log("Get Quote Request Body: \n" + JSON.stringify(payload) + "\n");
           response = await createQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          //console.log("create quote response body " + JSON.stringify(responseBody));
+          console.log("Get Quote Response Body: \n " + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_1: Get Quote for ${row.planCode}`,
             payload,
@@ -145,10 +145,11 @@ test.describe("", async () => {
       await test.step(`Scenario_2: Refine Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
           payload = createPayloadForRefineQuote(row, payLoadRefineQuote, [], null, responseBody);
-          console.log("payload for refine qoute with addon " + JSON.stringify(payload));
+          console.log("Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
           response = await createRefineQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
+          console.log("Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_2: Refine Quote for ${row.planCode}`,
             payload,
@@ -161,19 +162,19 @@ test.describe("", async () => {
       // Scenario 3: Issue Policy
       await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {
-          const addrPayLoad = generateAustralianAddress();
+          const addrPayLoad = generateAustralianAddress(row);
           const phonePayLoad = phoneNumbers();
           payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
-          console.log("Issue Policy Body for without addon " + JSON.stringify(payload));
+          console.log("Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
           response = await createIssuePolicy(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
+          console.log("Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
             payload,
             response: responseBody,
           });
-          console.log("Issue Policy response " + JSON.stringify(responseBody));
           console.log("Sending POST request for Issue Policy API for Success");
         }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
       });

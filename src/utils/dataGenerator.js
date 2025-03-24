@@ -114,21 +114,22 @@ function generateCommonIssuePolicyData(identifier, row) {
     };
 }
 
-function generateAustralianAddress() {
+function generateAustralianAddress(row) {
     return {
         postCode: `2${faker.number.int({ min: 100, max: 999 })}`, // Australian postcodes are 4 digits
         street1: faker.location.streetAddress(),
         street2: faker.location.secondaryAddress(),
         suburb: faker.location.city(),  // Use city() if suburb-specific method is not available
-        state: 'NSW', // Australian state abbreviation
+        state: row.state, // Australian state abbreviation
         countryCode: 'AUS'
     };
 }
 
 function phoneNumbers() {
     return {
-        "type": "mobile",
-        "number": faker.phone.number()
+        "type": "Mobile",
+        //"number": faker.phone.number()
+        "number": faker.string.numeric({ length: { min: 10, max: 12 } })
     };
 }
 

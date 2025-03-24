@@ -60,7 +60,7 @@ test.describe('', async () => {
     if (row.APIKey) {
       defaultHeaders['X-API-KEY'] = row.APIKey
     }
-    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode} and ${row.excess} excess amount`, async ({ request }, testInfo) => {
+    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, State - ${row.state}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode} and ${row.excess} excess amount`, async ({ request }, testInfo) => {
       // Initialize currentTestDetails for each test run
       currentTestDetails = {
         testName: `Test_Scenario_${index + 1}`,
@@ -161,7 +161,7 @@ test.describe('', async () => {
       // Scenario 3: Issue Policy
       await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {
-          const addrPayLoad = generateAustralianAddress();
+          const addrPayLoad = generateAustralianAddress(row);
           const phonePayLoad = phoneNumbers();
           payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
           console.log("Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
