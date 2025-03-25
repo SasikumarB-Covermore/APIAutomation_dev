@@ -748,19 +748,19 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
     let gender = faker.person.sexType().substring(0, 1);
     let title = JSON.stringify(travalersArray[i].gender) === 'm' ? 'Mr' : 'Ms';
     let firstName = 'Test_' + faker.person.firstName(gender);
-    let lastName = 'Test_' + faker.person.lastName();
+    let surName = 'Test_' + faker.person.lastName();
     let memberID = "";
     let externalCustomerId = "";
     //console.log("### " + EMC + " != '' && " + isPrimary + " == " + "true");
     //console.log("#### " + isPrimary + " == " + "true");
     additionalCoverAddons = additionalCoverAddonsForTraveller;
     if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons });
     } else if (EMC != '' && isPrimary == "true") {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, EMC });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, EMC });
     }
     else {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId });
     }
 
   }
@@ -1179,10 +1179,15 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
     }
   }
   let travellers = [];
-  let EMC = {
-    "emcNumber": responseBody.quoteSummary.travellers[0].emc.emcNumber,
-    "isAccepted": true
+  let EMC;
+  console.log("EMC pressent in data sheet ? " + row.EMC != "");
+  if (row.EMC != 0) {
+    EMC = {
+      "emcNumber": responseBody.quoteSummary.travellers[0].emc.emcNumber,
+      "isAccepted": true
+    }
   }
+
   for (let i = 0; i < Object.keys(travalersArray).length; i++) {
     let age = JSON.stringify(travalersArray[i].age);
     let dateOfBirth = travalersArray[i].dateOfBirth;
@@ -1191,16 +1196,16 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
     let gender = faker.person.sexType().substring(0, 1);
     let title = JSON.stringify(travalersArray[i].gender) === 'm' ? 'Mr' : 'Ms';
     let firstName = 'Test_' + faker.person.firstName(gender);
-    let lastName = 'Test_' + faker.person.lastName();
+    let surName = 'Test_' + faker.person.lastName();
     let memberID = "";
     let externalCustomerId = "";
     additionalCoverAddons = additionalCoverAddonsForTraveller;
     if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, additionalCoverAddons });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons });
     } else if (EMC != '' && isPrimary == "true") {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId, EMC });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, EMC });
     } else {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, lastName, gender, memberID, externalCustomerId });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId });
     }
   }
   payload.travellers = travellers;

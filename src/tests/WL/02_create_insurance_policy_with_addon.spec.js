@@ -27,7 +27,7 @@ const { savePolicyNumber } = require('../../utils/fileReader.js')
 const { generateAustralianAddress, phoneNumbers } = require('../../utils/dataGenerator')
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
 const { generateAddOns } = require('../../utils/addonsGenerator.js')
-// import { PriceCalculator } from '../../pricing/priceCalculator.js';
+import { PriceCalculator } from '../../pricing/priceCalculator.js';
 // import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
 const { createQuote, createRefineQuote, createIssuePolicy } = require("../../utils/apiClient.js");
@@ -76,6 +76,8 @@ test.describe('', async () => {
         defaultHeaders['X-API-KEY'] = row.APIKey
       }
       const { travelAddOns, policyAddOns } = await generateAddOns(row)
+
+      console.log("222 Travaler level add ons are " + JSON.stringify(travelAddOns) + " and  policy level add ons are " + JSON.stringify(policyAddOns));
 
       let payload = {};
 
@@ -138,6 +140,29 @@ test.describe('', async () => {
             console.log("validating benefits help text Success");
           }, currentTestDetails, currentTestDetails.testName, "Validate benefits help text.");
         });
+
+        //New function for price validation - 25/03/2025
+        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+        //   const priceCalculator = new PriceCalculator(row, payload);
+        //   const calculatedPrice = priceCalculator.calculatePrice(true);
+        //   const apiResponse = parseAPIResponse(row, responseBody)
+        //   const priceValidator = new PriceValidator(calculatedPrice, apiResponse, row.discount, row.childChargeRate);
+
+        //   await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
+        //     priceValidator.validateBasePrice();
+        //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+
+        //   if (travelAddOns.length != 0) {
+        //     await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
+        //       priceValidator.validateTravellerAddOns();
+        //     }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
+        //   }
+        //   if (policyAddOns.length != 0) {
+        //     await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
+        //       priceValidator.validatedAdditionalCoverage();
+        //     }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
+        //   }
+        // });
       });
 
       // Scenario 2: Refine Quote
