@@ -53,16 +53,18 @@ test.beforeEach(() => {
 
 
 test.describe("", async () => {
-  console.log("File path " + filePath + " and Sheet name " + sheetName);
+  //console.log("File path " + filePath + " and Sheet name " + sheetName);
   const data = await excelToJson(filePath, sheetName);
+  //console.log("Data " + data);
   const filteredDataSets = filterRowsByExecution(data);
-  filteredDataSets.slice(0, 1).forEach((row, index) => {
+  //console.log("Row of execution " + filteredDataSets);
+  filteredDataSets.forEach((row, index) => {
     // data.slice(0, 10).forEach((row, index) => {
     if (row.APIKey) {
       defaultHeaders["X-API-KEY"] = row.APIKey;
     }
 
-    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, State - ${row.state}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode} and ${row.excess} excess amount`, async ({ request }, testInfo) => {
+    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, State - ${row.state}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode}, ${row.excess} excess amount and EMC - ${row.EMC}`, async ({ request }, testInfo) => {
 
       // Initialize currentTestDetails for each test run
       currentTestDetails = {
@@ -81,7 +83,6 @@ test.describe("", async () => {
 
 
       let payload = {};
-
 
       let [travellerPayloadArrary, travellerUpdatePayloadArrary] =
         generateTravelDataNTimes(row.numAdults, row.numChild, row)

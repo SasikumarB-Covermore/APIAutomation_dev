@@ -10,6 +10,7 @@ const {
   getTravelPayloadForIssuePolicy,
   getTravelPayloadForUpdateTraveller,
 } = require("../utils/payloadStructures");
+const { json } = require('stream/consumers');
 
 
 function numberWithCommas(x) {
@@ -126,22 +127,23 @@ function extractAddOnsFromPayload(requestPayload) {
 }
 
 function extractAddOnsFromAPIResponse(row, responseBody) {
-  const productID = row.productID;
+  console.log("response body fron refine quote " + JSON.stringify(responseBody));
+  const productCode = row.productCode;
   const excess = row.excess;
-  // Ensure the productID and excess exist in the responseBody
-  if (!responseBody.product[productID]) {
-    throw new Error(`Product ID ${productID} not found in the response`);
+  // Ensure the productCode and excess exist in the responseBody
+  if (!responseBody.products[productCode]) {
+    throw new Error(`Product code ${productCode} not found in the response`);
   }
 
-  if (!responseBody.product[productID].excess[excess]) {
-    throw new Error(`Excess ${excess} not found for Product ID ${productID}`);
+  if (!responseBody.products[productCode].excess[excess]) {
+    throw new Error(`Excess ${excess} not found for Product code ${productCode}`);
   }
 
-  const durationKey = Object.keys(responseBody.product[productID].excess[excess].duration)[0];
-  const policyAddOnsList = responseBody.product[productID].excess[excess].duration[durationKey].additionalCoverPrices;
+  const durationKey = Object.keys(responseBody.products[productCode].excess[excess].duration)[0];
+  const policyAddOnsList = responseBody.products[productCode].excess[excess].duration[durationKey].additionalCoverPrices;
 
   // Extract traveller-level covers from response dynamically
-  let responseTravelCodes = responseBody.product[productID].excess[excess].duration[durationKey].travellers.flatMap(traveller =>
+  let responseTravelCodes = responseBody.products[productCode].excess[excess].duration[durationKey].travellers.flatMap(traveller =>
     traveller.additionalCoverPrices
   );
   const jsonKey = (item) => JSON.stringify(item);
@@ -151,21 +153,27 @@ function extractAddOnsFromAPIResponse(row, responseBody) {
 }
 
 function parseAPIResponse(row, responseBody) {
-  const productID = row.productID;
+  const productCode = row.productCode;
   const excess = row.excess;
-  // Ensure the productID and excess exist in the responseBody
-  if (!responseBody.product[productID]) {
-    throw new Error(`Product ID ${productID} not found in the response`);
+  console.log(" checking responce body " + JSON.stringify(responseBody));
+  // Ensure the productCode and excess exist in the responseBody
+  if (!responseBody.quoteSummary.products[0].productCode) {
+    throw new Error(`Product Code ${productCode} not found in the response`);
   }
 
-  if (!responseBody.product[productID].excess[excess]) {
-    throw new Error(`Excess ${excess} not found for Product ID ${productID}`);
+  if (!responseBody.quoteSummary.products[0].productCode) {
+    throw new Error(`Excess ${excess} not found for Productcode ${productCode}`);
   }
 
-  const durationKey = Object.keys(responseBody.product[productID].excess[excess].duration)[0];
+  //const durationKey = Object.keys(responseBody.products[productCode].excess[excess].duration)[0];
   // Extract traveller-level covers from response dynamically
-  let reponseProduct = responseBody.product[productID].excess[excess].duration[durationKey]
-  return reponseProduct
+  // let travalerLevelPath = responseBody.quoteSummary.travellers;
+  // let polisyLevelPath = responseBody.quoteSummary.products[0].additionalCoverAddons;
+  // let premiumMatrixPath = responseBody.quoteSummary.products[0].premiumMatrix;
+  // let reponseProduct = [];
+  // reponseProduct.push(travalerLevelPath,polisyLevelPath,premiumMatrixPath)
+  let reponseProduct = responseBody.quoteSummary;
+  return reponseProduct;
 }
 
 
@@ -186,7 +194,7 @@ function createQuotePayload(sessionToken, row, payLoadQuote, policyAddOns) {
   return {
     sessionToken: sessionToken,
     isResident: row.isResident,
-    productID: row.productID,
+    productCode: row.productCode,
     multiTripDuration: row.multiTripDuration,
     excess: row.excess,
     trip: {
@@ -697,40 +705,49 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
       }
       if (row.EMC != 0) {
         if (row.EMC == "EMCT3") {
-          let disease = "Epilepsy";
-          let score = 3.8;
-          const emc = emcAddOns(disease, score)
+          console.log("Checking EMCT3 " + row.EMC + " == EMCT3");
+          let disease = ["Epilepsy"];
+          let totalScore = 3.8;
+          let score = [3.8];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
 
         } else if (row.EMC == "EMCT5") {
-          let disease = "Knee Dislocation";
-          let score = 1.40;
-          const emc = emcAddOns(disease, score)
+          let disease = ["Knee Dislocation"];
+          let totalScore = 1.40;
+          let score = [1.40];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
         } else if (row.EMC == "EMCT6") {
-          let disease = "Asthma";
-          let score = 1.43;
-          const emc = emcAddOns(disease, score)
+          let disease = ["Asthma"];
+          let totalScore = 1.43;
+          let score = [1.43];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
         } else if (row.EMC == "EMCT7") {
-          let disease = "Abnormal heart rhythm";
-          let score = 4.2;
-          const emc = emcAddOns(disease, score)
+          let disease = ["Abnormal heart rhythm"];
+          let totalScore = 4.2;
+          let score = [4.2];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
         } else if (row.EMC == "EMCT8") {
-          let disease = "Pulmonary fibrosis";
-          let score = 5.01;
-          const emc = emcAddOns(disease, score)
+          let disease = ["Pulmonary fibrosis"];
+          let totalScore = 5.01;
+          let score = [5.01];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
         } else if (row.EMC == "EMCT9") {
-          let disease = "Epilepsy	and Cellulitis";
-          let score = 6.49;
-          const emc = emcAddOns(disease, score)
+          let disease = ["Epilepsy", "Cellulitis"];
+          let totalScore = 6.49;
+          let score = [3.8, 2.5];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
         } else if (row.EMC == "EMCT10") {
-          let disease = "Epilepsy, Cellulitis and Deep vein thrombosis";
-          let score = 7.97;
-          const emc = emcAddOns(disease, score)
+          //console.log("Checking EMCT10 " + row.EMC + " == EMCT10");
+          let disease = ["Epilepsy", "Cellulitis", "Deep vein thrombosis"];
+          let totalScore = 7.97;
+          let score = [3.8, 2.5, 1.67];
+          const emc = emcAddOns(disease, totalScore, score)
           EMC = emc;
         }
       }
@@ -751,18 +768,21 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
     let surName = 'Test_' + faker.person.lastName();
     let memberID = "";
     let externalCustomerId = "";
-    //console.log("### " + EMC + " != '' && " + isPrimary + " == " + "true");
-    //console.log("#### " + isPrimary + " == " + "true");
+    //console.log("1111### " + EMC + " != '' && " + isPrimary + " == " + "true");
+    //console.log("2222### " + additionalCoverAddonsForTraveller.length);
+
+    //console.log("333#### " + isPrimary + " == " + "true" + (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) + " || " + (EMC != '' && isPrimary == "true"));
     additionalCoverAddons = additionalCoverAddonsForTraveller;
-    if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons });
-    } else if (EMC != '' && isPrimary == "true") {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, EMC });
-    }
-    else {
+    if ((typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) || (EMC != '' && isPrimary == "true")) {
+      if (EMC != '' && isPrimary == "true") {
+        travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons, EMC });
+      } else {
+        travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons });
+      }
+      //travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons, EMC: (isPrimary == false ? null : EMC) });
+    } else {
       travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId });
     }
-
   }
 
   //travellers.push(additionalCoverAddons);
@@ -1180,7 +1200,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   }
   let travellers = [];
   let EMC;
-  console.log("EMC pressent in data sheet ? " + row.EMC != "");
+  console.log("EMC pressent in data sheet ? " + row.EMC + " Emc number " + responseBody.quoteSummary.travellers[0].emc.emcNumber);
   if (row.EMC != 0) {
     EMC = {
       "emcNumber": responseBody.quoteSummary.travellers[0].emc.emcNumber,
@@ -1195,17 +1215,20 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
     let treatAsAdult = JSON.stringify(travalersArray[i].treatAsAdult);
     let gender = faker.person.sexType().substring(0, 1);
     let title = JSON.stringify(travalersArray[i].gender) === 'm' ? 'Mr' : 'Ms';
-    let firstName = 'Test_' + faker.person.firstName(gender);
-    let surName = 'Test_' + faker.person.lastName();
+    let firstName = travalersArray[i].firstName;
+    let surname = travalersArray[i].surname;
     let memberID = "";
     let externalCustomerId = "";
     additionalCoverAddons = additionalCoverAddonsForTraveller;
-    if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0) {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, additionalCoverAddons });
-    } else if (EMC != '' && isPrimary == "true") {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId, EMC });
+    if (typeof additionalCoverAddonsForTraveller !== 'undefined' && additionalCoverAddonsForTraveller.length > 0 || EMC != '' && isPrimary == "true") {
+      if (EMC != '' && isPrimary == "true") {
+        travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surname, gender, memberID, externalCustomerId, additionalCoverAddons, EMC });
+      } else {
+        travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surname, gender, memberID, externalCustomerId, additionalCoverAddons });
+      }
+      //travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surname, gender, memberID, externalCustomerId, additionalCoverAddons });
     } else {
-      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surName, gender, memberID, externalCustomerId });
+      travellers.push({ age, dateOfBirth, isPrimary, treatAsAdult, title, firstName, surname, gender, memberID, externalCustomerId });
     }
   }
   payload.travellers = travellers;

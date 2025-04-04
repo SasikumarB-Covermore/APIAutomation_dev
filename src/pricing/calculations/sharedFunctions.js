@@ -3,6 +3,7 @@ const XLSX = require('xlsx');
 
 function getSheet(workbook, cover) {
   const sheetName = `${cover.code}_SellPrice`;
+  console.log("Sheet name for thw add ons " + sheetName);
   const sheet = workbook.Sheets[sheetName];
   if (!sheet) {
     throw new Error(`Sheet "${sheetName}" not found.`);
@@ -12,49 +13,57 @@ function getSheet(workbook, cover) {
 
 function createPrice(sellPrice, isDiscount = false) {
   return {
-      gross: sellPrice,
-      displayPrice: sellPrice,
-      isDiscount: isDiscount
+    gross: sellPrice,
+    displayPrice: sellPrice,
+    isDiscount: isDiscount
   };
 }
 
 //The policy Level Add-ons
 function calculatePriceByValue(workbook, cover) {
-  const sheet = getSheet(workbook,cover)
+  const sheet = getSheet(workbook, cover);
+  //console.log("Workbook sheet name " + JSON.stringify(sheet));
   const descriptionRange = XLSX.utils.sheet_to_json(sheet, { header: 1, range: "A2:A30" });
   let foundSellPrice = false;
+  console.log("descriptionRange length " + descriptionRange.length);
   for (let i = 0; i < descriptionRange.length; i++) {
     const descCell = descriptionRange[i][0]; // Get the value in the first column
+    console.log(" $$$ " + descCell + " === " + cover.options[0].description);
     if (descCell === undefined) {
-        break; // Exit the loop if the cell is empty
-    } else if (descCell === cover.amountLabel) {
-        const sellPriceCell = sheet[`B${i + 2}`]; // Adjust for zero-based index
-        let sellPrice = sellPriceCell ? sellPriceCell.v : undefined;
+      break; // Exit the loop if the cell is empty
+    } else if (descCell === cover.options[0].description) {
 
-        if (sellPrice === undefined) {
-            throw new Error(`The selling price for ${cover.code} with amount label ${cover.amountLabel} was not found.`);
-        }
+      const sellPriceCell = sheet[`B${i + 2}`]; // Adjust for zero-based index
+      let sellPrice = sellPriceCell ? sellPriceCell.v : undefined;
 
-        console.log(`The calculated ${cover.code}_SellPrice for ${cover.amountLabel} is ${sellPrice}`);
-        foundSellPrice = true; // Mark that the selling price was found
+      if (sellPrice === undefined) {
+        throw new Error(`The selling price for ${cover.code} with amount label ${cover.amountLabel} was not found.`);
+      }
 
-        return {
-            code: cover.code,
-            price: createPrice(sellPrice)
-        };
+      console.log(`The calculated ${cover.code}_SellPrice for ${cover.amountLabel} is ${sellPrice}`);
+      foundSellPrice = true; // Mark that the selling price was found
+
+      return {
+        code: cover.code,
+        price: createPrice(sellPrice)
+      };
     }
   }
 
   if (!foundSellPrice) {
-      throw new Error(`The selling price for ${cover.code} with amount label ${cover.amountLabel} was not found.`);
+    throw new Error(`The selling price for ${cover.code} with amount label ${cover.amountLabel} was not found.`);
   }
 
 }
 
 
 //The traveller Level Add-ons 
-function calculatePriceByAgeband(workbook,priceCalcData,cover) {
-  const sheet = getSheet(workbook,cover)
+function calculatePriceByAgeband(workbook, priceCalcData, cover) {
+  //console.log("Workbook " + JSON.stringify(workbook));
+  console.log("price cal data " + JSON.stringify(priceCalcData));
+  console.log("cover " + JSON.stringify(cover));
+
+  const sheet = getSheet(workbook, cover)
   let foundSellPrice = false;
 
   // Determine the range for Area
@@ -73,9 +82,9 @@ function calculatePriceByAgeband(workbook,priceCalcData,cover) {
       let isExcessMatch = (excessCell.v === priceCalcData.excess)
 
       if (isAgeMatch && isExcessMatch) {
-       
+
         let dateBucketCol = calculateDateBucket(sheet, priceCalcData.tripDuration);
-  
+
         let sellingPriceCell = sheet[XLSX.utils.encode_cell({ c: XLSX.utils.decode_col(dateBucketCol), r: row })];
         let sellingPriceForAgeBracket = sellingPriceCell ? sellingPriceCell.v : 'N/A';
         let sellingPrice = Number(sellingPriceForAgeBracket);
@@ -97,8 +106,8 @@ function calculatePriceByAgeband(workbook,priceCalcData,cover) {
   }
 }
 
-function calculateCRSPrice(workbook,row, cover) {
-  const sheet = getSheet(workbook,cover)
+function calculateCRSPrice(workbook, row, cover) {
+  const sheet = getSheet(workbook, cover)
   let foundSellPrice = false;
   const rngArea = XLSX.utils.sheet_to_json(sheet, { range: 'A2:A20000', header: 1 });
   for (let rowIndex = 0; rowIndex < rngArea.length; rowIndex++) {
@@ -113,12 +122,12 @@ function calculateCRSPrice(workbook,row, cover) {
       let isExcessMatch = (excessValue === Number(row.excess))
       const yesValue = sheet[`E${areaRowNum}`]?.v;
       if (isAgeMatch && isExcessMatch && yesValue === 'Yes') {
-        
-         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
-         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
 
-         console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
-         if (!isNaN(sellingPrice)) {
+        let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
+        let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
+
+        console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
+        if (!isNaN(sellingPrice)) {
           foundSellPrice = true
           return {
             code: cover.code,
@@ -135,8 +144,8 @@ function calculateCRSPrice(workbook,row, cover) {
   }
 }
 
-function calculateEMCPrice(workbook,row,cover) {
-  const sheet = getSheet(workbook,cover)
+function calculateEMCPrice(workbook, row, cover) {
+  const sheet = getSheet(workbook, cover)
   let foundSellPrice = false;
   const rngArea = XLSX.utils.sheet_to_json(sheet, { range: 'A2:A20000', header: 1 });
   for (let rowIndex = 0; rowIndex < rngArea.length; rowIndex++) {
@@ -148,12 +157,12 @@ function calculateEMCPrice(workbook,row,cover) {
 
       let isAgeMatch = isAgeInRange(row.age, ageBandValue)
       if (isAgeMatch) {
-   
-         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration,3);
-         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
+
+        let dateBucketCol = calculateDateBucket(sheet, row.tripDuration, 3);
+        let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
 
         console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
-         if (!isNaN(sellingPrice)) {
+        if (!isNaN(sellingPrice)) {
           foundSellPrice = true
           return {
             code: cover.code,
@@ -174,14 +183,14 @@ function calculateEMCPrice(workbook,row,cover) {
 function calculateDateBucket(sheet, tripDuration, startCol = 4) {
   const range = XLSX.utils.decode_range(sheet['!ref']);
   for (let col = startCol; col <= range.e.c; col++) { // Start from column E (index 4)
-      let dateBucketCell = sheet[XLSX.utils.encode_cell({ c: col, r: 0 })];
-      if (dateBucketCell) {
-          let tempDate = dateBucketCell.v.toString().slice(0, -1);
-          const dateBucketCol = XLSX.utils.encode_col(col);
-          if (parseInt(tempDate) >= parseInt(tripDuration)) {
-              return dateBucketCol;
-          }
+    let dateBucketCell = sheet[XLSX.utils.encode_cell({ c: col, r: 0 })];
+    if (dateBucketCell) {
+      let tempDate = dateBucketCell.v.toString().slice(0, -1);
+      const dateBucketCol = XLSX.utils.encode_col(col);
+      if (parseInt(tempDate) >= parseInt(tripDuration)) {
+        return dateBucketCol;
       }
+    }
   }
   throw new Error(`No suitable date bucket found for trip duration: ${tripDuration}`);
 }

@@ -10,26 +10,24 @@ import {
   getDataFilePath, PARTNER_NAME, configVeriskVersion
 } from '../../config/config.js'
 const { excelToJson, filterRowsByExecution } = require('../../utils/excelUtils.js').default
-const {
-  generateTravelDataNTimes,
+const { generateTravelDataNTimes,
+  generateRefineQouteTravelDataNTimes,
+  generateIssuePolicyTravelDataNTimes,
   flattenObject,
   createPayload,
-  parseAPIResponse,
-  extractAddOnsFromAPIResponse,
-  extractAddOnsFromPayload,
-  calculateDepartureDate,
-  calculateReturnDate
-  , validateResponseStatus, validateProductDetails
-} = require('../../utils/helper.js')
+  createPayloadForRefineQuote,
+  createPayloadForIssuePolicy,
+  validateResponseStatus
+} = require("../../utils/helper.js");
 const { savePolicyNumber } = require('../../utils/fileReader.js')
-const { generateAustralianAddress, assessmentId } = require('../../utils/dataGenerator.js')
+const { generateAustralianAddress, phoneNumbers } = require('../../utils/dataGenerator.js')
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
-const { generateAddOns, } = require('../../utils/addonsGenerator.js')
-import { PriceCalculator } from '../../pricing/priceCalculator.js';
-import { PriceValidator } from '../../utils/priceValidator.js';
+//const { generateAddOns, } = require('../../utils/addonsGenerator.js')
+//import { PriceCalculator } from '../../pricing/priceCalculator.js';
+//import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
-const { getEMCScore, generateEmcConditions, createSaveEmcPayload } = require('../../utils/emcUtils.js')
-const { createSession, createQuote, updateTravellers, closeSession, quoteEmc, saveEmc, newGetEmc, newQuoteEmc } = require("../../utils/apiClient.js");
+//const { getEMCScore, generateEmcConditions, createSaveEmcPayload } = require('../../utils/emcUtils.js')
+const { createQuote, createRefineQuote, createIssuePolicy } = require("../../utils/apiClient.js");
 
 const policyNumbers = []
 const filePath = getDataFilePath()
@@ -62,7 +60,7 @@ test.describe('', async () => {
     if (row.APIKey) {
       defaultHeaders["X-API-KEY"] = row.APIKey;
     }
-    test(`Feature_${index + 1}:[${PARTNER_NAME}][${row.planName}] create a insurance policy with add-ons, emc and $${row.excess} excess amount`, async ({ request }, testInfo) => {
+    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, State - ${row.state}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode}, ${row.excess} excess amount and EMC - ${row.EMC}`, async ({ request }, testInfo) => {
       // Initialize currentTestDetails for each test run
       currentTestDetails = {
         testName: `Feature_${index + 1}`,
@@ -75,395 +73,133 @@ test.describe('', async () => {
       let stepNumber //to be deleted once old verisk version is removed
       let response
       let responseBody;
-      let payload = {};
+
       if (row.APIKey) {
         defaultHeaders['X-API-KEY'] = row.APIKey
       }
-      const assessID = assessmentId().assessID;
-      const { travelAddOns, policyAddOns } = await generateAddOns(row)
+      let payload = {};
+
       let [travellerPayloadArrary, travellerUpdatePayloadArrary] =
         generateTravelDataNTimes(row.numAdults, row.numChild, row)
+
       let payLoadQuote = travellerPayloadArrary.map(traveller => ({
-        additionalCovers: travelAddOns, // Add the additionalCovers property
+        //additionalCovers: travelAddOns, // Add the additionalCovers property
         ...flattenObject(traveller) // Spread the existing plain object properties
       }))
 
-      await test.step(`Scenario_1: Get session for the campaign ID=${row.campaignID}`, async () => {
-        await enhancedTestStep(test, `Sending POST request to sessions/create for the campaign ID=${row.campaignID}`, async () => {
-          response = await createSession(request, row.campaignID)
+      let payLoadRefineQuote
+      let [travellerPayloadRefinQuoteArrary] =
+        generateRefineQouteTravelDataNTimes(row.numAdults, row.numChild, row)
 
-          responseBody = await response.json();
+      payLoadRefineQuote = travellerPayloadRefinQuoteArrary.map(traveller => ({
+        ...flattenObject(traveller)
+      }))
+      let [travellerPayloadIssuePolicy] =
+        generateIssuePolicyTravelDataNTimes(row.numAdults, row.numChild, row)
+
+      let payLoadIssuePolicy
+
+      payLoadIssuePolicy = travellerPayloadIssuePolicy.map(traveller => ({
+        ...flattenObject(traveller)
+      }))
+
+      // Scenario 1: Get Quote
+      await test.step(`Scenario_1: Get Quote for ${row.planCode}`, async () => {
+        await enhancedTestStep(test, `Sending POST request to quote API for ${row.planCode}`, async () => {
+          payload = createPayload(row, payLoadQuote, [], null);
+          console.log("Get Quote Request Body: \n" + JSON.stringify(payload) + "\n");
+          response = await createQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
-          sessionToken = responseBody.sessionToken;
-          expect(sessionToken, "And a Session token is returned").toBeDefined();
-
-          currentTestDetails.scenarios.push({
-            scenario: `Scenario_1: Get session for the campaign ID=${row.campaignID}`,
-            payload: { campaignID: row.campaignID },
-            response: responseBody, // Capture the session creation response
-          });
-
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_1: Get session`);
-
-      });
-
-
-      await test.step(`Scenario_2: Get Quote for ${row.planCode}`, async () => {
-        await enhancedTestStep(test, `Sending POST request to /quote API for ${row.planCode}`, async () => {
-          const emcOptions = {
-            identifier: 'adult1', emcAccepted: true, assessmentID: assessID
-          };
-
-          // payload = createPayload(sessionToken, row, payLoadQuote, policyAddOns, null);
-          payload = createPayload(sessionToken, row, payLoadQuote, policyAddOns, null);
-          response = await createQuote(request, payload)
-
           responseBody = await response.json();
-          validateResponseStatus(response, validStatusCode);
+          console.log("Get Quote Response Body: \n " + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
-            scenario: `Scenario_2: Get Quote for ${row.planCode}`,
+            scenario: `Scenario_1: Get Quote for ${row.planCode}`,
             payload,
             response: responseBody,
           });
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
+          console.log("Sending POST request to quote API for Success");
+        }, currentTestDetails, currentTestDetails.testName, `Scenario_1: Get Quote for ${row.planCode}`);
 
-
-        await enhancedTestStep(test, "And validating product details", async () => {
-          /* TODO: defect has raised to fixed this issue for 'CBA' https://innate.atlassian.net/browse/ATF-168      */
-          if (row.APIKey == 'cm-direct') {
-            expect(responseBody.quoteID, "QuoteID is returned").toBeDefined();
-          }
-          validateProductDetails(responseBody, row);
-        }, currentTestDetails, currentTestDetails.testName, "Validate product details");
-
-        await enhancedTestStep(test, `Then validate the additionalCovers code in the API response`, async () => {
-          const apiAdditionalCovers = extractAddOnsFromAPIResponse(row, responseBody)
-
-          const getCodes = (addOnsList) => addOnsList.map(cover => cover !== undefined ? cover.code : '');
-          const expectedAddOns = extractAddOnsFromPayload(payload)
-
-          const validateCoverCodes = (expectedCovers, responseCodes, level) => {
-            expectedCovers.forEach(cover => {
-              expect(responseCodes, `Verify the ${level} cover code ${cover.code} is in the response.`).toContain(cover.code);
-            });
-          };
-
-          if (travelAddOns.length != 0) {
-            const responseTravelCodes = getCodes(apiAdditionalCovers.travelAddOnsList);
-            // Validate travel-level additional covers
-            validateCoverCodes(expectedAddOns.travelLevelAddOns, responseTravelCodes, 'travel-level');
-          }
-          if (policyAddOns.length != 0) {
-            const responsePolicyCodes = getCodes(apiAdditionalCovers.policyAddOnsList);
-            // Validate policy-level additional covers
-            validateCoverCodes(expectedAddOns.prolicyLevelAddOns, responsePolicyCodes, 'policy-level');
-          }
-        }, currentTestDetails, currentTestDetails.testName, "Validate add ons code");
-
-        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
-          priceCalculator = new PriceCalculator(row, payload);
-          calculatedPrice = priceCalculator.calculatePrice(true);
-          const apiResponse = parseAPIResponse(row, responseBody)
-          const priceValidator = new PriceValidator(calculatedPrice, apiResponse, row.discount, row.childChargeRate);
-
-          await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
-            priceValidator.validateBasePrice();
-          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
-
-          if (travelAddOns.length != 0) {
-            await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
-              priceValidator.validateTravellerAddOns();
-            }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
-          }
-          if (policyAddOns.length != 0) {
-            await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
-              priceValidator.validatedAdditionalCoverage();
-            }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
-          }
-        });
-      });
-
-      let veriskVersion = (configVeriskVersion === null || configVeriskVersion === undefined) ? 0 : configVeriskVersion;
-      if (isNaN(Number(veriskVersion))) {
-        assert.fail(`Verisk version "${veriskVersion}" is incorrect in config file`);
-      } else if (Number(veriskVersion) > 2.5) {
-        await test.step(`Scenario_3: Save Emc for ${row.planCode}`, async () => {
-          await enhancedTestStep(test, `Sending POST request to /save/emc API ${row.planCode}`, async () => {
-            const emcValue = row.emc; // Ensure this matches the column name in your spreadsheet
-            if (!emcValue) {
-              console.error('No EMC value found in the current row');
-              return;
-            }
-            const emcScoreValue = getEMCScore(emcValue, filePath);
-
-            if (!emcScoreValue) {
-              console.error('No corresponding EMC score found for the given EMC tier');
-              return;
-            }
-            updatedHeaders = {
-              ...defaultHeaders,
-              'X-Correlation-ID': 'asdfsdafsadfsadfsadfsdfew2sdfsadfw',
-            };
-            const departureDate = calculateDepartureDate(row.leadTime);
-            const returnDate = calculateReturnDate(departureDate, row.duration);
-            let payload = createSaveEmcPayload(sessionToken, row, departureDate, returnDate, emcScoreValue);
-            response = await saveEmc(request, payload, updatedHeaders)
-            responseBody = await response.json();
-            currentTestDetails.scenarios.push({
-              scenario: `Scenario_3: Save Emc for ${row.planCode}`,
-              payload,
-              response: responseBody,
-            });
-            validateResponseStatus(response, validStatusCode);
-
-            assessmentID = responseBody.emcAssessment.assessmentID
-          }, currentTestDetails, currentTestDetails.testName, `Scenario_3: Save Emc for ${row.planCode}`);
-
-        });
-
-        await test.step(`Scenario_4: Get Emc for ${row.planCode}`, async () => {
-          await enhancedTestStep(test, `Sending POST request to /emc/assessmentNumber API ${row.planCode}`, async () => {
-
-            response = await newGetEmc(request, assessmentID, updatedHeaders)
-            responseBody = await response.json();
-            currentTestDetails.scenarios.push({
-              scenario: `Scenario_4: Get Emc for ${row.planCode}`,
-              payload,
-              response: responseBody,
-            });
-            validateResponseStatus(response, validStatusCode);
-
-          }, currentTestDetails, currentTestDetails.testName, `Scenario_3: Get Emc for ${row.planCode}`);
-
-        });
-
-        await test.step(`Scenario_5: Quote Emc for ${row.planCode}`, async () => {
-          await enhancedTestStep(test, `Sending POST request to /quote/emc API ${row.planCode}`, async () => {
-            payload = {
-              sessionToken: sessionToken,
-              assessmentID: assessmentID,
-              healixVersion: '3.0',
-              identifier: 'adult1'
-            }
-            response = await newQuoteEmc(request, payload, updatedHeaders)
-            responseBody = await response.json();
-            currentTestDetails.scenarios.push({
-              scenario: `Scenario_5: Quote Emc for ${row.planCode}`,
-              payload,
-              response: responseBody,
-            });
-            validateResponseStatus(response, validStatusCode);
-
-          }, currentTestDetails, currentTestDetails.testName, `Scenario_5: Quote Emc for ${row.planCode}`);
-
-        });
-        stepNumber = 6
-      } else {
-        await test.step(`Scenario_3: Get Emc for ${row.planCode}`, async () => {
-          await enhancedTestStep(test, `Sending POST request to /quote/emc API ${row.planCode}`, async () => {
-            const emcValue = row.emc; // Ensure this matches the column name in your spreadsheet
-            if (!emcValue) {
-              console.error('No EMC value found in the current row');
-              return;
-            }
-            const emcScoreValue = getEMCScore(emcValue, filePath);
-
-            if (!emcScoreValue) {
-              console.error('No corresponding EMC score found for the given EMC tier');
-              return;
-            }
-            let emcConditions = generateEmcConditions();
-
-            // payload = createPayload(sessionToken, row, payLoadQuote, policyAddOns, null);
-            payload = {
-              sessionToken: sessionToken,
-              identifier: 'adult1',
-              totalRiskScore: emcScoreValue,
-              assessmentID: assessID,
-              healixVersion: '2.5',
-              healixRegionID: 202,
-              isDeclaredByOther: false,
-              conditionGroups: [
-                {
-                  score: emcScoreValue,
-                  conditions: [...emcConditions]
-                }
-              ]
-            }
-            response = await quoteEmc(request, payload)
-            responseBody = await response.json();
-            validateResponseStatus(response, validStatusCode);
-            currentTestDetails.scenarios.push({
-              scenario: `Scenario_3: Get Emc for ${row.planCode}`,
-              payload,
-              response: responseBody,
-            });
-          }, currentTestDetails, currentTestDetails.testName, `Scenario_3: Get Emc for ${row.planCode}`);
-
-        });
-        stepNumber = 4
-      }
-
-
-      await test.step(`Scenario_${stepNumber}: Get Quote for ${row.campaignID}`, async () => {
-        await enhancedTestStep(test, `Sending POST with EMC request to /quote API for ${row.campaignID}`, async () => {
-          const emcOptions = {
-            identifier: 'adult1',
-            emcAccepted: true,
-            assessmentID: assessID
-          };
-          payload = createPayload(sessionToken, row, payLoadQuote, policyAddOns, emcOptions);
-          response = await createQuote(request, payload)
-
-          responseBody = await response.json();
-          validateResponseStatus(response, validStatusCode);
-          currentTestDetails.scenarios.push({
-            scenario: `Scenario_${stepNumber}: Get Quote for ${row.planCode}`,
-            payload,
-            response: responseBody,
-          });
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_${stepNumber}: Get Quote for ${row.campaignID}`);
+        // Validate product details
         await test.step("And I receive valid HTTP response, And validating product details", async () => {
-          await enhancedTestStep(test, "And validating product details", async () => {
+          await enhancedTestStep(test, "Then validating product details", async () => {
             if (row.APIKey != 'cba-cardholder') {
-              expect(responseBody.quoteID, "QuoteID is returned").toBeDefined();
+              expect(JSON.stringify(responseBody.quoteId), "QuoteID is returned").toBeDefined();
             }
-            validateProductDetails(responseBody, row);
+            console.log("Then validating product details Success");
+
           }, currentTestDetails, currentTestDetails.testName, "Validate product details");
 
           await enhancedTestStep(test, "And validating benefits help text", async () => {
             const helpTextValidator = new HelpTextValidator(responseBody);
             helpTextValidator.validateHelpText();
+            console.log("validating benefits help text Success");
           }, currentTestDetails, currentTestDetails.testName, "Validate benefits help text.");
-        })
-
-        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
-          const apiResponse = parseAPIResponse(row, responseBody)
-          const priceValidator = new PriceValidator(calculatedPrice, apiResponse, row.discount, row.childChargeRate);
-
-          await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
-            priceValidator.validateBasePrice();
-          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
-
-          await enhancedTestStep(test, `Then Validate EMC price for adult1 in the API response`, async () => {
-            priceValidator.validateEMCPrice();
-          }, currentTestDetails, currentTestDetails.testName, "Validate EMC price");
-
-          if (travelAddOns.length != 0) {
-            await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
-              priceValidator.validateTravellerAddOns();
-            }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
-          }
-          if (policyAddOns.length != 0) {
-            await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
-              priceValidator.validatedAdditionalCoverage();
-            }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
-          }
         });
       });
-      stepNumber += 1
 
-      await test.step(`Scenario_${stepNumber}: Update travellers information`, async () => {
-        await enhancedTestStep(test, `Sending POST request with EMC data to /travellers API for`, async () => {
-
-          const addrPayLoad = generateAustralianAddress();
-          let payLoadUpdate = travellerUpdatePayloadArrary.map(traveller => ({
-            ...flattenObject(traveller)
-          }))
-
-          payload = {
-            sessionToken: sessionToken,
-            contact: {
-              email: emailAddress,
-              optInMarketing: false,
-              phoneNumbers: [
-                {
-                  type: "mobile",
-                  number: 384738293,
-                },
-              ],
-              address: addrPayLoad,
-            },
-            travellers: payLoadUpdate
-          };
-
-          // Make the API request
-          response = await updateTravellers(request, payload)
-          responseBody = await response.json();
+      // Scenario 2: Refine Quote
+      await test.step(`Scenario_2: Refine Quote for ${row.planCode}`, async () => {
+        await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
+          payload = createPayloadForRefineQuote(row, payLoadRefineQuote, [], null, responseBody);
+          console.log("Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
+          response = await createRefineQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
-          console.error("Response:", responseBody.exceptions);
-
+          responseBody = await response.json();
+          console.log("Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
-            scenario: `Scenario_${stepNumber}: Update travellers information`,
+            scenario: `Scenario_2: Refine Quote for ${row.planCode}`,
             payload,
             response: responseBody,
           });
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_${stepNumber}: Update travellers information`);
+          console.log("Sending POST request for refine quote API for Success");
+        }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
 
+        //New function for price validation - 04/04/2025
+        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+        //   const priceCalculator = new PriceCalculator(row, payload);
+        //   const expectedPrices = priceCalculator.calculatePrice(true);
+        //   console.log("expected prices in test " + JSON.stringify(expectedPrices));
+        //   const apiResponse = parseAPIResponse(row, responseBody);
 
+        //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+
+        //   // await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
+        //   //   priceValidator.validateBasePrice();
+        //   // }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+
+        //   // if (travelAddOns.length != 0) {
+        //   //   await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
+        //   //     priceValidator.validateTravellerAddOns();
+        //   //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
+        //   // }
+        //   // if (policyAddOns.length != 0) {
+        //   //   await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
+        //   //     priceValidator.validatedAdditionalCoveragePolicyAddOns();
+        //   //   }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
+        //   // }
+        // });
       });
-      stepNumber += 1
-      let devURL = /https:\/\/apidev\.au\.poweredbycovermore\.com\/.*/i;
 
-      if (devURL.test(baseURL)) {
-        console.log("Working on dev Environment with URL: ", baseURL)
-        await test.step(`Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`, async () => {
-          await enhancedTestStep(test, `Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`, async () => {
-
-            response
-            let payload = {
-              sessionToken: sessionToken,
-              bookingID: Math.random().toString(36).slice(2),
-              isPurchased: true
-            };
-            response = await closeSession(request, payload)
-
-            responseBody = await response.json();
-            validateResponseStatus(response, validStatusCode);
-            console.log(`Policy Number: ${responseBody.policyNumber}`)
-            const policyNumber = responseBody.policyNumber;
-            expect(responseBody.policyNumber, `And a policy number ${policyNumber} is returned`).toBeDefined()
-            if (row.downLoadPdfs) { policyNumbers.push(responseBody.policyNumber) };
-
-            currentTestDetails.scenarios.push({
-              scenario: `Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`,
-              payload,
-              response: responseBody,
-            });
-
-          }, currentTestDetails, currentTestDetails.testName, `Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`);
-
-        });
-      } else {
-        console.log("Working on dev Environment with URL: ", baseURL)
-        await test.step(`Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`, async () => {
-          await enhancedTestStep(test, `Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`, async () => {
-
-            response
-            let payload = {
-              sessionToken: sessionToken,
-              bookingID: Math.random().toString(36).slice(2),
-              isPurchased: false  // Policy will not be issued if environment is not dev environment
-            };
-            response = await closeSession(request, payload)
-
-            responseBody = await response.json();
-            validateResponseStatus(response, validStatusCode);
-            const policyNumber = 0;
-            console.log(`Policy Number: `, policyNumber)
-            expect(responseBody).toEqual({});
-            if (row.downLoadPdfs) { policyNumbers.push(responseBody.policyNumber) };
-
-            currentTestDetails.scenarios.push({
-              scenario: `Scenario_6: Close the session for the campaign ID=${row.campaignID}`,
-              payload,
-              response: responseBody,
-            });
-
-          }, currentTestDetails, currentTestDetails.testName, `Scenario_${stepNumber}: Close the session for the campaign ID=${row.campaignID}`);
-
-        });
-      }
+      // Scenario 3: Issue Policy
+      await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
+        await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {
+          const addrPayLoad = generateAustralianAddress(row);
+          const phonePayLoad = phoneNumbers();
+          payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
+          console.log("Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
+          response = await createIssuePolicy(request, payload);
+          validateResponseStatus(response, validStatusCode);
+          responseBody = await response.json();
+          console.log("Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          currentTestDetails.scenarios.push({
+            scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
+            payload,
+            response: responseBody,
+          });
+          console.log("Sending POST request for Issue Policy API for Success");
+        }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
+      });
     })
   })
 

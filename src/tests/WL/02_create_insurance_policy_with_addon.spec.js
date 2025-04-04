@@ -28,7 +28,7 @@ const { generateAustralianAddress, phoneNumbers } = require('../../utils/dataGen
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
 const { generateAddOns } = require('../../utils/addonsGenerator.js')
 import { PriceCalculator } from '../../pricing/priceCalculator.js';
-// import { PriceValidator } from '../../utils/priceValidator.js';
+import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
 const { createQuote, createRefineQuote, createIssuePolicy } = require("../../utils/apiClient.js");
 const policyNumbers = []
@@ -141,28 +141,7 @@ test.describe('', async () => {
           }, currentTestDetails, currentTestDetails.testName, "Validate benefits help text.");
         });
 
-        //New function for price validation - 25/03/2025
-        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
-        //   const priceCalculator = new PriceCalculator(row, payload);
-        //   const calculatedPrice = priceCalculator.calculatePrice(true);
-        //   const apiResponse = parseAPIResponse(row, responseBody)
-        //   const priceValidator = new PriceValidator(calculatedPrice, apiResponse, row.discount, row.childChargeRate);
 
-        //   await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
-        //     priceValidator.validateBasePrice();
-        //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
-
-        //   if (travelAddOns.length != 0) {
-        //     await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
-        //       priceValidator.validateTravellerAddOns();
-        //     }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
-        //   }
-        //   if (policyAddOns.length != 0) {
-        //     await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
-        //       priceValidator.validatedAdditionalCoverage();
-        //     }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
-        //   }
-        // });
       });
 
       // Scenario 2: Refine Quote
@@ -181,6 +160,31 @@ test.describe('', async () => {
           });
           console.log("Sending POST request for refine quote API for Success");
         }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
+
+        //New function for price validation - 25/03/2025
+        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+        //   const priceCalculator = new PriceCalculator(row, payload);
+        //   const expectedPrices = priceCalculator.calculatePrice(true);
+        //   console.log("expected prices in test " + JSON.stringify(expectedPrices));
+        //   const apiResponse = parseAPIResponse(row, responseBody);
+
+        //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+
+        //   // await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
+        //   //   priceValidator.validateBasePrice();
+        //   // }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+
+        //   // if (travelAddOns.length != 0) {
+        //   //   await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
+        //   //     priceValidator.validateTravellerAddOns();
+        //   //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
+        //   // }
+        //   // if (policyAddOns.length != 0) {
+        //   //   await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
+        //   //     priceValidator.validatedAdditionalCoveragePolicyAddOns();
+        //   //   }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
+        //   // }
+        // });
       });
 
       // Scenario 3: Issue Policy
