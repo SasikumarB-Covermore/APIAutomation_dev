@@ -2,17 +2,15 @@ import { expect } from '@playwright/test'
 export class PriceValidator {
     constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1) {
         //console.log("APIresponse details " + JSON.stringify(apiResponsePrices));
-        console.log("expectedCalPrice details " + JSON.stringify(expectedCalcPrices));
-        this.expectedTravalerPriceData = expectedCalcPrices.travellers;
-        this.expectedPolicyPriceData = expectedCalcPrices.products[0].additionalCoverAddons;
+        //console.log("expectedCalPrice details " + JSON.stringify(expectedCalcPrices));
+        this.expectedPriceData = expectedCalcPrices;
         this.actualPriceData = apiResponsePrices;
-        //this.expectedAdditionalCoverage = expectedCalcPrices.additionalCoverAddons;
-        //console.log("expected Additional Coverage details " + JSON.stringify(this.expectedAdditionalCoverage));
-        this.actualAdditionalCoverage = apiResponsePrices.products[0].additionalCoverAddons;
-        this.expectedTravellerData = expectedCalcPrices.travellers;
-        this.actualTravellerData = apiResponsePrices.travellers;
-        this.discountValue = discount;
-        this.childChargeRateValue = childChargeRate;
+        this.expectedAdditionalCoverage = expectedCalcPrices.additionalCoverAddons
+        this.actualAdditionalCoverage = apiResponsePrices.products[0].additionalCoverAddons
+        this.expectedTravellerData = expectedCalcPrices.travellers
+        this.actualTravellerData = apiResponsePrices.travellers
+        this.discountValue = discount
+        this.childChargeRateValue = childChargeRate
     }
 
     calculateDiscountedPrice(originalPrice) {
@@ -56,7 +54,7 @@ export class PriceValidator {
     }
 
     validateBasePrice() {
-        console.log("### actualTravellerData Travaller Data " + JSON.stringify(this.actualTravellerData));
+        //console.log("### actualTravellerData Travaller Data " + JSON.stringify(this.actualTravellerData));
         let i = 0;
         this.actualTravellerData.forEach(traveller => {
 
@@ -74,7 +72,7 @@ export class PriceValidator {
             //console.log("expected Gross Price " + expectedGrossPrice + " and actualPrice " + actualPrice);
 
             this.validatePrice(expectedGrossPrice, actualPrice, 'Base', 'Gross Price', traveller);
-            //this.validatePrice(expectedDisplayPrice, actualPrice.displayPrice, 'Base', 'Display Price', traveller);
+            this.validatePrice(expectedDisplayPrice, actualPrice.displayPrice, 'Base', 'Display Price', traveller);
             i = i + 1;
         });
     }
@@ -94,7 +92,7 @@ export class PriceValidator {
         //console.log("Cover is " + JSON.stringify(cover));
         //console.log("Cover is " + JSON.stringify(priceType));
         //console.log("Cover is " + JSON.stringify(traveller));
-        //expect(expected === actual, this.createValidationMessage(expected, actual, cover, traveller.treatAsAdult === true, priceType)).toBeTruthy();
+        expect(expected === actual, this.createValidationMessage(expected, actual, cover, traveller.treatAsAdult === true, priceType)).toBeTruthy();
         expect(this.createValidationMessage(expected, actual, cover, traveller.treatAsAdult === true, priceType)).toBeTruthy();
     }
 
@@ -114,46 +112,31 @@ export class PriceValidator {
     validateTravellerAddOns() {
         this.actualTravellerData.forEach(traveller => {
             //console.log("expected Traveller Data " + JSON.stringify(this.expectedTravellerData));
-            const expectedAdditionalsCovers = this.expectedTravellerData;
-            this.validatedAdditionalCoverageTravellerAddOns(expectedAdditionalsCovers, traveller.additionalCoverAddons, traveller)
+            const expectedAdditionalsCovers = this.expectedTravellerData[0].additionalCoverAddons;
+            this.validatedAdditionalCoverage(expectedAdditionalsCovers, traveller.additionalCoverAddons, traveller)
         });
     }
 
-    validatedAdditionalCoverageTravellerAddOns(expectedAdditionalCoverages = this.expectedTravalerPriceData, actualAdditionalCoverage = this.actualAdditionalCoverage, traveller = null) {
-        console.log("expected Additional Coverage " + JSON.stringify(expectedAdditionalCoverages));
-        console.log("actual Additional Coverage " + JSON.stringify(actualAdditionalCoverage));
-        expectedAdditionalCoverages.forEach(travellers => {
-            const actualCover = this.validateTheAddOnsPrice(actualAdditionalCoverage, travellers);
-            console.log("actual Cover " + JSON.stringify(actualCover));
+    validatedAdditionalCoverage(expectedAdditionalCoverages = this.expectedAdditionalCoverage, actualAdditionalCoverage = this.actualAdditionalCoverage, traveller = null) {
+        //console.log("expected Additional Coverage " + JSON.stringify(expectedAdditionalCoverages));
+        //console.log("actual Additional Coverage " + JSON.stringify(actualAdditionalCoverage));
+        //console.log("travaller detail  " + JSON.stringify(traveller));
+        expectedAdditionalCoverages.forEach(additionalCoverAddon => {
+            //console.log("additional cover addons " + JSON.stringify(additionalCoverAddon));
+            const actualCover = this.validateTheAddOnsPrice(actualAdditionalCoverage, additionalCoverAddon);
+            //console.log("actual Cover " + JSON.stringify(actualCover));
             const actualCoverPrice = actualCover.price;
-            console.log("checking index of addons " + JSON.stringify(travellers) + " and index " + JSON.stringify(travellers.additionalCoverAddons[0].code));
-            const calculatedPrice = travellers.price;
+            const calculatedPrice = additionalCoverAddon.price;
             const expectedCoverPrice = this.calculateDiscountedPrice(calculatedPrice.displayPrice)
             const isChildTraveller = traveller?.treatAsAdult === false ?? false;
-            let { expectedGrossPrice, expectedDisplayPrice } = this.getExpectedPricesForCover(expectedCoverPrice, isChildTraveller, travellers.additionalCoverAddons[0].code);
-            this.validatePrice(expectedGrossPrice, actualCoverPrice.gross, travellers.code, 'Gross Price', traveller);
-            this.validatePrice(expectedDisplayPrice, actualCoverPrice.displayPrice, travellers.code, 'Display Price', traveller);
-        });
-    }
-    validatedAdditionalCoveragePolicyAddOns(expectedAdditionalCoverages = this.expectedPolicyPriceData, actualAdditionalCoverage = this.actualAdditionalCoverage, traveller = null) {
-        console.log("expected Additional Coverage " + JSON.stringify(expectedAdditionalCoverages));
-        console.log("actual Additional Coverage " + JSON.stringify(actualAdditionalCoverage));
-        expectedAdditionalCoverages.forEach(travellers => {
-            const actualCover = this.validateTheAddOnsPrice(actualAdditionalCoverage, travellers);
-            console.log("actual Cover " + JSON.stringify(actualCover));
-            const actualCoverPrice = actualCover.price;
-            console.log("checking index of addons " + JSON.stringify(travellers) + " and index " + JSON.stringify(travellers.additionalCoverAddons[0].code));
-            const calculatedPrice = travellers.price;
-            const expectedCoverPrice = this.calculateDiscountedPrice(calculatedPrice.displayPrice)
-            const isChildTraveller = traveller?.treatAsAdult === false ?? false;
-            let { expectedGrossPrice, expectedDisplayPrice } = this.getExpectedPricesForCover(expectedCoverPrice, isChildTraveller, travellers.additionalCoverAddons[0].code);
-            this.validatePrice(expectedGrossPrice, actualCoverPrice.gross, travellers.code, 'Gross Price', traveller);
-            this.validatePrice(expectedDisplayPrice, actualCoverPrice.displayPrice, travellers.code, 'Display Price', traveller);
+            let { expectedGrossPrice, expectedDisplayPrice } = this.getExpectedPricesForCover(expectedCoverPrice, isChildTraveller, additionalCoverAddon.code);
+            this.validatePrice(expectedGrossPrice, actualCoverPrice.gross, additionalCoverAddon.code, 'Gross Price', traveller);
+            this.validatePrice(expectedDisplayPrice, actualCoverPrice.displayPrice, additionalCoverAddon.code, 'Display Price', traveller);
         });
     }
 
     getExpectedPricesForCover(expectedCoverPrice, isChildTraveller, coverCode) {
-        console.log("code cover " + JSON.stringify(coverCode));
+        //console.log("code cover " + JSON.stringify(coverCode));
         if (isChildTraveller && this.childChargeRateValue !== 1 && coverCode.includes("LUGG")) {
             const adjustedGrossPrice = parseFloat((expectedCoverPrice.gross * this.childChargeRateValue).toFixed(2));
             const adjustedDisplayPrice = parseFloat((expectedCoverPrice.displayPrice * this.childChargeRateValue).toFixed(2));
@@ -164,10 +147,10 @@ export class PriceValidator {
     }
 
     validateTheAddOnsPrice(itemsArray, itemToMatch) {
-        console.log("itams Array " + JSON.stringify(itemsArray));
-        console.log("itemToMatch Array " + JSON.stringify(itemToMatch));
-        console.log(" compare " + itemsArray[0].code + " === " + itemToMatch.additionalCoverAddons[0].code);
-        return itemsArray.find(item => item.code === itemToMatch.additionalCoverAddons[0].code);
+        //console.log("itams Array " + JSON.stringify(itemsArray));
+        //console.log("itemToMatch Array " + JSON.stringify(itemToMatch));
+        //console.log(" compare " + itemsArray[0].code + " === " + itemToMatch.code);
+        return itemsArray.find(item => item.code === itemToMatch.code);
     }
 
     createValidationMessage = (expected, actual, coverCode, identifier, priceType) => {
@@ -175,4 +158,34 @@ export class PriceValidator {
         const coverPart = coverCode ? ` of ${coverCode}` : '';
         return `${priceType}${coverPart}${identifierPart} has been matched: expected ${expected}, got ${actual}.`;
     };
+
+    validateTotalGrossPremium(expectedPriceData = this.expectedPriceData, actualPriceData = this.actualPriceData) {
+        let totalGrossPremiumFromActual = actualPriceData.products[0].premiumMatrix[0].totalGrossPremium;
+        //console.log("total Gross Premium From Actual " + totalGrossPremiumFromActual);
+        let totalGrossPremiumFromExpected;
+        let expectedPrice = [];
+
+        expectedPriceData.travellers.forEach(traveller => {
+            //base price add to array
+            if (traveller.age > 15) {
+                expectedPrice.push(traveller.price.gross);
+            }
+            //EMC price add to array
+            if (traveller.emcPrice) {
+                expectedPrice.push(traveller.emcPrice[0].gross);
+            }
+            //Cover price add to array
+            if (traveller.additionalCoverAddons) {
+                expectedPrice.push(traveller.additionalCoverAddons[0].price.gross);
+            }
+        });
+        //policy cover add to array
+        expectedPrice.push(expectedPriceData.additionalCoverAddons[0].price.gross);
+        //console.log("expected base price for travallers " + expectedPrice);
+        totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
+        //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
+        //expect(totalGrossPremiumFromActual === totalGrossPremiumFromExpected).toBeTruthy();
+        expect(Math.trunc(totalGrossPremiumFromActual)).toBe(totalGrossPremiumFromExpected);
+        console.log("Total Gross Premium expected " + totalGrossPremiumFromExpected + ", got " + Math.trunc(totalGrossPremiumFromActual));
+    }
 }

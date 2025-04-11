@@ -15,6 +15,7 @@ const { generateTravelDataNTimes,
   generateIssuePolicyTravelDataNTimes,
   flattenObject,
   createPayload,
+  parseAPIResponse,
   createPayloadForRefineQuote,
   createPayloadForIssuePolicy,
   validateResponseStatus
@@ -22,9 +23,9 @@ const { generateTravelDataNTimes,
 const { savePolicyNumber } = require('../../utils/fileReader.js')
 const { generateAustralianAddress, phoneNumbers } = require('../../utils/dataGenerator.js')
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
-//const { generateAddOns, } = require('../../utils/addonsGenerator.js')
-//import { PriceCalculator } from '../../pricing/priceCalculator.js';
-//import { PriceValidator } from '../../utils/priceValidator.js';
+const { generateAddOns, } = require('../../utils/addonsGenerator.js')
+import { PriceCalculator } from '../../pricing/priceCalculator.js';
+import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
 //const { getEMCScore, generateEmcConditions, createSaveEmcPayload } = require('../../utils/emcUtils.js')
 const { createQuote, createRefineQuote, createIssuePolicy } = require("../../utils/apiClient.js");
@@ -78,7 +79,7 @@ test.describe('', async () => {
         defaultHeaders['X-API-KEY'] = row.APIKey
       }
       let payload = {};
-
+      const { travelAddOns, policyAddOns } = await generateAddOns(row)
       let [travellerPayloadArrary, travellerUpdatePayloadArrary] =
         generateTravelDataNTimes(row.numAdults, row.numChild, row)
 
@@ -159,10 +160,13 @@ test.describe('', async () => {
         // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
         //   const priceCalculator = new PriceCalculator(row, payload);
         //   const expectedPrices = priceCalculator.calculatePrice(true);
-        //   console.log("expected prices in test " + JSON.stringify(expectedPrices));
+        //   //console.log("expected prices in test " + JSON.stringify(expectedPrices));
         //   const apiResponse = parseAPIResponse(row, responseBody);
 
         //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+        //   await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+        //     priceValidator.validateTotalGrossPremium();
+        //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
 
         //   // await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
         //   //   priceValidator.validateBasePrice();
@@ -175,7 +179,7 @@ test.describe('', async () => {
         //   // }
         //   // if (policyAddOns.length != 0) {
         //   //   await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
-        //   //     priceValidator.validatedAdditionalCoveragePolicyAddOns();
+        //   //     priceValidator.validatedAdditionalCoverage();
         //   //   }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
         //   // }
         // });

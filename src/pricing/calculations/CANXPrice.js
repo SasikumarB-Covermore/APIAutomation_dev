@@ -1,6 +1,14 @@
 const XLSX = require('xlsx');
 const { calculateDateBucket, isAgeInRange } = require("./sharedFunctions");
+const { ro } = require('@faker-js/faker');
 
+function numberWithCommas(x) {
+  x = x.toString();
+  var pattern = /(-?\d+)(\d{3})/;
+  while (pattern.test(x))
+    x = x.replace(pattern, "$1,$2");
+  return x;
+}
 
 function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
   let totalSellingPrice = 0
@@ -26,13 +34,17 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const netCommission = 1 - commission;
     let baseCANXPrice = effectiveRate * netDiscount / netCommission
     let canxSellPriceAdult = 0;
-    console.log("check travaller " + JSON.stringify(traveller));
-    if (traveller.treatAsAdult == false) {
+    //console.log("check travaller " + JSON.stringify(traveller));
+    //console.log("Traveller treat as Adult " + traveller.treatAsAdult + "== true");
+    //console.log("Child charge rate " + row.childChargeRate);
+    if (traveller.treatAsAdult != "true") {
+      //console.log("Check adult = Yes");
       canxSellPriceAdult = row.childChargeRate === 0 ? 0 : (row.childChargeRate !== 1 ? baseCANXPrice * row.childChargeRate : baseCANXPrice);
     } else {
+      //console.log("Check adult = NO");
       canxSellPriceAdult = baseCANXPrice;
     }
-    console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult);
+    //console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult);
     totalSellingPrice += canxSellPriceAdult;
   })
   const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults)
@@ -59,16 +71,16 @@ function calcCANXValue(workbook, row) {
 
   // Read the range A2:A20000
   const range = XLSX.utils.sheet_to_json(sheet, { header: 1, range: 'A2:A20000' });
-  console.log("value sheet lenght " + range.length);
+  //console.log("value sheet lenght " + range.length);
   for (let i = 0; i < range.length; i++) {
     const cellValue = range[i][0]; // A column values
-    console.log("cell value form simple file " + cellValue);
-    console.log("cell value form simple file" + cellValue + " ==== " + "$" + row.CANX);
+    //console.log("cell value form simple file " + cellValue);
+    //console.log("cell value form simple file" + cellValue + " ==== " + "$" + numberWithCommas(row.CANX));
     if (cellValue === undefined) {
-      console.log("cell value form simple file check");
+      //console.log("cell value form simple file check");
       break; // Exit if the cell is empty
-    } else if (cellValue === "$" + row.CANX) {
-      console.log("cell value form simple file check");
+    } else if (cellValue == "$" + numberWithCommas(row.CANX)) {
+      //console.log("cell value form simple file check");
       const CANX_VAL_ROW = i + 2; // Adjust for 0-based index
       if (row.numAdults >= 2) {
         return sheet[`C${CANX_VAL_ROW}`]?.v; // C column value
@@ -80,7 +92,7 @@ function calcCANXValue(workbook, row) {
 }
 
 function calcCANX(workbook, sheetName, row) {
-  console.log("\n Data comes from " + sheetName + "\n and " + JSON.stringify(row));
+  //console.log("\n Data comes from " + sheetName + "\n and " + JSON.stringify(row));
   const sheet = workbook.Sheets[sheetName];
   if (!sheet) {
     throw new Error(`Sheet "${sheetName}" not found.`);
@@ -111,7 +123,7 @@ function calcCANX(workbook, sheetName, row) {
 function calculateCFAR(simpleFileWorkbook, requestPayload, row) {
 
   const calculatedCANXPrice = calculateCANXPrice(simpleFileWorkbook, requestPayload, row);
-  console.log("cal CANX price " + JSON.stringify(calculatedCANXPrice));
+  //console.log("cal CANX price " + JSON.stringify(calculatedCANXPrice));
 
   // Check if the calculated price is valid
   if (!calculatedCANXPrice || !calculatedCANXPrice.price || typeof calculatedCANXPrice.price.gross !== 'number') {

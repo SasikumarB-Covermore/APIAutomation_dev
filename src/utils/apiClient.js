@@ -71,13 +71,13 @@ async function createQuote(request, payload) {
     //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
     // },
     //Test3 Header
-    headers: {
-      'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
-      'X-Timestamp': xTimeStamp,
-      'X-Signature': (await xSignature).toString(),
-      'Content-Type': 'application/json',
-      'X-Correlation-Id': 'TestGetQuoteCorrelationId'
-    },
+    // headers: {
+    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+    //   'X-Timestamp': xTimeStamp,
+    //   'X-Signature': (await xSignature).toString(),
+    //   'Content-Type': 'application/json',
+    //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
+    // },
     //Preprod Header
     // headers: {
     //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
@@ -86,6 +86,15 @@ async function createQuote(request, payload) {
     //   'Content-Type': 'application/json',
     //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
     // },
+    //NewStaging Header
+    headers: {
+      'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+      'X-Timestamp': xTimeStamp,
+      'X-Signature': (await xSignature).toString(),
+      'Content-Type': 'application/json',
+      'X-Correlation-Id': 'TestGetQuoteCorrelationId',
+      'X-ConsumerApp': 'atom'
+    },
     data: payload,
   });
   return reponse
@@ -102,13 +111,13 @@ async function createRefineQuote(request, payload) {
     //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
     // },
     //Test3 Header
-    headers: {
-      'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
-      'X-Timestamp': xTimeStamp,
-      'X-Signature': (await xSignature).toString(),
-      'Content-Type': 'application/json',
-      'X-Correlation-Id': 'TestGetQuoteCorrelationId'
-    },
+    // headers: {
+    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+    //   'X-Timestamp': xTimeStamp,
+    //   'X-Signature': (await xSignature).toString(),
+    //   'Content-Type': 'application/json',
+    //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
+    // },
     //Preprod Header
     // headers: {
     //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
@@ -117,6 +126,15 @@ async function createRefineQuote(request, payload) {
     //   'Content-Type': 'application/json',
     //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
     // },
+    //NewStaging Header
+    headers: {
+      'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+      'X-Timestamp': xTimeStamp,
+      'X-Signature': (await xSignature).toString(),
+      'Content-Type': 'application/json',
+      'X-Correlation-Id': 'TestGetQuoteCorrelationId',
+      'X-ConsumerApp': 'atom'
+    },
     data: payload,  // Send the defined payload
   });
   return reponse
@@ -133,13 +151,13 @@ async function createIssuePolicy(request, payload) {
     //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
     // },
     //Test3 Header
-    headers: {
-      'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
-      'X-Timestamp': xTimeStamp,
-      'X-Signature': (await xSignature).toString(),
-      'Content-Type': 'application/json',
-      'X-Correlation-Id': 'TestGetQuoteCorrelationId'
-    },
+    // headers: {
+    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+    //   'X-Timestamp': xTimeStamp,
+    //   'X-Signature': (await xSignature).toString(),
+    //   'Content-Type': 'application/json',
+    //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
+    // },
     //Preprod Header
     // headers: {
     //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
@@ -148,6 +166,15 @@ async function createIssuePolicy(request, payload) {
     //   'Content-Type': 'application/json',
     //   'X-Correlation-Id': 'TestGetQuoteCorrelationId'
     // },
+    //NewStaging Header
+    headers: {
+      'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+      'X-Timestamp': xTimeStamp,
+      'X-Signature': (await xSignature).toString(),
+      'Content-Type': 'application/json',
+      'X-Correlation-Id': 'TestGetQuoteCorrelationId',
+      'X-ConsumerApp': 'atom'
+    },
     data: payload,  // Send the defined payload
   });
   return reponse

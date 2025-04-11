@@ -207,7 +207,6 @@ test.describe('', async () => {
         }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
       });
 
-
     })
   })
 

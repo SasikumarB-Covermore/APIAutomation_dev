@@ -3,7 +3,7 @@ const XLSX = require('xlsx');
 
 function getSheet(workbook, cover) {
   const sheetName = `${cover.code}_SellPrice`;
-  console.log("Sheet name for thw add ons " + sheetName);
+  //console.log("Sheet name for thw add ons " + sheetName);
   const sheet = workbook.Sheets[sheetName];
   if (!sheet) {
     throw new Error(`Sheet "${sheetName}" not found.`);
@@ -25,10 +25,10 @@ function calculatePriceByValue(workbook, cover) {
   //console.log("Workbook sheet name " + JSON.stringify(sheet));
   const descriptionRange = XLSX.utils.sheet_to_json(sheet, { header: 1, range: "A2:A30" });
   let foundSellPrice = false;
-  console.log("descriptionRange length " + descriptionRange.length);
+  //console.log("descriptionRange length " + descriptionRange.length);
   for (let i = 0; i < descriptionRange.length; i++) {
     const descCell = descriptionRange[i][0]; // Get the value in the first column
-    console.log(" $$$ " + descCell + " === " + cover.options[0].description);
+    //console.log(" $$$ " + descCell + " === " + cover.options[0].description);
     if (descCell === undefined) {
       break; // Exit the loop if the cell is empty
     } else if (descCell === cover.options[0].description) {
@@ -40,7 +40,7 @@ function calculatePriceByValue(workbook, cover) {
         throw new Error(`The selling price for ${cover.code} with amount label ${cover.amountLabel} was not found.`);
       }
 
-      console.log(`The calculated ${cover.code}_SellPrice for ${cover.amountLabel} is ${sellPrice}`);
+      //console.log(`The calculated ${cover.code}_SellPrice for ${cover.amountLabel} is ${sellPrice}`);
       foundSellPrice = true; // Mark that the selling price was found
 
       return {
@@ -60,8 +60,8 @@ function calculatePriceByValue(workbook, cover) {
 //The traveller Level Add-ons 
 function calculatePriceByAgeband(workbook, priceCalcData, cover) {
   //console.log("Workbook " + JSON.stringify(workbook));
-  console.log("price cal data " + JSON.stringify(priceCalcData));
-  console.log("cover " + JSON.stringify(cover));
+  //console.log("price cal data " + JSON.stringify(priceCalcData));
+  //console.log("cover " + JSON.stringify(cover));
 
   const sheet = getSheet(workbook, cover)
   let foundSellPrice = false;
@@ -126,7 +126,7 @@ function calculateCRSPrice(workbook, row, cover) {
         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
 
-        console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
+        //console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
         if (!isNaN(sellingPrice)) {
           foundSellPrice = true
           return {
@@ -161,7 +161,7 @@ function calculateEMCPrice(workbook, row, cover) {
         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration, 3);
         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
 
-        console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
+        //console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
         if (!isNaN(sellingPrice)) {
           foundSellPrice = true
           return {

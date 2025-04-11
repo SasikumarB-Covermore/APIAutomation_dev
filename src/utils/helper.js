@@ -155,7 +155,7 @@ function extractAddOnsFromAPIResponse(row, responseBody) {
 function parseAPIResponse(row, responseBody) {
   const productCode = row.productCode;
   const excess = row.excess;
-  console.log(" checking responce body " + JSON.stringify(responseBody));
+  //console.log(" checking responce body " + JSON.stringify(responseBody));
   // Ensure the productCode and excess exist in the responseBody
   if (!responseBody.quoteSummary.products[0].productCode) {
     throw new Error(`Product Code ${productCode} not found in the response`);
@@ -1200,7 +1200,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
   }
   let travellers = [];
   let EMC;
-  console.log("EMC pressent in data sheet ? " + row.EMC + " Emc number " + responseBody.quoteSummary.travellers[0].emc.emcNumber);
+  //console.log("EMC pressent in data sheet ? " + row.EMC + " Emc number " + responseBody.quoteSummary.travellers[0].emc.emcNumber);
   if (row.EMC != 0) {
     EMC = {
       "emcNumber": responseBody.quoteSummary.travellers[0].emc.emcNumber,
