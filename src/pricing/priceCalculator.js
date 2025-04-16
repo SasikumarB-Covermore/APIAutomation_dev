@@ -55,14 +55,14 @@ export class PriceCalculator {
       // let calPrice = this.calculateBasePrice(traveller);
       // console.log("check indu travellers calPrice " + calPrice);
       // calculatedPrices["travellers"].push({ calPrice });
-      //console.log("Checking calculated price " + JSON.stringify(calculatedPrices));
+      console.log("Checking calculated price " + JSON.stringify(calculatedPrices));
       //console.log("Checking EMC " + JSON.stringify(this.emcValue) + " and Travellers is primary " + traveller.isPrimary);
       if (this.emcValue !== undefined && traveller.isPrimary == "true") {
         //console.log("thiss scenario have emc");
         const calcData = this.getCalculationData(traveller);
-        //console.log("Check calcdata " + JSON.stringify(calcData));
+        console.log("Check calcdata " + JSON.stringify(calcData));
         let emcprice = calculateEMCPrice(this.simpleFileWorkbook, calcData, { code: this.emcValue });
-        //console.log("Check EMC cal Price " + JSON.stringify(emcprice));
+        console.log("Check EMC cal Price " + JSON.stringify(emcprice));
         calculatedPrices["travellers"][index]["emcPrice"] = [];
         if (emcprice !== undefined) {
           //calculatedPrices["travellers"][travellers]["emcPrice"] = emcprice.price;
@@ -81,7 +81,7 @@ export class PriceCalculator {
           calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
           coverPrice = this.calculateCoverPrice(additionalCoverAddon, traveller);
           if (coverPrice !== undefined) {
-            //console.log("cover addons price " + JSON.stringify(coverPrice));
+            console.log("cover addons price " + JSON.stringify(coverPrice));
             calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
           }
 
@@ -93,7 +93,7 @@ export class PriceCalculator {
     if (enableAddOnPriceCalculation) {
       //console.log("thiss scenario have Policy addons");
       let coverPrice = this.calculatePolicyLevelCoverPrice();
-      //console.log("Policy level add on from calcualte policy level cover price " + JSON.stringify(coverPrice));
+      console.log("Policy level add on from calcualte policy level cover price " + JSON.stringify(coverPrice));
       if (coverPrice !== undefined) {
         calculatedPrices.additionalCoverAddons = coverPrice;
       }
@@ -160,27 +160,16 @@ export class PriceCalculator {
           this.requestPayload,
           this.row
         )
-      // case 'MTCL':
-      //   return calculateCANXPrice(
-      //     this.simpleFileWorkbook,
-      //     this.requestPayload,
-      //     this.row
-      //   )
-      // case 'WNTS':
-      //   return calculateCANXPrice(
-      //     this.simpleFileWorkbook,
-      //     this.requestPayload,
-      //     this.row
-      //   )
       //case 'LUGG':
       // case 'SNSPRTS3':
       // case 'CRS2':
       // case 'AGECBA':
       // case 'ADVACT2':
       //   return this.calculatePriceForAgeBand(cover, travellers);
-      // case 'CRS':
-      //   const calcData = this.getCalculationData(travellers);
-      //   return calculateCRSPrice(this.simpleFileWorkbook, calcData, cover);
+      case 'CRS':
+        const calcData = this.getCalculationData(travellers);
+        console
+        return calculateCRSPrice(this.simpleFileWorkbook, calcData, cover);
       // case 'CANXPC':
       //   return calculateCFAR(
       //     this.simpleFileWorkbook,
