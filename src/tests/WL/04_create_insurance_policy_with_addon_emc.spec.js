@@ -108,11 +108,11 @@ test.describe('', async () => {
       await test.step(`Scenario_1: Get Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to quote API for ${row.planCode}`, async () => {
           payload = createPayload(row, payLoadQuote, [], null);
-          console.log("Get Quote Request Body: \n" + JSON.stringify(payload) + "\n");
+          console.log("****** Get Quote Request Body: \n" + JSON.stringify(payload) + "\n");
           response = await createQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Get Quote Response Body: \n " + JSON.stringify(responseBody) + "\n");
+          console.log("****** Get Quote Response Body: \n " + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_1: Get Quote for ${row.planCode}`,
             payload,
@@ -128,7 +128,6 @@ test.describe('', async () => {
               expect(JSON.stringify(responseBody.quoteId), "QuoteID is returned").toBeDefined();
             }
             console.log("Then validating product details Success");
-
           }, currentTestDetails, currentTestDetails.testName, "Validate product details");
 
           await enhancedTestStep(test, "And validating benefits help text", async () => {
@@ -143,11 +142,11 @@ test.describe('', async () => {
       await test.step(`Scenario_2: Refine Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
           payload = createPayloadForRefineQuote(row, payLoadRefineQuote, [], null, responseBody);
-          console.log("Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
+          console.log("****** Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
           response = await createRefineQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          console.log("****** Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_2: Refine Quote for ${row.planCode}`,
             payload,
@@ -156,7 +155,7 @@ test.describe('', async () => {
           console.log("Sending POST request for refine quote API for Success");
         }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
 
-        //New function for price validation - 04/04/2025
+        // //New function for price validation - 04/04/2025
         // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
         //   const priceCalculator = new PriceCalculator(row, payload);
         //   const expectedPrices = priceCalculator.calculatePrice(true);
@@ -191,11 +190,11 @@ test.describe('', async () => {
           const addrPayLoad = generateAustralianAddress(row);
           const phonePayLoad = phoneNumbers();
           payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
-          console.log("Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
+          console.log("****** Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
           response = await createIssuePolicy(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          console.log("****** Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
             payload,

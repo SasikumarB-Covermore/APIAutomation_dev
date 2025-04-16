@@ -25,12 +25,12 @@ function calculatePriceByValue(workbook, cover) {
   const sheet = getSheet(workbook, cover);
   //console.log("Workbook sheet name " + JSON.stringify(sheet));
   const descriptionRange = XLSX.utils.sheet_to_json(sheet, { header: 1, range: "A2:A30" });
-  console.log("descriptionRange  " + descriptionRange);
+  //console.log("descriptionRange  " + descriptionRange);
   let foundSellPrice = false;
   //console.log("descriptionRange length " + descriptionRange.length);
   for (let i = 0; i < descriptionRange.length; i++) {
     const descCell = descriptionRange[i][0]; // Get the value in the first column
-    console.log(" $$$ " + descCell + " === " + cover.options[0].description);
+    // console.log(" $$$ " + descCell + " === " + cover.options[0].description);
     if (descCell === undefined) {
       break; // Exit the loop if the cell is empty
     } else if (descCell === cover.options[0].description) {
@@ -62,8 +62,8 @@ function calculatePriceByValue(workbook, cover) {
 //The traveller Level Add-ons 
 function calculatePriceByAgeband(workbook, priceCalcData, cover) {
   //console.log("Workbook " + JSON.stringify(workbook));
-  console.log("price cal data " + JSON.stringify(priceCalcData));
-  console.log("cover " + JSON.stringify(cover));
+  //console.log("price cal data " + JSON.stringify(priceCalcData));
+  //console.log("cover " + JSON.stringify(cover));
 
   const sheet = getSheet(workbook, cover)
   let foundSellPrice = false;
@@ -86,13 +86,13 @@ function calculatePriceByAgeband(workbook, priceCalcData, cover) {
       let isExcessMatch = (excessCell.v === priceCalcData.excess)
 
       if (isAgeMatch && isExcessMatch) {
-        console.log("2 if check ");
+        //console.log("2 if check ");
         let dateBucketCol = calculateDateBucket(sheet, priceCalcData.tripDuration);
 
         let sellingPriceCell = sheet[XLSX.utils.encode_cell({ c: XLSX.utils.decode_col(dateBucketCol), r: row })];
         let sellingPriceForAgeBracket = sellingPriceCell ? sellingPriceCell.v : 'N/A';
         let sellingPrice = Number(sellingPriceForAgeBracket);
-        console.info(`The calculated Selling price for ${cover.code}:`, sellingPrice)
+        //console.info(`The calculated Selling price for ${cover.code}:`, sellingPrice)
         if (!isNaN(sellingPrice)) {
           foundSellPrice = true;
           return {

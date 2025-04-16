@@ -34,7 +34,8 @@ export class PriceCalculator {
     return this.readWorkbook(filePath);
   }
 
-  getCalculationData(travellers) {
+  getCalculationData(travellers, text) {
+    console.log("Check travaler detail for " + text + " && " + JSON.stringify(travellers));
     const items = {
       area: this.row.area,
       excess: Number(this.row.excess),
@@ -55,14 +56,14 @@ export class PriceCalculator {
       // let calPrice = this.calculateBasePrice(traveller);
       // console.log("check indu travellers calPrice " + calPrice);
       // calculatedPrices["travellers"].push({ calPrice });
-      console.log("Checking calculated price " + JSON.stringify(calculatedPrices));
+      //console.log("Checking calculated price " + JSON.stringify(calculatedPrices));
       //console.log("Checking EMC " + JSON.stringify(this.emcValue) + " and Travellers is primary " + traveller.isPrimary);
       if (this.emcValue !== undefined && traveller.isPrimary == "true") {
         //console.log("thiss scenario have emc");
-        const calcData = this.getCalculationData(traveller);
-        console.log("Check calcdata " + JSON.stringify(calcData));
+        const calcData = this.getCalculationData(traveller, "EMC");
+        //console.log("Check calcdata " + JSON.stringify(calcData));
         let emcprice = calculateEMCPrice(this.simpleFileWorkbook, calcData, { code: this.emcValue });
-        console.log("Check EMC cal Price " + JSON.stringify(emcprice));
+        //console.log("Check EMC cal Price " + JSON.stringify(emcprice));
         calculatedPrices["travellers"][index]["emcPrice"] = [];
         if (emcprice !== undefined) {
           //calculatedPrices["travellers"][travellers]["emcPrice"] = emcprice.price;
@@ -81,7 +82,7 @@ export class PriceCalculator {
           calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
           coverPrice = this.calculateCoverPrice(additionalCoverAddon, traveller);
           if (coverPrice !== undefined) {
-            console.log("cover addons price " + JSON.stringify(coverPrice));
+            //console.log("cover addons price " + JSON.stringify(coverPrice));
             calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
           }
 
@@ -133,6 +134,7 @@ export class PriceCalculator {
 
   calculatePolicyLevelCoverPrice() {
     let additionalCovers = this.requestPayload.products[0].additionalCoverAddons;
+    let travellerAge = this.requestPayload.traveller.age;
     //console.log("Policy level addon on calcualte policy level cover price " + JSON.stringify(additionalCovers));
     if (additionalCovers) {
       let additionalCoverPrices = [];
@@ -167,8 +169,7 @@ export class PriceCalculator {
       // case 'ADVACT2':
       //   return this.calculatePriceForAgeBand(cover, travellers);
       case 'CRS':
-        const calcData = this.getCalculationData(travellers);
-        console
+        const calcData = this.getCalculationData(travellers, "CRS");
         return calculateCRSPrice(this.simpleFileWorkbook, calcData, cover);
       // case 'CANXPC':
       //   return calculateCFAR(
@@ -186,7 +187,7 @@ export class PriceCalculator {
   }
 
   calculatePriceForAgeBand(cover, travellers) {
-    const calcData = this.getCalculationData(travellers);
+    const calcData = this.getCalculationData(travellers, "AgeBand");
     //console.log("sample file detail " + JSON.stringify(this.simpleFileWorkbook));
     return calculatePriceByAgeband(this.simpleFileWorkbook, calcData, cover);
   }

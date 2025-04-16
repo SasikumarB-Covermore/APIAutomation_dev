@@ -77,7 +77,7 @@ test.describe("", async () => {
     }))
 
 
-    test(`Feature_${index + 1}: [${PARTNER_NAME}][${row.planName}] create a insurance policy with $${row.excess} excess amount`, async ({ request }, testInfo) => {
+    test(`Test_Scenario_${index + 1}: Create a policy for: ${sheetName}, PlanName - ${row.planName}_${row.tripType}, Duration - ${row.duration}, Country Code - ${row.destinationCountryCodes}, State - ${row.state}, Cancelation - ${row.CANX}, Lugg - ${row.LUGG}, MTCL - ${row.MTCL}, WNTS - ${row.WNTS}, CRS - ${row.CRS}, Product Code - ${row.productCode}, Plan Code - ${row.planCode}, ${row.excess} excess amount and EMC - ${row.EMC}`, async ({ request }, testInfo) => {
       // Initialize currentTestDetails for each test run
       currentTestDetails = {
         testName: `Feature_${index + 1}`,
@@ -94,12 +94,11 @@ test.describe("", async () => {
       await test.step(`Scenario_1: Get Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to quote API for ${row.planCode}`, async () => {
           payload = createPayload(row, payLoadQuote, [], null);
-          console.log("Get Quote Request Body: \n" + JSON.stringify(payload) + "\n");
-          console.log("Create quote Body for without addon " + JSON.stringify(payload));
+          console.log("****** Get Quote Request Body: \n" + JSON.stringify(payload) + "\n");
           response = await createQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Get Quote Response Body: \n " + JSON.stringify(responseBody) + "\n");
+          console.log("****** Get Quote Response Body: \n " + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_1: Get Quote for ${row.planCode}`,
             payload,
@@ -130,11 +129,11 @@ test.describe("", async () => {
       await test.step(`Scenario_2: Refine Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
           payload = createPayloadForRefineQuote(row, payLoadRefineQuote, [], null, responseBody);
-          console.log("Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
+          console.log("****** Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
           response = await createRefineQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          console.log("****** Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_2: Refine Quote for ${row.planCode}`,
             payload,
@@ -150,11 +149,11 @@ test.describe("", async () => {
           const addrPayLoad = generateAustralianAddress(row);
           const phonePayLoad = phoneNumbers();
           payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
-          console.log("Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
+          console.log("****** Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
           response = await createIssuePolicy(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          console.log("****** Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
             scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
             payload,
