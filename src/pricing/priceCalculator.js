@@ -50,7 +50,7 @@ export class PriceCalculator {
     var calculatedPrices = {};
     let coverPrice = {};
     calculatedPrices["travellers"] = [];
-    ///console.log("request payload from tes " + JSON.stringify(this.requestPayload));
+    console.log("request payload from tes " + JSON.stringify(this.requestPayload));
     this.requestPayload.travellers.forEach((traveller, index) => {
       calculatedPrices["travellers"][index] = this.calculateBasePrice(traveller);
       // let calPrice = this.calculateBasePrice(traveller);
@@ -81,6 +81,7 @@ export class PriceCalculator {
           //console.log("index check " + JSON.stringify(index) + " And Travalser " + JSON.stringify(additionalCoverAddon));
           calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
           coverPrice = this.calculateCoverPrice(additionalCoverAddon, traveller);
+          console.log("Cover Price Detail " + JSON.stringify(coverPrice));
           if (coverPrice !== undefined) {
             //console.log("cover addons price " + JSON.stringify(coverPrice));
             calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
@@ -132,21 +133,51 @@ export class PriceCalculator {
     //}
   }
 
+  // calculatePolicyLevelCoverPrice() {
+  //   let additionalCovers = this.requestPayload.products[0].additionalCoverAddons;
+  //   //let travellerAge = this.requestPayload.traveller.age;
+  //   console.log("Policy level addon on calcualte policy level cover price " + JSON.stringify(additionalCovers));
+  //   if (additionalCovers) {
+  //     let additionalCoverPrices = [];
+  //     additionalCovers.forEach(cover => {
+  //       let priceObj = this.calculateCoverPrice(cover);
+  //       if (priceObj !== undefined) {
+  //         additionalCoverPrices.push(priceObj);
+  //       }
+  //     });
+  //     return additionalCoverPrices;
+  //   }
+  // }
+  //new fuction 16/04/2024 for policy cover addons
   calculatePolicyLevelCoverPrice() {
     let additionalCovers = this.requestPayload.products[0].additionalCoverAddons;
-    let travellerAge = this.requestPayload.traveller.age;
-    //console.log("Policy level addon on calcualte policy level cover price " + JSON.stringify(additionalCovers));
-    if (additionalCovers) {
-      let additionalCoverPrices = [];
-      additionalCovers.forEach(cover => {
+    //let travellerAge = this.requestPayload.traveller.age;
+    console.log("Policy level addon on calcualte policy level cover price " + JSON.stringify(additionalCovers));
+
+    let additionalCoverPrices = [];
+    additionalCovers.forEach(cover => {
+      console.log("additional cover code " + JSON.stringify(cover.code));
+      let travellerAge = {};
+      if (cover.code == "CRS") {
+        this.requestPayload.travellers.forEach((traveller, index) => {
+          travellerAge += traveller.age;
+        });
+        console.log("Traveller Age " + JSON.stringify(travellerAge));
+        console.log("cover " + JSON.stringify(cover));
         let priceObj = this.calculateCoverPrice(cover);
         if (priceObj !== undefined) {
           additionalCoverPrices.push(priceObj);
         }
-      });
-      return additionalCoverPrices;
-    }
+      } else {
+        let priceObj = this.calculateCoverPrice(cover);
+        if (priceObj !== undefined) {
+          additionalCoverPrices.push(priceObj);
+        }
+      }
+    });
+    return additionalCoverPrices;
   }
+
 
   calculateCoverPrice(cover, travellers = '') {
     const additionalCoverageCodes = ['LUGG', 'MTCL', 'WNTS'];

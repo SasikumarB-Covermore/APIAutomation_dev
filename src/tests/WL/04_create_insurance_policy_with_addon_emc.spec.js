@@ -156,32 +156,32 @@ test.describe('', async () => {
         }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
 
         // //New function for price validation - 04/04/2025
-        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
-        //   const priceCalculator = new PriceCalculator(row, payload);
-        //   const expectedPrices = priceCalculator.calculatePrice(true);
-        //   console.log("expected prices in test " + JSON.stringify(expectedPrices));
-        //   const apiResponse = parseAPIResponse(row, responseBody);
+        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+          const priceCalculator = new PriceCalculator(row, payload);
+          const expectedPrices = priceCalculator.calculatePrice(true);
+          console.log("expected prices in test " + JSON.stringify(expectedPrices));
+          const apiResponse = parseAPIResponse(row, responseBody);
 
-        //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
-        //   await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
-        //     priceValidator.validateTotalGrossPremium();
-        //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+          await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+            priceValidator.validateTotalGrossPremium();
+          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
 
-        //   // await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
-        //   //   priceValidator.validateBasePrice();
-        //   // }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+          // await enhancedTestStep(test, `Then validate the traveller's base price with API response`, async () => {
+          //   priceValidator.validateBasePrice();
+          // }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
 
-        //   // if (travelAddOns.length != 0) {
-        //   //   await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
-        //   //     priceValidator.validateTravellerAddOns();
-        //   //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
-        //   // }
-        //   // if (policyAddOns.length != 0) {
-        //   //   await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
-        //   //     priceValidator.validatedAdditionalCoverage();
-        //   //   }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
-        //   // }
-        // });
+          // if (travelAddOns.length != 0) {
+          //   await enhancedTestStep(test, `Then Validate traveller Level additional cover's price with API response`, async () => {
+          //     priceValidator.validateTravellerAddOns();
+          //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller level Add-Ons price");
+          // }
+          // if (policyAddOns.length != 0) {
+          //   await enhancedTestStep(test, `Then Validate Policy Level additional cover's price with API response`, async () => {
+          //     priceValidator.validatedAdditionalCoverage();
+          //   }, currentTestDetails, currentTestDetails.testName, "Validate Policy level Add-Ons price");
+          // }
+        });
       });
 
       // Scenario 3: Issue Policy
