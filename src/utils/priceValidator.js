@@ -198,7 +198,11 @@ export class PriceValidator {
         totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
         //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
         //expect(totalGrossPremiumFromActual === totalGrossPremiumFromExpected).toBeTruthy();
-        expect(Math.trunc(totalGrossPremiumFromActual)).toBe(totalGrossPremiumFromExpected);
-        console.log("Total Gross Premium expected " + totalGrossPremiumFromExpected + ", got " + Math.trunc(totalGrossPremiumFromActual));
+        expect(Math.trunc(totalGrossPremiumFromActual) === totalGrossPremiumFromExpected, this.createValidationMessage(totalGrossPremiumFromExpected, Math.trunc(totalGrossPremiumFromActual))).toBeTruthy();
+        //expect(Math.trunc(totalGrossPremiumFromActual)).toBe(totalGrossPremiumFromExpected);
+        //console.log("Total Gross Premium expected " + totalGrossPremiumFromExpected + ", got " + Math.trunc(totalGrossPremiumFromActual));
     }
+    createValidationMessage = (expected, actual) => {
+        return `Total Gross Premium expected ${expected}, got ${actual}.`;
+    };
 }
