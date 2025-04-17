@@ -35,7 +35,7 @@ export class PriceCalculator {
   }
 
   getCalculationData(travellers, text) {
-    console.log("Check travaler detail for " + text + " && " + JSON.stringify(travellers));
+    //console.log("Check travaler detail for " + text + " && " + JSON.stringify(travellers));
     const items = {
       area: this.row.area,
       excess: Number(this.row.excess),
@@ -50,7 +50,7 @@ export class PriceCalculator {
     var calculatedPrices = {};
     let coverPrice = {};
     calculatedPrices["travellers"] = [];
-    console.log("request payload from tes " + JSON.stringify(this.requestPayload));
+    //console.log("request payload from tes " + JSON.stringify(this.requestPayload));
     this.requestPayload.travellers.forEach((traveller, index) => {
       calculatedPrices["travellers"][index] = this.calculateBasePrice(traveller);
       // let calPrice = this.calculateBasePrice(traveller);
@@ -81,7 +81,7 @@ export class PriceCalculator {
           //console.log("index check " + JSON.stringify(index) + " And Travalser " + JSON.stringify(additionalCoverAddon));
           calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
           coverPrice = this.calculateCoverPrice(additionalCoverAddon, traveller);
-          console.log("Cover Price Detail " + JSON.stringify(coverPrice));
+          //console.log("Cover Price Detail " + JSON.stringify(coverPrice));
           if (coverPrice !== undefined) {
             //console.log("cover addons price " + JSON.stringify(coverPrice));
             calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
@@ -95,7 +95,7 @@ export class PriceCalculator {
     if (enableAddOnPriceCalculation) {
       //console.log("thiss scenario have Policy addons");
       let coverPrice = this.calculatePolicyLevelCoverPrice();
-      console.log("Policy level add on from calcualte policy level cover price " + JSON.stringify(coverPrice));
+      //console.log("Policy level add on from calcualte policy level cover price " + JSON.stringify(coverPrice));
       if (coverPrice !== undefined) {
         calculatedPrices.additionalCoverAddons = coverPrice;
       }
@@ -152,22 +152,25 @@ export class PriceCalculator {
   calculatePolicyLevelCoverPrice() {
     let additionalCovers = this.requestPayload.products[0].additionalCoverAddons;
     //let travellerAge = this.requestPayload.traveller.age;
-    console.log("Policy level addon on calcualte policy level cover price " + JSON.stringify(additionalCovers));
+    //console.log("Policy level addon on calcualte policy level cover price " + JSON.stringify(additionalCovers));
 
     let additionalCoverPrices = [];
     additionalCovers.forEach(cover => {
-      console.log("additional cover code " + JSON.stringify(cover.code));
-      let travellerAge = {};
+      //console.log("additional cover code " + JSON.stringify(cover.code));
+      let travellerAge = [];
       if (cover.code == "CRS") {
+        //let i = 0;
         this.requestPayload.travellers.forEach((traveller, index) => {
-          travellerAge += traveller.age;
+          //travellerAge.push(traveller.age);
+          //i = i + 1;
+          let priceObj = this.calculateCoverPrice(cover, traveller);
+          if (priceObj !== undefined) {
+            additionalCoverPrices.push(priceObj);
+          }
         });
-        console.log("Traveller Age " + JSON.stringify(travellerAge));
-        console.log("cover " + JSON.stringify(cover));
-        let priceObj = this.calculateCoverPrice(cover);
-        if (priceObj !== undefined) {
-          additionalCoverPrices.push(priceObj);
-        }
+        //console.log("Traveller Age " + JSON.stringify(travellerAge));
+        //console.log("cover " + JSON.stringify(cover));
+
       } else {
         let priceObj = this.calculateCoverPrice(cover);
         if (priceObj !== undefined) {

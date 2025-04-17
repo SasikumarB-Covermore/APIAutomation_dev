@@ -111,8 +111,8 @@ function calculatePriceByAgeband(workbook, priceCalcData, cover) {
 }
 
 function calculateCRSPrice(workbook, row, cover) {
-  console.log("Row " + JSON.stringify(row));
-  console.log("cover " + JSON.stringify(cover));
+  //console.log("Row " + JSON.stringify(row));
+  //console.log("cover " + JSON.stringify(cover));
   const sheet = getSheet(workbook, cover);
   //console.log("Sheet " + JSON.stringify(sheet));
   let foundSellPrice = false;
@@ -141,10 +141,11 @@ function calculateCRSPrice(workbook, row, cover) {
         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
 
-        console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
+        //console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
         if (!isNaN(sellingPrice)) {
           foundSellPrice = true
           return {
+            age: row.age,
             code: cover.code,
             price: createPrice(sellingPrice)
           }

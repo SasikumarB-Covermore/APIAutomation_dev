@@ -181,6 +181,19 @@ export class PriceValidator {
         });
         //policy cover add to array
         expectedPrice.push(expectedPriceData.additionalCoverAddons[0].price.gross);
+        //CRS price add to array
+        expectedPriceData.additionalCoverAddons.forEach(additionalCover => {
+            let crsByAge;
+            if (additionalCover.code == "CRS") {
+                if (additionalCover.age <= 15) {
+                    crsByAge = additionalCover.price.gross * this.childChargeRateValue;
+
+                } else {
+                    crsByAge = additionalCover.price.gross
+                }
+                expectedPrice.push(crsByAge);
+            }
+        });
         //console.log("expected base price for travallers " + expectedPrice);
         totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
         //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
