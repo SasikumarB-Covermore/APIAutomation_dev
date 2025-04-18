@@ -168,19 +168,45 @@ export class PriceValidator {
         expectedPriceData.travellers.forEach(traveller => {
             //base price add to array
             if (traveller.age > 15) {
+                console.log("Check travaler age " + traveller.age + " and base price " + traveller.price.gross);
                 expectedPrice.push(traveller.price.gross);
             }
             //EMC price add to array
             if (traveller.emcPrice) {
+                console.log("Check travaler EMC " + traveller.emcPrice + " and EMC price " + traveller.emcPrice[0].gross);
                 expectedPrice.push(traveller.emcPrice[0].gross);
             }
             //Cover price add to array
             if (traveller.additionalCoverAddons) {
+                console.log("Check travaler Cover " + traveller.additionalCoverAddons + " and cover price " + traveller.additionalCoverAddons[0].price.gross);
                 expectedPrice.push(traveller.additionalCoverAddons[0].price.gross);
             }
         });
+
+        expectedPriceData.additionalCoverAddons.forEach(additionalCover => {
+            //Cover price add to array
+            let wntsByAge;
+            if (additionalCover.code == "WNTS") {
+                console.log("WNTS Cover Price ");
+                if (additionalCover.age <= 15) {
+                    wntsByAge = additionalCover.price.gross * this.childChargeRateValue;
+
+                } else {
+                    console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
+                    wntsByAge = additionalCover.price.gross
+                }
+                expectedPrice.push(wntsByAge);
+            } else if (additionalCover.code == "CANX") {
+                console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
+                expectedPrice.push(additionalCover.price.gross);
+            } else if (additionalCover.code == "MTCL") {
+                console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
+                expectedPrice.push(additionalCover.price.gross);
+            }
+        });
+
         //policy cover add to array
-        expectedPrice.push(expectedPriceData.additionalCoverAddons[0].price.gross);
+        //expectedPrice.push(expectedPriceData.additionalCoverAddons[0].price.gross);
         //CRS price add to array
         expectedPriceData.additionalCoverAddons.forEach(additionalCover => {
             let crsByAge;
@@ -194,7 +220,7 @@ export class PriceValidator {
                 expectedPrice.push(crsByAge);
             }
         });
-        //console.log("expected base price for travallers " + expectedPrice);
+        console.log("expected base price for travallers " + expectedPrice);
         totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
         //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
         //expect(totalGrossPremiumFromActual === totalGrossPremiumFromExpected).toBeTruthy();

@@ -30,7 +30,7 @@ function calculatePriceByValue(workbook, cover) {
   //console.log("descriptionRange length " + descriptionRange.length);
   for (let i = 0; i < descriptionRange.length; i++) {
     const descCell = descriptionRange[i][0]; // Get the value in the first column
-    // console.log(" $$$ " + descCell + " === " + cover.options[0].description);
+    //console.log(" $$$ " + descCell + " === " + cover.options[0].description);
     if (descCell === undefined) {
       break; // Exit the loop if the cell is empty
     } else if (descCell === cover.options[0].description) {
@@ -135,8 +135,58 @@ function calculateCRSPrice(workbook, row, cover) {
       let isAgeMatch = isAgeInRange(row.age, ageBandValue)
       let isExcessMatch = (excessValue === Number(row.excess))
       const yesValue = sheet[`E${areaRowNum}`]?.v;
-
+      //console.log("Age Mached " + isAgeMatch + " and Excess Match " + isExcessMatch + " and yes Value " + yesValue);
       if (isAgeMatch && isExcessMatch && yesValue === 'Yes') {
+
+        let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
+        let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
+
+        //console.info(`The calculated selling price for ${cover.code}:`, sellingPrice)
+        if (!isNaN(sellingPrice)) {
+          foundSellPrice = true
+          return {
+            age: row.age,
+            code: cover.code,
+            price: createPrice(sellingPrice)
+          }
+        } else {
+          throw new Error(`The selling price ${cover.code} has not been found in the simple files`);
+        }
+      }
+    }
+  }
+  if (!foundSellPrice) {
+    throw new Error(`The selling price for ${cover.code} was not found.`);
+  }
+}
+
+function calculateWNTSPrice(workbook, row, cover) {
+  //console.log("Row " + JSON.stringify(row));
+  //console.log("cover " + JSON.stringify(cover));
+  const sheet = getSheet(workbook, cover);
+  //console.log("Sheet " + JSON.stringify(sheet));
+  let foundSellPrice = false;
+  const rngArea = XLSX.utils.sheet_to_json(sheet, { range: 'A2:A20000', header: 1 });
+  //console.log("area cell value " + JSON.stringify(rngArea));
+  for (let rowIndex = 0; rowIndex < rngArea.length; rowIndex++) {
+    const areaCellValue = rngArea[rowIndex][0]; // Column A value
+    // if (typeof areaCellValue !== 'undefined' && areaCellValue.length > 0) {
+    //   console.log("area cell value " + JSON.stringify(areaCellValue));
+    //   console.log("area cell value " + areaCellValue.replace(/"/g, '') + " === " + row.area);
+    // }
+
+    if (typeof areaCellValue !== 'undefined' && areaCellValue.length > 0 && areaCellValue.replace(/"/g, '') === row.area) {
+      //console.log("area cell value " + areaCellValue.replace(/"/g, '') + " === " + row.area);
+      const areaRowNum = rowIndex + 2; // Adjusting for 0-index and header
+
+      const ageBandValue = sheet[`C${areaRowNum}`]?.v;
+      const excessValue = sheet[`D${areaRowNum}`]?.v;
+
+      let isAgeMatch = isAgeInRange(row.age, ageBandValue)
+      let isExcessMatch = (excessValue === Number(row.excess))
+      //const yesValue = sheet[`E${areaRowNum}`]?.v;
+      //console.log("Age Mached " + isAgeMatch + " and Excess Match " + isExcessMatch);
+      if (isAgeMatch && isExcessMatch) {
 
         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
@@ -225,6 +275,7 @@ module.exports = {
   calculatePriceByValue,
   calculatePriceByAgeband,
   calculateCRSPrice,
+  calculateWNTSPrice,
   isAgeInRange,
   calculateDateBucket,
   calculateEMCPrice

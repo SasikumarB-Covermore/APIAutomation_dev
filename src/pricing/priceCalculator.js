@@ -7,6 +7,7 @@ const {
   calculatePriceByValue,
   calculatePriceByAgeband,
   calculateCRSPrice,
+  calculateWNTSPrice,
   calculateEMCPrice
 } = require('./calculations/sharedFunctions');
 
@@ -50,7 +51,7 @@ export class PriceCalculator {
     var calculatedPrices = {};
     let coverPrice = {};
     calculatedPrices["travellers"] = [];
-    //console.log("request payload from tes " + JSON.stringify(this.requestPayload));
+    console.log("request payload from tes " + JSON.stringify(this.requestPayload));
     this.requestPayload.travellers.forEach((traveller, index) => {
       calculatedPrices["travellers"][index] = this.calculateBasePrice(traveller);
       // let calPrice = this.calculateBasePrice(traveller);
@@ -76,19 +77,21 @@ export class PriceCalculator {
         //console.log("thiss scenario have Travaler addons");
         //console.log("## Travaler detail " + JSON.stringify(traveller));
         //console.log("## cover detail " + JSON.stringify(cover));
+        console.log("Check traveller cover add on lenght " + Array.isArray(traveller.additionalCoverAddons));
+        if (Array.isArray(traveller.additionalCoverAddons)) {
+          traveller.additionalCoverAddons.forEach((additionalCoverAddon, coverIndex) => {
+            //console.log("index check " + JSON.stringify(index) + " And Travalser " + JSON.stringify(additionalCoverAddon));
+            calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
+            coverPrice = this.calculateCoverPrice(additionalCoverAddon, traveller);
+            //console.log("Cover Price Detail " + JSON.stringify(coverPrice));
+            if (coverPrice !== undefined) {
+              //console.log("cover addons price " + JSON.stringify(coverPrice));
+              calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
+            }
 
-        traveller.additionalCoverAddons.forEach((additionalCoverAddon, coverIndex) => {
-          //console.log("index check " + JSON.stringify(index) + " And Travalser " + JSON.stringify(additionalCoverAddon));
-          calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
-          coverPrice = this.calculateCoverPrice(additionalCoverAddon, traveller);
-          //console.log("Cover Price Detail " + JSON.stringify(coverPrice));
-          if (coverPrice !== undefined) {
-            //console.log("cover addons price " + JSON.stringify(coverPrice));
-            calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
-          }
-
-          //console.log(`Additional covers price of ${index}:`,calculatedPrices["travellers"][coverIndex]['additionalCoverAddons']);
-        });
+            //console.log(`Additional covers price of ${index}:`,calculatedPrices["travellers"][coverIndex]['additionalCoverAddons']);
+          });
+        }
 
       }
     });
@@ -157,7 +160,6 @@ export class PriceCalculator {
     let additionalCoverPrices = [];
     additionalCovers.forEach(cover => {
       //console.log("additional cover code " + JSON.stringify(cover.code));
-      let travellerAge = [];
       if (cover.code == "CRS") {
         //let i = 0;
         this.requestPayload.travellers.forEach((traveller, index) => {
@@ -171,6 +173,15 @@ export class PriceCalculator {
         //console.log("Traveller Age " + JSON.stringify(travellerAge));
         //console.log("cover " + JSON.stringify(cover));
 
+      } else if (cover.code == "WNTS") {
+        this.requestPayload.travellers.forEach((traveller, index) => {
+          //travellerAge.push(traveller.age);
+          //i = i + 1;
+          let priceObj = this.calculateCoverPrice(cover, traveller);
+          if (priceObj !== undefined) {
+            additionalCoverPrices.push(priceObj);
+          }
+        });
       } else {
         let priceObj = this.calculateCoverPrice(cover);
         if (priceObj !== undefined) {
@@ -183,7 +194,7 @@ export class PriceCalculator {
 
 
   calculateCoverPrice(cover, travellers = '') {
-    const additionalCoverageCodes = ['LUGG', 'MTCL', 'WNTS'];
+    const additionalCoverageCodes = ['LUGG', 'MTCL'];
     //console.log("cover code " + cover.code);
     if (additionalCoverageCodes.includes(cover.code)) {
       return calculatePriceByValue(this.simpleFileWorkbook, cover);
@@ -203,8 +214,11 @@ export class PriceCalculator {
       // case 'ADVACT2':
       //   return this.calculatePriceForAgeBand(cover, travellers);
       case 'CRS':
-        const calcData = this.getCalculationData(travellers, "CRS");
-        return calculateCRSPrice(this.simpleFileWorkbook, calcData, cover);
+        const calcDataCRS = this.getCalculationData(travellers, "CRS");
+        return calculateCRSPrice(this.simpleFileWorkbook, calcDataCRS, cover);
+      case 'WNTS':
+        const calcDataWNTS = this.getCalculationData(travellers, "WNTS");
+        return calculateWNTSPrice(this.simpleFileWorkbook, calcDataWNTS, cover);
       // case 'CANXPC':
       //   return calculateCFAR(
       //     this.simpleFileWorkbook,

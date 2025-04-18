@@ -136,6 +136,18 @@ test.describe('', async () => {
             console.log("validating benefits help text Success");
           }, currentTestDetails, currentTestDetails.testName, "Validate benefits help text.");
         });
+
+        //New function for price validation - 04/04/2025
+        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+        //   const priceCalculator = new PriceCalculator(row, payload);
+        //   const expectedPrices = priceCalculator.calculatePrice(true);
+        //   console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+        //   const apiResponse = parseAPIResponse(row, responseBody);
+        //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+        //   // await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+        //   //   priceValidator.validateTotalGrossPremium();
+        //   // }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+        // });
       });
 
       // Scenario 2: Refine Quote
@@ -159,6 +171,7 @@ test.describe('', async () => {
         // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
         //   const priceCalculator = new PriceCalculator(row, payload);
         //   const expectedPrices = priceCalculator.calculatePrice(true);
+        //   console.log("expected calculated Price " + JSON.stringify(expectedPrices));
         //   const apiResponse = parseAPIResponse(row, responseBody);
         //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
         //   await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
