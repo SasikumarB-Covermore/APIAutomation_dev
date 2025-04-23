@@ -20,6 +20,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const discount = calcCANX(simpleFileWorkbook, 'CANX_Discount', row);
     const commission = calcCANX(simpleFileWorkbook, 'CANX_Commission', row);
     const value = calcCANXValue(simpleFileWorkbook, row);
+    //console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
     if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
       console.log("Traveller Age", traveller.age)
       console.log("rate:", rate);
@@ -32,19 +33,22 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const effectiveRate = rate * value;
     const netDiscount = 1 - discount;
     const netCommission = 1 - commission;
-    let baseCANXPrice = effectiveRate * netDiscount / netCommission
+    let baseCANXPrice = effectiveRate * netDiscount / netCommission;
+    //console.log("effectiveRate " + rate * value + " and netDiscount " + 1 - discount + " and netCommission " + 1 - commission);
+    //console.log("base CANX price " + baseCANXPrice);
     let canxSellPriceAdult = 0;
     //console.log("check travaller " + JSON.stringify(traveller));
     //console.log("Traveller treat as Adult " + traveller.treatAsAdult + "== true");
-    //console.log("Child charge rate " + row.childChargeRate);
+    //console.log("CANXrate " + (row.childChargeRate !== 1 ? baseCANXPrice * row.childChargeRate : baseCANXPrice));
     if (traveller.treatAsAdult != "true") {
-      //console.log("Check adult = Yes");
+      //console.log("Check adult = Yes" + traveller.treatAsAdult);
       canxSellPriceAdult = row.childChargeRate === 0 ? 0 : (row.childChargeRate !== 1 ? baseCANXPrice * row.childChargeRate : baseCANXPrice);
+      //console.log("Check adult = Yes" + canxSellPriceAdult);
     } else {
       //console.log("Check adult = NO");
       canxSellPriceAdult = baseCANXPrice;
     }
-    //console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult);
+    //console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult, ` and total Selling Price `, totalSellingPrice);
     totalSellingPrice += canxSellPriceAdult;
   })
   const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults)

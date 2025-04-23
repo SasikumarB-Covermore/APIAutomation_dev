@@ -533,7 +533,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
           ];
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
-        if (row.WNTS == "WNTS") {
+        if (row.WNTS == "Yes") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           let code = "WNTS";
@@ -1045,7 +1045,7 @@ function createPayloadForIssuePolicy(row, payLoadRefineQuote, addrPayLoad, phone
           additionalCoverAddons.push({ code, applyAtLevel, name, helpText, options, addOnDuration });
         }
         //console.log(row.WNTS + " == WNTS");
-        if (row.WNTS == "WNTS") {
+        if (row.WNTS == "Yes") {
           //console.log("!!!! Plan name is " + responseBody.quoteSummary.products[i].name + " and addon is " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           //console.log("^^^^ " + row.WNTS + " == " + responseBody.quoteSummary.products[i].availableCoverAddons[l].code);
           let code = "WNTS";
