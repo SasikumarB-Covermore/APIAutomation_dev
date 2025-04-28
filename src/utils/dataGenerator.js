@@ -89,7 +89,7 @@ function generateCommonIssuePolicyData(identifier, row) {
     const age = isAgeOver80
         ? faker.number.int({ min: 81, max: 99 })  // If AGECBA is "yes", age > 80
         : (isAdult
-            ? faker.number.int({ min: 36, max: 50 }) // Default adult age
+            ? faker.number.int({ min: 36, max: 99 }) // Default adult age
             : faker.number.int({ min: 2, max: 15 })); // Default child age
 
 

@@ -15,6 +15,7 @@ const { generateTravelDataNTimes,
   generateIssuePolicyTravelDataNTimes,
   flattenObject,
   createPayload,
+  parseAPIResponse,
   createPayloadForRefineQuote,
   createPayloadForIssuePolicy,
   validateResponseStatus
@@ -23,8 +24,8 @@ const { savePolicyNumber } = require('../../utils/fileReader.js')
 const { generateAustralianAddress, phoneNumbers } = require("../../utils/dataGenerator.js");
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
 // const { getEMCScore, generateEmcConditions, createSaveEmcPayload } = require('../../utils/emcUtils.js')
-// import { PriceCalculator } from '../../pricing/priceCalculator.js';
-// import { PriceValidator } from '../../utils/priceValidator.js';
+import { PriceCalculator } from '../../pricing/priceCalculator.js';
+import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
 const { createQuote, createRefineQuote, createIssuePolicy } = require("../../utils/apiClient.js");
 const filePath = getDataFilePath()
@@ -158,6 +159,18 @@ test.describe("", async () => {
           });
           console.log("Sending POST request for refine quote API for Success");
         }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
+
+        //function for price validation
+        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+          const priceCalculator = new PriceCalculator(row, payload);
+          const expectedPrices = priceCalculator.calculatePrice(true);
+          console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+          const apiResponse = parseAPIResponse(row, responseBody);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+          await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+            priceValidator.validateTotalGrossPremium();
+          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+        });
       });
 
       // Scenario 3: Issue Policy

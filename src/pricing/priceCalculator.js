@@ -149,7 +149,7 @@ export class PriceCalculator {
           if (cover.code == "CANX") {
             //calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
             coverPrice = this.calculateCoverPriceForGetQuote(cover, traveller);
-            console.log("Cover Price Detail " + JSON.stringify(coverPrice));
+            //console.log("Cover Price Detail " + JSON.stringify(coverPrice));
             // if (coverPrice !== undefined) {
             //   //console.log("cover addons price " + JSON.stringify(coverPrice));
             //   calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
@@ -160,7 +160,7 @@ export class PriceCalculator {
 
     });
     //products["travellers"].push(travellers);
-    console.log("calculated Base price for traveller " + JSON.stringify(calculatedPrices));
+    //console.log("calculated Base price for traveller " + JSON.stringify(calculatedPrices));
 
   }
 
@@ -252,7 +252,7 @@ export class PriceCalculator {
 
   calculateCoverPrice(cover, travellers = '') {
     const additionalCoverageCodes = ['LUGG', 'MTCL'];
-    console.log("cover code " + cover.code);
+    //console.log("cover code " + cover.code);
     if (additionalCoverageCodes.includes(cover.code)) {
       return calculatePriceByValue(this.simpleFileWorkbook, cover);
     }
@@ -293,7 +293,7 @@ export class PriceCalculator {
 
   calculateCoverPriceForGetQuote(cover, travellers = '') {
     const additionalCoverageCodes = ['LUGG', 'MTCL'];
-    console.log("cover code " + cover.code);
+    //console.log("cover code " + cover.code);
     if (additionalCoverageCodes.includes(cover.code)) {
       return calculatePriceByValue(this.simpleFileWorkbook, cover);
     }

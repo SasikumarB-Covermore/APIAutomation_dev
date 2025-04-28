@@ -20,7 +20,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const discount = calcCANX(simpleFileWorkbook, 'CANX_Discount', row);
     const commission = calcCANX(simpleFileWorkbook, 'CANX_Commission', row);
     const value = calcCANXValue(simpleFileWorkbook, row);
-    console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
+    //console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
     if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
       console.log("Traveller Age", traveller.age)
       console.log("rate:", rate);
@@ -102,11 +102,11 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
           //console.log("Check adult = NO");
           canxSellPriceAdult = baseCANXPrice;
         }
-        console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult, ` and total Selling Price `, totalSellingPrice);
+        //console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult, ` and total Selling Price `, totalSellingPrice);
         totalSellingPrice += canxSellPriceAdult;
       });
       const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults);
-      console.log("Canx sellprice " + JSON.stringify(canxSellPrice));
+      //console.log("Canx sellprice " + JSON.stringify(canxSellPrice));
       return {
         code: 'CANX',
         price: { gross: canxSellPrice, displayPrice: canxSellPrice, isDiscount: false }
