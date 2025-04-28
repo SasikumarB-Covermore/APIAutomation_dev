@@ -143,8 +143,6 @@ test.describe("", async () => {
         }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
       });
 
-      await setTimeout(() => { console.log(''); }, 5000);
-
       // Scenario 3: Issue Policy
       await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {

@@ -20,7 +20,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const discount = calcCANX(simpleFileWorkbook, 'CANX_Discount', row);
     const commission = calcCANX(simpleFileWorkbook, 'CANX_Commission', row);
     const value = calcCANXValue(simpleFileWorkbook, row);
-    //console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
+    console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
     if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
       console.log("Traveller Age", traveller.age)
       console.log("rate:", rate);
@@ -50,12 +50,69 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     }
     //console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult, ` and total Selling Price `, totalSellingPrice);
     totalSellingPrice += canxSellPriceAdult;
-  })
-  const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults)
+  });
+  //console.log("total sellprice = " + totalSellingPrice + " and number of adult = " + row.numAdults);
+  const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults);
+  //console.log("Canx sellprice " + JSON.stringify(canxSellPrice));
   return {
     code: 'CANX',
     price: { gross: canxSellPrice, displayPrice: canxSellPrice, isDiscount: false }
   }
+}
+
+function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
+
+  //console.log("get quote response detail " + JSON.stringify(requestPayload));
+  response.quoteSummary.products.forEach(product => {
+    product.premiumMatrix.forEach(matrix => {
+      let totalSellingPrice = 0
+      response.quoteSummary.travellers.forEach((traveller, i) => {
+        row.age = traveller.age
+        const foundCover = response.quoteSummary.products?.additionalCovers?.find(cover => cover.code === 'CANX');
+        row.CANXAmount = foundCover?.amountLabel
+        const rate = calcCANXForGetQuote(simpleFileWorkbook, 'CANX_Rates', row, matrix.excess);
+        const discount = calcCANXForGetQuote(simpleFileWorkbook, 'CANX_Discount', row, matrix.excess);
+        const commission = calcCANXForGetQuote(simpleFileWorkbook, 'CANX_Commission', row, matrix.excess);
+        const value = calcCANXValue(simpleFileWorkbook, row);
+        //console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
+        if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
+          console.log("Traveller Age", traveller.age)
+          console.log("rate:", rate);
+          console.log("discount:", discount);
+          console.log("commission:", commission);
+          console.log("CANX_value:", value);
+          throw new Error('One or more values are null or undefined');
+        }
+        //A3*B3*(1-D3)/(1-C3)
+        const effectiveRate = rate * value;
+        const netDiscount = 1 - discount;
+        const netCommission = 1 - commission;
+        let baseCANXPrice = effectiveRate * netDiscount / netCommission;
+        //console.log("effectiveRate " + rate * value + " and netDiscount " + 1 - discount + " and netCommission " + 1 - commission);
+        //console.log("base CANX price " + baseCANXPrice);
+        let canxSellPriceAdult = 0;
+        //console.log("check travaller " + JSON.stringify(traveller));
+        //console.log("Traveller treat as Adult " + traveller.treatAsAdult + "== true");
+        //console.log("CANXrate " + (row.childChargeRate !== 1 ? baseCANXPrice * row.childChargeRate : baseCANXPrice));
+        if (traveller.treatAsAdult != true) {
+          //console.log("Check adult = Yes" + traveller.treatAsAdult);
+          canxSellPriceAdult = row.childChargeRate === 0 ? 0 : (row.childChargeRate !== 1 ? baseCANXPrice * row.childChargeRate : baseCANXPrice);
+          //console.log("Check adult = Yes" + canxSellPriceAdult);
+        } else {
+          //console.log("Check adult = NO");
+          canxSellPriceAdult = baseCANXPrice;
+        }
+        console.log(`Calculated CANX Price for Age of ${traveller.age} is :`, canxSellPriceAdult, ` and total Selling Price `, totalSellingPrice);
+        totalSellingPrice += canxSellPriceAdult;
+      });
+      const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults);
+      console.log("Canx sellprice " + JSON.stringify(canxSellPrice));
+      return {
+        code: 'CANX',
+        price: { gross: canxSellPrice, displayPrice: canxSellPrice, isDiscount: false }
+      }
+    });
+  });
 }
 
 
@@ -114,7 +171,7 @@ function calcCANX(workbook, sheetName, row) {
       let isAgeMatch = isAgeInRange(row.age, ageBandValue)
       let isExcessMatch = (excessValue === Number(row.excess))
       if (isAgeMatch && isExcessMatch) {
-        let dateBucketCol = calculateDateBucket(sheet, row.leadTime);
+        let dateBucketCol = calculateDateBucket(sheet, row.duration);
         colValue = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
         break;
       }
@@ -123,6 +180,33 @@ function calcCANX(workbook, sheetName, row) {
   return colValue;
 }
 
+function calcCANXForGetQuote(workbook, sheetName, row, excess) {
+  //console.log("\n Data comes from " + sheetName + "\n and " + JSON.stringify(row));
+  const sheet = workbook.Sheets[sheetName];
+  if (!sheet) {
+    throw new Error(`Sheet "${sheetName}" not found.`);
+  }
+  const rngArea = XLSX.utils.sheet_to_json(sheet, { range: 'A2:A20000', header: 1 });
+  let colValue;
+  for (let rowIndex = 0; rowIndex < rngArea.length; rowIndex++) {
+    const areaCellValue = rngArea[rowIndex][0]; // Column A value
+    if (areaCellValue === row.area) {
+      const areaRowNum = rowIndex + 2; // Adjusting for 0-index and header
+
+      const ageBandValue = sheet[`C${areaRowNum}`]?.v;
+      const excessValue = sheet[`D${areaRowNum}`]?.v;
+
+      let isAgeMatch = isAgeInRange(row.age, ageBandValue)
+      let isExcessMatch = (excessValue === Number(excess))
+      if (isAgeMatch && isExcessMatch) {
+        let dateBucketCol = calculateDateBucket(sheet, row.leadTime);
+        colValue = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
+        break;
+      }
+    }
+  }
+  return colValue;
+}
 
 function calculateCFAR(simpleFileWorkbook, requestPayload, row) {
 
@@ -189,5 +273,5 @@ function calculateCFAR(simpleFileWorkbook, requestPayload, row) {
 
 
 module.exports = {
-  calculateCANXPrice, calculateCFAR
+  calculateCANXPrice, calculateCANXPriceForGetQuote, calculateCFAR
 };

@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const {
   calculateCANXPrice,
+  calculateCANXPriceForGetQuote,
   calculateCFAR
 } = require('./calculations/CANXPrice');
 const {
@@ -111,42 +112,56 @@ export class PriceCalculator {
   }
 
   calculatePriceForGetQuote(enableAddOnPriceCalculation = true) {
+    // let products = {};
+    // products["products"] = [];
+    // products["travellers"];
+    // this.response.quoteSummary.products.forEach((product, index) => {
+    //   console.log("product " + index);
+    //   products["products"][index] = [];
+    //   let prodDetails;
+    //   product.premiumMatrix.forEach((matrix, matrixIndex) => {
+    //     console.log("max duration " + matrix.maxDurationDays);
+    //     prodDetails = {
+    //       excess: matrix.excess,
+    //       duration: matrix.maxDurationDays,
+    //       additionalCoverAddons: {
+    //         code: "CANX",
+    //         options: {
+    //           value: product.destinationType === "Domestic" ? 5271 : 30818,
+    //           description: product.destinationType === "Domestic" ? "$10000" : "$Unlimited"
+    //         }
+    //       }
+    //     }
+    //     products["products"][index].push(prodDetails);
+    //   });
+
+    // });
+
     var calculatedPrices = {};
     let coverPrice = {};
     calculatedPrices["travellers"] = [];
-    //console.log("Response from tes " + JSON.stringify(this.response));
     this.response.quoteSummary.travellers.forEach((traveller, index) => {
       calculatedPrices["travellers"][index] = this.calculateBasePrice(traveller);
-      //console.log("check traveller " + JSON.stringify(traveller))
-      //console.log("check if condition " + JSON.stringify(traveller) != '{}');
-      // if (JSON.stringify(traveller) != '{}') {
-      //   //console.log("check if condition");
-      //   //traveller.age.forEach(age => {
-      //   //console.log("index check " + JSON.stringify(age) + " And Travalser " + JSON.stringify(age));
-      //   calculatedPrices["travellers"][index]['canx'] = [];
-      //   let cover = { 'code': 'CANX' }
-      //   coverPrice = this.calculateCoverPrice(cover, traveller);
-      //   console.log("Cover Price Detail " + JSON.stringify(coverPrice));
-      //   if (coverPrice !== undefined) {
-      //     //console.log("cover addons price " + JSON.stringify(coverPrice));
-      //     calculatedPrices["travellers"][index]['canx'].push(coverPrice);
-      //   }
 
-      //   //console.log(`Additional covers price of ${index}:`,calculatedPrices["travellers"][coverIndex]['additionalCoverAddons']);
-      //   // });
-      // }
+
+      this.response.quoteSummary.products.forEach(product => {
+        product.availableCoverAddons.forEach((cover, coverIndex) => {
+          if (cover.code == "CANX") {
+            //calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
+            coverPrice = this.calculateCoverPriceForGetQuote(cover, traveller);
+            console.log("Cover Price Detail " + JSON.stringify(coverPrice));
+            // if (coverPrice !== undefined) {
+            //   //console.log("cover addons price " + JSON.stringify(coverPrice));
+            //   calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
+            // }
+          }
+        });
+      });
+
     });
-    if (enableAddOnPriceCalculation) {
-      //console.log("thiss scenario have Policy addons");
-      let cover = { 'code': 'CANX' }
-      let coverPrice = this.calculatePolicyLevelCoverPriceForGetQuote();
-      //console.log("Policy level add on from calcualte policy level cover price " + JSON.stringify(coverPrice));
-      if (coverPrice !== undefined) {
-        calculatedPrices.additionalCoverAddons = coverPrice;
-      }
-      //console.log(`Additional covers price:`, calculatedPrices.additionalCoverAddons);
-    }
-    return calculatedPrices;
+    //products["travellers"].push(travellers);
+    console.log("calculated Base price for traveller " + JSON.stringify(calculatedPrices));
+
   }
 
   calculateBasePrice(travellers) {
@@ -234,9 +249,6 @@ export class PriceCalculator {
     return additionalCoverPrices;
   }
 
-  calculatePolicyLevelCoverPriceForGetQuote(cover) {
-    let additionalCovers = this.response.quoteSummary.products[0].additionalCoverAddons;
-  }
 
   calculateCoverPrice(cover, travellers = '') {
     const additionalCoverageCodes = ['LUGG', 'MTCL'];
@@ -270,6 +282,30 @@ export class PriceCalculator {
       //     this.requestPayload,
       //     this.row
       //   );
+      default:
+        console.log(
+          'No price calculation available for this add-on',
+          cover.code
+        );
+        return undefined; // Explicitly return undefined for unmatched cases
+    }
+  }
+
+  calculateCoverPriceForGetQuote(cover, travellers = '') {
+    const additionalCoverageCodes = ['LUGG', 'MTCL'];
+    console.log("cover code " + cover.code);
+    if (additionalCoverageCodes.includes(cover.code)) {
+      return calculatePriceByValue(this.simpleFileWorkbook, cover);
+    }
+
+    switch (cover.code) {
+      case 'CANX':
+        return calculateCANXPriceForGetQuote(
+          this.simpleFileWorkbook,
+          this.response,
+          this.row
+        )
+
       default:
         console.log(
           'No price calculation available for this add-on',
