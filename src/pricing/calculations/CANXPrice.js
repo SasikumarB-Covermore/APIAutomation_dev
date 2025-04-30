@@ -171,7 +171,7 @@ function calcCANX(workbook, sheetName, row) {
       let isAgeMatch = isAgeInRange(row.age, ageBandValue)
       let isExcessMatch = (excessValue === Number(row.excess))
       if (isAgeMatch && isExcessMatch) {
-        let dateBucketCol = calculateDateBucket(sheet, row.duration);
+        let dateBucketCol = calculateDateBucket(sheet, row.leadTime);
         colValue = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
         break;
       }

@@ -160,6 +160,7 @@ export class PriceValidator {
     };
 
     validateTotalGrossPremium(expectedPriceData = this.expectedPriceData, actualPriceData = this.actualPriceData) {
+        //console.log("actual price data " + JSON.stringify(actualPriceData));
         let totalGrossPremiumFromActual = actualPriceData.products[0].premiumMatrix[0].totalGrossPremium;
         //console.log("total Gross Premium From Actual " + totalGrossPremiumFromActual);
         let totalGrossPremiumFromExpected;
@@ -182,28 +183,49 @@ export class PriceValidator {
                 expectedPrice.push(traveller.additionalCoverAddons[0].price.gross);
             }
         });
-
+        let wntsByAge = 0;
         expectedPriceData.additionalCoverAddons.forEach(additionalCover => {
-            //Cover price add to array
-            let wntsByAge;
-            if (additionalCover.code == "WNTS") {
-                console.log("WNTS Cover Price ");
-                if (additionalCover.age <= 15) {
-                    wntsByAge = additionalCover.price.gross * this.childChargeRateValue;
 
-                } else {
-                    console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
-                    wntsByAge = additionalCover.price.gross
+            actualPriceData.products[0].additionalCoverAddons.forEach(actualCover => {
+
+                if (additionalCover.code == actualCover.code) {
+                    if (additionalCover.code == "WNTS") {
+                        console.log("WNTS Cover Price ");
+                        if (additionalCover.age <= 15) {
+                            wntsByAge = wntsByAge + parseInt(additionalCover.price.gross * this.childChargeRateValue);
+
+                        } else {
+                            //console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
+                            //console.log("Check additional Cover code actual  " + actualCover.code + " and cover price " + actualCover.price);
+                            //expect(additionalCover.price.gross === actualCover.price, this.createValidationMessageForAddOns(additionalCover.code, additionalCover.price.gross, actualCover.price)).toBeTruthy();
+                            wntsByAge = wntsByAge + parseInt(additionalCover.price.gross);
+                        }
+
+                    } else {
+                        console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
+                        console.log("Check additional Cover code actual  " + actualCover.code + " and cover price " + actualCover.price);
+                        expect(additionalCover.price.gross === actualCover.price, this.createValidationMessageForAddOns(additionalCover.code, additionalCover.price.gross, actualCover.price)).toBeTruthy();
+                        expectedPrice.push(additionalCover.price.gross);
+                    }
+
                 }
-                expectedPrice.push(wntsByAge);
-            } else if (additionalCover.code == "CANX") {
-                console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
-                expectedPrice.push(additionalCover.price.gross);
-            } else if (additionalCover.code == "MTCL") {
-                console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
-                expectedPrice.push(additionalCover.price.gross);
-            }
+
+            });
+
+
         });
+        actualPriceData.products[0].additionalCoverAddons.forEach(actualCover => {
+            if (actualCover.code == "WNTS") {
+                console.log("Check additional Cover code WNTS and cover price " + wntsByAge);
+                console.log("Check additional Cover code actual  " + actualCover.code + " and cover price " + actualCover.price);
+                expect(wntsByAge === actualCover.price, this.createValidationMessageForAddOns(actualCover.code, wntsByAge, actualCover.price)).toBeTruthy();
+                //console.log("total wnts price " + wntsByAge);
+                expectedPrice.push(wntsByAge);
+            }
+
+
+        });
+
 
         //policy cover add to array
         //expectedPrice.push(expectedPriceData.additionalCoverAddons[0].price.gross);
@@ -230,5 +252,8 @@ export class PriceValidator {
     }
     createValidationMessage = (expected, actual) => {
         return `Total Gross Premium expected ${expected}, got ${actual}.`;
+    };
+    createValidationMessageForAddOns = (addon, expected, actual) => {
+        return `${addon} Expected price is ${expected}, got ${actual}.`;
     };
 }
