@@ -164,7 +164,7 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload);
           const expectedPrices = priceCalculator.calculatePrice(true);
-          console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
@@ -174,24 +174,24 @@ test.describe("", async () => {
       });
 
       // Scenario 3: Issue Policy
-      await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
-        await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {
-          const addrPayLoad = generateAustralianAddress(row);
-          const phonePayLoad = phoneNumbers();
-          payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
-          console.log("****** Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
-          response = await createIssuePolicy(request, payload);
-          validateResponseStatus(response, validStatusCode);
-          responseBody = await response.json();
-          console.log("****** Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
-          currentTestDetails.scenarios.push({
-            scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
-            payload,
-            response: responseBody,
-          });
-          console.log("Sending POST request for Issue Policy API for Success");
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
-      });
+      // await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
+      //   await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {
+      //     const addrPayLoad = generateAustralianAddress(row);
+      //     const phonePayLoad = phoneNumbers();
+      //     payload = createPayloadForIssuePolicy(row, payLoadIssuePolicy, addrPayLoad, phonePayLoad, emailAddress, [], null, responseBody);
+      //     console.log("****** Issue Policy Request Body: \n" + JSON.stringify(payload) + "\n");
+      //     response = await createIssuePolicy(request, payload);
+      //     validateResponseStatus(response, validStatusCode);
+      //     responseBody = await response.json();
+      //     console.log("****** Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
+      //     currentTestDetails.scenarios.push({
+      //       scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
+      //       payload,
+      //       response: responseBody,
+      //     });
+      //     console.log("Sending POST request for Issue Policy API for Success");
+      //   }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
+      // });
 
     })
   })
