@@ -168,7 +168,7 @@ export class PriceValidator {
 
         expectedPriceData.travellers.forEach(traveller => {
             //base price add to array
-            if (traveller.age > 15) {
+            if (traveller.age >= 18) {
                 console.log("Check travaler age " + traveller.age + " and base price " + traveller.price.gross);
                 expectedPrice.push(traveller.price.gross);
             }
@@ -196,7 +196,7 @@ export class PriceValidator {
                 if (additionalCover.code == actualCover.code) {
                     if (additionalCover.code == "WNTS") {
                         //console.log("WNTS Cover Price ");
-                        if (additionalCover.age <= 15) {
+                        if (additionalCover.age <= 17) {
                             wntsByAge = wntsByAge + parseInt(additionalCover.price.gross * this.childChargeRateValue);
 
                         } else {
@@ -208,7 +208,7 @@ export class PriceValidator {
 
                     } else if (additionalCover.code == "CRS") {
                         //console.log("CRS Cover Price ");
-                        if (additionalCover.age <= 15) {
+                        if (additionalCover.age <= 17) {
                             crsByAge = crsByAge + parseInt(additionalCover.price.gross * this.childChargeRateValue);
 
                         } else {

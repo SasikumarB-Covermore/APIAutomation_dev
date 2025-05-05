@@ -20,7 +20,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const discount = calcCANX(simpleFileWorkbook, 'CANX_Discount', row);
     const commission = calcCANX(simpleFileWorkbook, 'CANX_Commission', row);
     const value = calcCANXValue(simpleFileWorkbook, row);
-    //console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
+    console.log("rate " + rate + " and discount " + discount + " and commission " + commission + " and value " + value);
     if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
       console.log("Traveller Age", traveller.age)
       console.log("rate:", rate);
@@ -34,7 +34,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const netDiscount = 1 - discount;
     const netCommission = 1 - commission;
     let baseCANXPrice = effectiveRate * netDiscount / netCommission;
-    //console.log("effectiveRate " + rate * value + " and netDiscount " + 1 - discount + " and netCommission " + 1 - commission);
+    console.log("effectiveRate " + rate * value + " and netDiscount " + 1 - discount + " and netCommission " + 1 - commission);
     //console.log("base CANX price " + baseCANXPrice);
     let canxSellPriceAdult = 0;
     //console.log("check travaller " + JSON.stringify(traveller));
@@ -106,7 +106,7 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
         totalSellingPrice += canxSellPriceAdult;
       });
       const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults);
-      //console.log("Canx sellprice " + JSON.stringify(canxSellPrice));
+      console.log("Canx sellprice " + JSON.stringify(canxSellPrice));
       return {
         code: 'CANX',
         price: { gross: canxSellPrice, displayPrice: canxSellPrice, isDiscount: false }
