@@ -583,7 +583,7 @@ function createPayloadForRefineQuote(row, payLoadRefineQuote, policyAddOns = [],
       }
     }
   }
-
+  console.log("premiumMatrix detail " + JSON.stringify(premiumMatrix));
   payload.products[0].additionalCoverAddons = additionalCoverAddons;
   payload.products[0].premiumMatrix = premiumMatrix;
   var travalersArray = responseBody.quoteSummary.travellers;
