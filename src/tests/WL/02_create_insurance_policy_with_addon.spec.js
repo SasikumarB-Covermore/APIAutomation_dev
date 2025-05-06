@@ -77,7 +77,7 @@ test.describe('', async () => {
       }
       const { travelAddOns, policyAddOns } = await generateAddOns(row)
 
-      console.log("222 Travaler level add ons are " + JSON.stringify(travelAddOns) + " and  policy level add ons are " + JSON.stringify(policyAddOns));
+      // console.log("222 Travaler level add ons are " + JSON.stringify(travelAddOns) + " and  policy level add ons are " + JSON.stringify(policyAddOns));
 
       let payload = {};
 
@@ -167,7 +167,7 @@ test.describe('', async () => {
           const expectedPrices = priceCalculator.calculatePrice(true);
           //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
-          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, sheetName);
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
             priceValidator.validateTotalGrossPremium();
           }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");

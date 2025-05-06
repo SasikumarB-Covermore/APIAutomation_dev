@@ -6,11 +6,11 @@ const { excelToJson } = require('./excelUtils').default;
 
 export class HelpTextValidator {
 
-  constructor (responseBody) {
+  constructor(responseBody) {
     this.actualBenefits = responseBody.benefits;
   }
 
-  async fetchBenefitsList () {
+  async fetchBenefitsList() {
     try {
       const data = await excelToJson(filePath, sheetName);
       const list = {};
@@ -35,23 +35,23 @@ export class HelpTextValidator {
     }
   }
 
-  async validateHelpText () {
+  async validateHelpText() {
     try {
       const expectedBenefits = await this.fetchBenefitsList();
       if (Object.keys(expectedBenefits).length == 0) {
         // throw new Error(
         //   'No Data has been found in the help text sheet.'
         // )
-        console.log('Helptext sheet is empty hence Helptext and Benefit is not validated');
+        console.log('Helptext sheet is empty hence Helptext and Benefit is not validated \n');
       } else {
-      this.actualBenefits.forEach(benefit => {
-        const name = benefit.name.trim();
-        const expectedHelpText = expectedBenefits[name];
-        const actualHelpText = this.normalizeString(benefit.helpText);
+        this.actualBenefits.forEach(benefit => {
+          const name = benefit.name.trim();
+          const expectedHelpText = expectedBenefits[name];
+          const actualHelpText = this.normalizeString(benefit.helpText);
 
-        this.checkHelpTextMatch(name, expectedHelpText, actualHelpText);
-      });
-    }
+          this.checkHelpTextMatch(name, expectedHelpText, actualHelpText);
+        });
+      }
     } catch (error) {
       console.error('Error validating help text:', error);
       // Optionally, rethrow or handle the error further
@@ -59,16 +59,16 @@ export class HelpTextValidator {
     }
   }
 
-  checkHelpTextMatch (name, expected, actual) {
+  checkHelpTextMatch(name, expected, actual) {
     const message = `The help text for ${name} has been successfully matched with the API response.`;
     if (expected === undefined) {
       throw new Error(`No expected help text found for ${name}.`);
     }
     expect(expected === actual, message).toBeTruthy();
-    
+
   }
 
-  normalizeString(str){
+  normalizeString(str) {
     return str.replace(/\r?\n|\r/g, '').trim();
   }
 }

@@ -166,7 +166,7 @@ test.describe("", async () => {
           const expectedPrices = priceCalculator.calculatePrice(true);
           console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
-          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, sheetName);
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
             priceValidator.validateTotalGrossPremium();
           }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");

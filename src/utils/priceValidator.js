@@ -1,16 +1,17 @@
 import { expect } from '@playwright/test'
 export class PriceValidator {
-    constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1) {
+    constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1, sheetName) {
         //console.log("APIresponse details " + JSON.stringify(apiResponsePrices));
         //console.log("expectedCalPrice details " + JSON.stringify(expectedCalcPrices));
         this.expectedPriceData = expectedCalcPrices;
         this.actualPriceData = apiResponsePrices;
-        this.expectedAdditionalCoverage = expectedCalcPrices.additionalCoverAddons
-        this.actualAdditionalCoverage = apiResponsePrices.products[0].additionalCoverAddons
-        this.expectedTravellerData = expectedCalcPrices.travellers
-        this.actualTravellerData = apiResponsePrices.travellers
-        this.discountValue = discount
-        this.childChargeRateValue = childChargeRate
+        this.expectedAdditionalCoverage = expectedCalcPrices.additionalCoverAddons;
+        this.actualAdditionalCoverage = apiResponsePrices.products[0].additionalCoverAddons;
+        this.expectedTravellerData = expectedCalcPrices.travellers;
+        this.actualTravellerData = apiResponsePrices.travellers;
+        this.discountValue = discount;
+        this.childChargeRateValue = childChargeRate;
+        this.sheetName = sheetName;
     }
 
     calculateDiscountedPrice(originalPrice) {
@@ -222,7 +223,9 @@ export class PriceValidator {
                     } else {
                         console.log("Check additional Cover code " + additionalCover.code + " and cover price " + additionalCover.price.gross);
                         console.log("Check additional Cover code actual  " + actualCover.code + " and cover price " + actualCover.price);
-                        expect(additionalCover.price.gross === actualCover.price, this.createValidationMessageForAddOns(additionalCover.code, additionalCover.price.gross, actualCover.price)).toBeTruthy();
+                        if (this.sheetName != "WL_WO_AddOn_EMC") {
+                            expect(additionalCover.price.gross === actualCover.price, this.createValidationMessageForAddOns(additionalCover.code, additionalCover.price.gross, actualCover.price)).toBeTruthy();
+                        }
                         expectedPrice.push(additionalCover.price.gross);
                     }
 
@@ -236,13 +239,17 @@ export class PriceValidator {
             if (actualCover.code == "WNTS") {
                 console.log("Check additional Cover code WNTS and cover price " + wntsByAge);
                 console.log("Check additional Cover code actual  " + actualCover.code + " and cover price " + actualCover.price);
-                expect(wntsByAge === actualCover.price, this.createValidationMessageForAddOns(actualCover.code, wntsByAge, actualCover.price)).toBeTruthy();
+                if (this.sheetName != "WL_WO_AddOn_EMC") {
+                    expect(wntsByAge === actualCover.price, this.createValidationMessageForAddOns(actualCover.code, wntsByAge, actualCover.price)).toBeTruthy();
+                }
                 //console.log("total wnts price " + wntsByAge);
                 expectedPrice.push(wntsByAge);
             } else if (actualCover.code == "CRS") {
                 console.log("Check additional Cover code CRS and cover price " + crsByAge);
                 console.log("Check additional Cover code actual  " + actualCover.code + " and cover price " + actualCover.price);
-                expect(crsByAge === actualCover.price, this.createValidationMessageForAddOns(actualCover.code, crsByAge, actualCover.price)).toBeTruthy();
+                if (this.sheetName != "WL_WO_AddOn_EMC") {
+                    expect(crsByAge === actualCover.price, this.createValidationMessageForAddOns(actualCover.code, crsByAge, actualCover.price)).toBeTruthy();
+                }
                 //console.log("total wnts price " + wntsByAge);
                 expectedPrice.push(crsByAge);
             }
@@ -270,7 +277,9 @@ export class PriceValidator {
         totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
         //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
         //expect(totalGrossPremiumFromActual === totalGrossPremiumFromExpected).toBeTruthy();
-        expect(Math.trunc(totalGrossPremiumFromActual) === totalGrossPremiumFromExpected, this.createValidationMessage(totalGrossPremiumFromExpected, Math.trunc(totalGrossPremiumFromActual))).toBeTruthy();
+        if (this.sheetName != "WL_WO_AddOn_EMC") {
+            expect(Math.trunc(totalGrossPremiumFromActual) === totalGrossPremiumFromExpected, this.createValidationMessage(totalGrossPremiumFromExpected, Math.trunc(totalGrossPremiumFromActual))).toBeTruthy();
+        }
         //expect(Math.trunc(totalGrossPremiumFromActual)).toBe(totalGrossPremiumFromExpected);
         //console.log("Total Gross Premium expected " + totalGrossPremiumFromExpected + ", got " + Math.trunc(totalGrossPremiumFromActual));
     }

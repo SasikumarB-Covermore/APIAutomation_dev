@@ -129,7 +129,7 @@ test.describe("", async () => {
       await test.step(`Scenario_2: Refine Quote for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
           payload = createPayloadForRefineQuote(row, payLoadRefineQuote, [], null, responseBody);
-          console.log("****** Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
+          console.log("****** Refine Quote Request Body: \n " + JSON.stringify(payload) + "\n");
           response = await createRefineQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
@@ -143,16 +143,16 @@ test.describe("", async () => {
         }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
 
         //function for price validation
-        // await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
-        //   const priceCalculator = new PriceCalculator(row, payload);
-        //   const expectedPrices = priceCalculator.calculatePrice(true);
-        //   //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
-        //   const apiResponse = parseAPIResponse(row, responseBody);
-        //   const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
-        //   await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
-        //     priceValidator.validateTotalGrossPremium();
-        //   }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
-        // });
+        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+          const priceCalculator = new PriceCalculator(row, payload);
+          const expectedPrices = priceCalculator.calculatePrice(true);
+          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+          const apiResponse = parseAPIResponse(row, responseBody);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, sheetName);
+          await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+            priceValidator.validateTotalGrossPremium();
+          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+        });
       });
 
       // Scenario 3: Issue Policy
