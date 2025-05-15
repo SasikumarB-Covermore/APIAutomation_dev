@@ -1,3 +1,5 @@
+import { emptyDir } from 'fs-extra';
+
 const XLSX = require('xlsx');
 const {
   calculateCANXPrice,
@@ -27,12 +29,22 @@ export class PriceCalculator {
     return `src/pricing/simpleFiles/${this.productCode}/${this.planName}.xlsx`
   }
 
+  getSimpleFilePathForGetQuote(product) {
+    return `src/pricing/simpleFiles/${product.productCode}/${product.name}.xlsx`
+  }
+
   readWorkbook(filePath) {
     return XLSX.readFile(filePath)
   }
 
   getWorkbook() {
     const filePath = this.getSimpleFilePath();
+    //console.log("file path " + filePath);
+    return this.readWorkbook(filePath);
+  }
+
+  getWorkbookForGetQuote(product) {
+    const filePath = this.getSimpleFilePathForGetQuote(product);
     //console.log("file path " + filePath);
     return this.readWorkbook(filePath);
   }
@@ -48,6 +60,19 @@ export class PriceCalculator {
     //console.log("items details " + JSON.stringify(items));
     return items;
   }
+
+  getCalculationDataForGetQuote(travellers, text, product) {
+    //console.log("Check travaler detail for " + text + " && " + JSON.stringify(travellers));
+    const items = {
+      area: this.row.area,
+      excess: Number(product.excess),
+      tripDuration: product.duration,
+      age: travellers.age
+    }
+    //console.log("items details " + JSON.stringify(items));
+    return items;
+  }
+
 
   calculatePrice(enableAddOnPriceCalculation = true) {
     var calculatedPrices = {};
@@ -112,56 +137,149 @@ export class PriceCalculator {
   }
 
   calculatePriceForGetQuote(enableAddOnPriceCalculation = true) {
-    // let products = {};
-    // products["products"] = [];
-    // products["travellers"];
-    // this.response.quoteSummary.products.forEach((product, index) => {
-    //   console.log("product " + index);
-    //   products["products"][index] = [];
-    //   let prodDetails;
-    //   product.premiumMatrix.forEach((matrix, matrixIndex) => {
-    //     console.log("max duration " + matrix.maxDurationDays);
-    //     prodDetails = {
-    //       excess: matrix.excess,
-    //       duration: matrix.maxDurationDays,
-    //       additionalCoverAddons: {
-    //         code: "CANX",
-    //         options: {
-    //           value: product.destinationType === "Domestic" ? 5271 : 30818,
-    //           description: product.destinationType === "Domestic" ? "$10000" : "$Unlimited"
-    //         }
-    //       }
-    //     }
-    //     products["products"][index].push(prodDetails);
-    //   });
+    let products = {};
+    products = [];
+    this.response.quoteSummary.products.forEach((product, index) => {
+      // product.availableCoverAddons.forEach((cover, coverIndex) => {
 
-    // });
-
-    var calculatedPrices = {};
-    let coverPrice = {};
-    calculatedPrices["travellers"] = [];
-    this.response.quoteSummary.travellers.forEach((traveller, index) => {
-      calculatedPrices["travellers"][index] = this.calculateBasePrice(traveller);
+      // });
 
 
-      this.response.quoteSummary.products.forEach(product => {
-        product.availableCoverAddons.forEach((cover, coverIndex) => {
-          if (cover.code == "CANX") {
-            //calculatedPrices["travellers"][index]['additionalCoverAddons'] = [];
-            coverPrice = this.calculateCoverPriceForGetQuote(cover, traveller);
-            //console.log("Cover Price Detail " + JSON.stringify(coverPrice));
-            // if (coverPrice !== undefined) {
-            //   //console.log("cover addons price " + JSON.stringify(coverPrice));
-            //   calculatedPrices["travellers"][index]['additionalCoverAddons'].push(coverPrice);
-            // }
+      product.premiumMatrix.forEach((matrix, matrixIndex) => {
+        if (matrix.isSelected == true) {
+          //console.log("max duration " + matrix.maxDurationDays);
+          products[index] = {
+            excess: matrix.excess,
+            duration: matrix.maxDurationDays === '' || matrix.maxDurationDays == null ? this.row.duration : matrix.maxDurationDays,
+            productCode: product.productCode,
+            name: product.name,
+            additionalCoverAddons: {
+              code: "CANX",
+              options: {
+                value: product.destinationType === "Domestic" ? 5271 : 30818,
+                description: product.destinationType === "Domestic" ? "$10000" : "$Unlimited"
+              }
+            }
           }
-        });
+          // products["products"][index].push(prodDetails);
+        }
+
       });
 
     });
+    //console.log("Product Detail" + JSON.stringify(products));
+
+    var calculatedPrices = {};
+    let coverPrice = {};
+    //calculatedPrices["travellers"] = [];
+    calculatedPrices["product"] = [];
+
+
+
+
+    // calculatedPrices["travellers"] = {
+    //   excess: product.excess,
+    //   duration: product.maxDurationDays,
+    // }
+    products.forEach((product, coverIndex) => {
+      calculatedPrices["product"].push(this.calculateBasePriceForGetQuoteProduct(product));
+      calculatedPrices["product"][coverIndex]["travellers"] = [];
+      //console.log("index check from product loop");
+      this.requestPayload.travellers.forEach((traveller, index) => {
+        //console.log("index check from travaler loop");
+
+        calculatedPrices["product"][coverIndex]["travellers"].push(this.calculateBasePriceForGetQuote(traveller, product));
+        //console.log("index check " + JSON.stringify(index) + " And Travalser " + JSON.stringify(additionalCoverAddon));
+        calculatedPrices["product"][coverIndex]["travellers"][index]['additionalCoverAddons'] = [];
+        coverPrice = this.calculateCoverPriceForGetQuote(product, traveller);
+        //console.log("Cover Price Detail " + JSON.stringify(coverPrice));
+        if (coverPrice !== undefined) {
+          //console.log("cover addons price " + JSON.stringify(coverPrice));
+          calculatedPrices["product"][coverIndex]["travellers"][index]['additionalCoverAddons'].push(coverPrice);
+        }
+
+        //console.log(`Additional covers price of ${index}:`,calculatedPrices["travellers"][coverIndex]['additionalCoverAddons']);
+      });
+    });
+
+
+
+
     //products["travellers"].push(travellers);
     //console.log("calculated Base price for traveller " + JSON.stringify(calculatedPrices));
+    //console.log("price calculate price " + JSON.stringify(calculatedPrices));
+    return calculatedPrices;
+  }
 
+  calculateBasePriceForGetQuoteProduct(product) {
+    //let expetcedPrice;
+    //console.log("Traveler detail " + JSON.stringify(product));
+    //if (travellers.treatAsAdult == "true") {
+
+    //expetcedPrice = this.calculatePriceForAgeBandForGetQuote({ code: 'Base' }, travellers, product);
+
+    //if (expetcedPrice !== undefined) {
+    //let basePrice = expetcedPrice.price;
+    //console.log("calculate expected price " + JSON.stringify(basePrice));
+    //console.log(`[${this.productCode} ${this.planName} excess: ${this.row.excess}, duration: ${this.row.duration}, area: ${this.row.area}] Gross Price for Age: ${travellers.age} is :`, basePrice.gross);
+    //console.log("calculated base price details, travaler age " + travellers.age + " base price " + basePrice.gross + " display price " + basePrice.displayPrice);
+
+    return {
+      excess: product.excess,
+      duration: product.duration,
+      productCode: product.productCode,
+      name: product.name
+      // age: travellers.age,
+      // price: {
+      //   gross: basePrice.gross,
+      //   displayPrice: basePrice.displayPrice,
+      //   isDiscount: false
+      // }
+    }
+
+    //console.log("price detaile for all excess and duration " + JSON.stringify(result));
+    //return result;
+    // } else {
+    //   throw new Error(
+    //     `The Base selling price for the ${this.productCode} ${this.planName} has not been found`
+    //   )
+    // }
+    //}
+  }
+
+  calculateBasePriceForGetQuote(travellers, product) {
+    let expetcedPrice;
+    //console.log("Traveler detail " + JSON.stringify(product));
+    //if (travellers.treatAsAdult == "true") {
+
+    expetcedPrice = this.calculatePriceForAgeBandForGetQuote({ code: 'Base' }, travellers, product);
+
+    if (expetcedPrice !== undefined) {
+      let basePrice = expetcedPrice.price;
+      //console.log("calculate expected price " + JSON.stringify(basePrice));
+      //console.log(`[${this.productCode} ${this.planName} excess: ${this.row.excess}, duration: ${this.row.duration}, area: ${this.row.area}] Gross Price for Age: ${travellers.age} is :`, basePrice.gross);
+      //console.log("calculated base price details, travaler age " + travellers.age + " base price " + basePrice.gross + " display price " + basePrice.displayPrice);
+
+      let result = {
+        //excess: product.excess,
+        //duration: product.duration,
+        //productCode: product.productCode,
+        age: travellers.age,
+        price: {
+          gross: basePrice.gross,
+          displayPrice: basePrice.displayPrice,
+          isDiscount: false
+        }
+      }
+
+      //console.log("price detaile for all excess and duration " + JSON.stringify(result));
+      return result;
+    } else {
+      throw new Error(
+        `The Base selling price for the ${this.productCode} ${this.planName} has not been found`
+      )
+    }
+    //}
   }
 
   calculateBasePrice(travellers) {
@@ -291,17 +409,17 @@ export class PriceCalculator {
     }
   }
 
-  calculateCoverPriceForGetQuote(cover, travellers = '') {
+  calculateCoverPriceForGetQuote(product, travellers = '') {
     const additionalCoverageCodes = ['LUGG', 'MTCL'];
-    //console.log("cover code " + cover.code);
-    if (additionalCoverageCodes.includes(cover.code)) {
+    //console.log("cover code " + JSON.stringify(product.additionalCoverAddons.code));
+    if (additionalCoverageCodes.includes(product.additionalCoverAddons.code)) {
       return calculatePriceByValue(this.simpleFileWorkbook, cover);
     }
 
-    switch (cover.code) {
+    switch (product.additionalCoverAddons.code) {
       case 'CANX':
         return calculateCANXPriceForGetQuote(
-          this.simpleFileWorkbook,
+          this.getWorkbookForGetQuote(product),
           this.response,
           this.row
         )
@@ -315,9 +433,15 @@ export class PriceCalculator {
     }
   }
 
+  calculatePriceForAgeBandForGetQuote(cover, travellers, product) {
+    const calcData = this.getCalculationDataForGetQuote(travellers, "AgeBand", product);
+    //console.log("sample file detail " + JSON.stringify(calcData));
+    return calculatePriceByAgeband(this.getWorkbookForGetQuote(product), calcData, cover);
+  }
+
   calculatePriceForAgeBand(cover, travellers) {
     const calcData = this.getCalculationData(travellers, "AgeBand");
-    //console.log("sample file detail " + JSON.stringify(this.simpleFileWorkbook));
+    console.log("sample file detail " + JSON.stringify(calcData));
     return calculatePriceByAgeband(this.simpleFileWorkbook, calcData, cover);
   }
 }

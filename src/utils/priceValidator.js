@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test'
+import { readJsonSync } from 'fs-extra';
 export class PriceValidator {
     constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1, sheetName) {
         //console.log("APIresponse details " + JSON.stringify(apiResponsePrices));
@@ -159,6 +160,14 @@ export class PriceValidator {
         const coverPart = coverCode ? ` of ${coverCode}` : '';
         return `${priceType}${coverPart}${identifierPart} has been matched: expected ${expected}, got ${actual}.`;
     };
+    createValidationMessageForAddOns = (addon, expected, actual) => {
+        return `${addon} Expected price is ${expected}, got ${actual}.`;
+    };
+
+    createValidationMessageForGetQuote = (expected, actual, productCode, name) => {
+
+        return `Product ${productCode} and planName ${name} have total gross : expected ${expected}, got ${actual}.`;
+    };
 
     validateTotalGrossPremium(expectedPriceData = this.expectedPriceData, actualPriceData = this.actualPriceData) {
         //console.log("actual price data " + JSON.stringify(actualPriceData));
@@ -170,12 +179,12 @@ export class PriceValidator {
         expectedPriceData.travellers.forEach(traveller => {
             //base price add to array
             if (traveller.age >= 18) {
-                console.log("Check travaler age " + traveller.age + " and base price " + traveller.price.gross);
+                //console.log("Check travaler age " + traveller.age + " and base price " + traveller.price.gross);
                 expectedPrice.push(traveller.price.gross);
             }
             //EMC price add to array
             if (traveller.emcPrice) {
-                console.log("Check travaler EMC " + traveller.emcPrice + " and EMC price " + traveller.emcPrice[0].gross);
+                //console.log("Check travaler EMC " + traveller.emcPrice + " and EMC price " + traveller.emcPrice[0].gross);
                 expectedPrice.push(traveller.emcPrice[0].gross);
                 console.log("Check traveller Cover code EMC and cover price " + traveller.emcPrice[0].gross);
                 console.log("Check traveller Cover code actual  EMC and cover price " + actualPriceData.travellers[0].emc.price);
@@ -258,22 +267,8 @@ export class PriceValidator {
         });
 
 
-        //policy cover add to array
-        //expectedPrice.push(expectedPriceData.additionalCoverAddons[0].price.gross);
-        // //CRS price add to array
-        // expectedPriceData.additionalCoverAddons.forEach(additionalCover => {
-        //     let crsByAge;
-        //     if (additionalCover.code == "CRS") {
-        //         if (additionalCover.age <= 15) {
-        //             crsByAge = additionalCover.price.gross * this.childChargeRateValue;
 
-        //         } else {
-        //             crsByAge = additionalCover.price.gross
-        //         }
-        //         expectedPrice.push(crsByAge);
-        //     }
-        // });
-        console.log("expected base price for travallers " + expectedPrice);
+        //console.log("expected base price for travallers " + expectedPrice);
         totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
         //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
         //expect(totalGrossPremiumFromActual === totalGrossPremiumFromExpected).toBeTruthy();
@@ -283,10 +278,44 @@ export class PriceValidator {
         //expect(Math.trunc(totalGrossPremiumFromActual)).toBe(totalGrossPremiumFromExpected);
         //console.log("Total Gross Premium expected " + totalGrossPremiumFromExpected + ", got " + Math.trunc(totalGrossPremiumFromActual));
     }
-    createValidationMessage = (expected, actual) => {
-        return `Total Gross Premium expected ${expected}, got ${actual}.`;
-    };
-    createValidationMessageForAddOns = (addon, expected, actual) => {
-        return `${addon} Expected price is ${expected}, got ${actual}.`;
-    };
+
+    validateTotalGrossPremiumForGetQuote(expectedPriceData = this.expectedPriceData, actualPriceData = this.actualPriceData) {
+        let totalGrossPremiumFromExpected = [];
+        let expectedPrice = [];
+        expectedPriceData.product.forEach(product => {
+            let travelarBasePrice = [];
+            let addonsPrice = [];
+            product.travellers.forEach(traveller => {
+                if (traveller.age >= 18) {
+                    travelarBasePrice.push(traveller.price.gross);
+
+                }
+            });
+            addonsPrice = product.travellers[0].additionalCoverAddons[0].price.gross;
+            travelarBasePrice.push(addonsPrice);
+            expectedPrice.push(travelarBasePrice);
+        });
+        //console.log("expected price for each product " + JSON.stringify(expectedPrice));
+
+        expectedPrice.forEach(index => {
+            totalGrossPremiumFromExpected.push(index.reduce((partialSum, a) => partialSum + a, 0));
+        });
+        //console.log("expected price TotalGross " + JSON.stringify(totalGrossPremiumFromExpected));
+
+        let actualTotalGross = [];
+        let i = 0;
+        actualPriceData.products.forEach(product => {
+            product.premiumMatrix.forEach(matrix => {
+                if (matrix.isSelected) {
+                    actualTotalGross.push(matrix.totalGrossPremium);
+                    expect(Math.trunc(matrix.totalGrossPremium) === totalGrossPremiumFromExpected[i], this.createValidationMessageForGetQuote(totalGrossPremiumFromExpected[i], Math.trunc(matrix.totalGrossPremium), product.productCode, product.name)).toBeTruthy();
+                }
+            });
+            i = i + 1;
+        });
+
+    }
+
+
+
 }

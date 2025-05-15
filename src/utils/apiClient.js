@@ -190,7 +190,7 @@ async function createIssuePolicy(request, payload) {
     //   'X-Correlation-Id': makeCorrelationId('TestIssuePolicyCorrelationId', 3),
     //   'X-ConsumerApp': 'atom'
     // },
-    // data: payload,  // Send the defined payload
+    data: payload,  // Send the defined payload
   });
   return reponse
 }

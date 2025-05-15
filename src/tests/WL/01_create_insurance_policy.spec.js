@@ -123,6 +123,18 @@ test.describe("", async () => {
             console.log("validating benefits help text Success");
           }, currentTestDetails, currentTestDetails.testName, "Validate benefits help text.");
         });
+
+        //Get quote price validation
+        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+          const priceCalculator = new PriceCalculator(row, payload, responseBody);
+          const expectedPrices = priceCalculator.calculatePriceForGetQuote(true);
+          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+          const apiResponse = parseAPIResponse(row, responseBody);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
+          await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+            priceValidator.validateTotalGrossPremiumForGetQuote();
+          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+        });
       });
 
       // Scenario 2: Refine Quote

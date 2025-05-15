@@ -86,7 +86,7 @@ function calculatePriceByAgeband(workbook, priceCalcData, cover) {
       let isExcessMatch = (excessCell.v === priceCalcData.excess)
 
       if (isAgeMatch && isExcessMatch) {
-        //console.log("2 if check ");
+        //console.log("Duration from input data " + priceCalcData.tripDuration);
         let dateBucketCol = calculateDateBucket(sheet, priceCalcData.tripDuration);
 
         let sellingPriceCell = sheet[XLSX.utils.encode_cell({ c: XLSX.utils.decode_col(dateBucketCol), r: row })];
@@ -247,6 +247,8 @@ function calculateEMCPrice(workbook, row, cover) {
 
 // Calculate Date Bucket Column
 function calculateDateBucket(sheet, tripDuration, startCol = 4) {
+  //console.log("Duration from input data " + tripDuration);
+  tripDuration = tripDuration == null ? 0 : tripDuration;
   const range = XLSX.utils.decode_range(sheet['!ref']);
   for (let col = startCol; col <= range.e.c; col++) { // Start from column E (index 4)
     let dateBucketCell = sheet[XLSX.utils.encode_cell({ c: col, r: 0 })];
