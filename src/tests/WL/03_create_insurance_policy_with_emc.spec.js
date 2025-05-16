@@ -16,7 +16,8 @@ const { generateTravelDataNTimes,
   flattenObject,
   createPayload,
   parseAPIResponse,
-  createPayloadForRefineQuote,
+  createPayloadForRefineQuoteOnlyAddons,
+  createPayloadForRefineQuoteOnlyEMC,
   createPayloadForIssuePolicy,
   validateResponseStatus
 } = require("../../utils/helper.js");
@@ -156,37 +157,66 @@ test.describe("", async () => {
       });
 
       // Scenario 2: Refine Quote
-      await test.step(`Scenario_2: Refine Quote for ${row.planCode}`, async () => {
+      await test.step(`Scenario_2: Refine Quote Only Addons for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
-          payload = createPayloadForRefineQuote(row, payLoadRefineQuote, [], null, responseBody);
-          console.log("****** Refine Quote Resuest Body: \n " + JSON.stringify(payload) + "\n");
+          payload = createPayloadForRefineQuoteOnlyAddons(row, payLoadRefineQuote, [], null, responseBody);
+          console.log("****** Refine Quote Only Addons Request Body: \n " + JSON.stringify(payload) + "\n");
           response = await createRefineQuote(request, payload);
           validateResponseStatus(response, validStatusCode);
           responseBody = await response.json();
-          console.log("****** Refine Quote Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          console.log("****** Refine Quote Only Addons Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
-            scenario: `Scenario_2: Refine Quote for ${row.planCode}`,
+            scenario: `Scenario_2: Refine Quote Only Addons for ${row.planCode}`,
             payload,
             response: responseBody,
           });
           console.log("Sending POST request for refine quote API for Success");
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_2: Get Quote for ${row.planCode}`);
+        }, currentTestDetails, currentTestDetails.testName, `Scenario_2: refine Quote Only Addons for ${row.planCode}`);
 
         //function for price validation
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
-          const priceCalculator = new PriceCalculator(row, payload);
+          const priceCalculator = new PriceCalculator(row, payload, responseBody, "OnlyAddons");
           const expectedPrices = priceCalculator.calculatePrice(true);
-          console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
-          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, sheetName);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, "OnlyAddons");
+          await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
+            priceValidator.validateTotalGrossPremium();
+          }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
+        });
+      });
+      // Scenario 3: Refine Quote
+      await test.step(`Scenario_3: Refine Quote Only EMC for ${row.planCode}`, async () => {
+        await enhancedTestStep(test, `Sending POST request to Refine quote API for ${row.planCode}`, async () => {
+          payload = createPayloadForRefineQuoteOnlyEMC(row, payLoadRefineQuote, [], null, responseBody);
+          console.log("****** Refine Quote Only EMC Request Body: \n " + JSON.stringify(payload) + "\n");
+          response = await createRefineQuote(request, payload);
+          validateResponseStatus(response, validStatusCode);
+          responseBody = await response.json();
+          console.log("****** Refine Quote Only EMC Response Body: \n" + JSON.stringify(responseBody) + "\n");
+          currentTestDetails.scenarios.push({
+            scenario: `Scenario_3: Refine Quote Only EMC for ${row.planCode}`,
+            payload,
+            response: responseBody,
+          });
+          console.log("Sending POST request for refine quote API for Success");
+        }, currentTestDetails, currentTestDetails.testName, `Scenario_3: refine Quote Only EMC for ${row.planCode}`);
+
+        //function for price validation
+        await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
+          const priceCalculator = new PriceCalculator(row, payload, responseBody, "OnlyEMC");
+          const expectedPrices = priceCalculator.calculatePrice(true);
+          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
+          const apiResponse = parseAPIResponse(row, responseBody);
+          const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, "OnlyEMC");
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
             priceValidator.validateTotalGrossPremium();
           }, currentTestDetails, currentTestDetails.testName, "Validate traveller's base price");
         });
       });
 
-      // Scenario 3: Issue Policy
-      await test.step(`Scenario_3: Issue Policy for ${row.planCode}`, async () => {
+      // Scenario 4: Issue Policy
+      await test.step(`Scenario_4: Issue Policy for ${row.planCode}`, async () => {
         await enhancedTestStep(test, `Sending POST request to Issue Policy API for ${row.planCode}`, async () => {
           const addrPayLoad = generateAustralianAddress(row);
           const phonePayLoad = phoneNumbers();
@@ -197,12 +227,12 @@ test.describe("", async () => {
           responseBody = await response.json();
           console.log("****** Issue Policy Response Body: \n" + JSON.stringify(responseBody) + "\n");
           currentTestDetails.scenarios.push({
-            scenario: `Scenario_3: Issue Policy for ${row.planCode}`,
+            scenario: `Scenario_4: Issue Policy for ${row.planCode}`,
             payload,
             response: responseBody,
           });
           console.log("Sending POST request for Issue Policy API for Success");
-        }, currentTestDetails, currentTestDetails.testName, `Scenario_3: IssuePolicy for ${row.planCode}`);
+        }, currentTestDetails, currentTestDetails.testName, `Scenario_4: IssuePolicy for ${row.planCode}`);
       });
 
     })

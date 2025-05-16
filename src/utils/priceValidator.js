@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { readJsonSync } from 'fs-extra';
 export class PriceValidator {
-    constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1, sheetName) {
+    constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1, addons) {
         //console.log("APIresponse details " + JSON.stringify(apiResponsePrices));
         //console.log("expectedCalPrice details " + JSON.stringify(expectedCalcPrices));
         this.expectedPriceData = expectedCalcPrices;
@@ -12,7 +12,7 @@ export class PriceValidator {
         this.actualTravellerData = apiResponsePrices.travellers;
         this.discountValue = discount;
         this.childChargeRateValue = childChargeRate;
-        this.sheetName = sheetName;
+        this.addons = addons;
     }
 
     calculateDiscountedPrice(originalPrice) {
@@ -155,10 +155,8 @@ export class PriceValidator {
         return itemsArray.find(item => item.code === itemToMatch.code);
     }
 
-    createValidationMessage = (expected, actual, coverCode, identifier, priceType) => {
-        const identifierPart = identifier ? ` for ${identifier}` : '';
-        const coverPart = coverCode ? ` of ${coverCode}` : '';
-        return `${priceType}${coverPart}${identifierPart} has been matched: expected ${expected}, got ${actual}.`;
+    createValidationMessage = (priceType, expected, actual) => {
+        return `${priceType} has been matched: expected ${expected}, got ${actual}.`;
     };
     createValidationMessageForAddOns = (addon, expected, actual) => {
         return `${addon} Expected price is ${expected}, got ${actual}.`;
@@ -272,8 +270,8 @@ export class PriceValidator {
         totalGrossPremiumFromExpected = expectedPrice.reduce((partialSum, a) => partialSum + a, 0);
         //console.log("total Gross Premium From Expected " + totalGrossPremiumFromExpected);
         //expect(totalGrossPremiumFromActual === totalGrossPremiumFromExpected).toBeTruthy();
-        if (this.sheetName != "WL_WO_AddOn_EMC") {
-            expect(Math.trunc(totalGrossPremiumFromActual) === totalGrossPremiumFromExpected, this.createValidationMessage(totalGrossPremiumFromExpected, Math.trunc(totalGrossPremiumFromActual))).toBeTruthy();
+        if (this.addons != "OnlyEMC") {
+            expect(Math.trunc(totalGrossPremiumFromActual) === totalGrossPremiumFromExpected, this.createValidationMessage("Total Gross Premium", totalGrossPremiumFromExpected, Math.trunc(totalGrossPremiumFromActual))).toBeTruthy();
         }
         //expect(Math.trunc(totalGrossPremiumFromActual)).toBe(totalGrossPremiumFromExpected);
         //console.log("Total Gross Premium expected " + totalGrossPremiumFromExpected + ", got " + Math.trunc(totalGrossPremiumFromActual));

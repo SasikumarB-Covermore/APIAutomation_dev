@@ -15,7 +15,7 @@ const {
 } = require('./calculations/sharedFunctions');
 
 export class PriceCalculator {
-  constructor(row, payload, response) {
+  constructor(row, payload, response, addons) {
     this.productCode = row.productCode
     this.planName = row.planName
     this.row = row
@@ -23,6 +23,7 @@ export class PriceCalculator {
     this.simpleFileWorkbook = this.getWorkbook()
     this.emcValue = row.EMC;
     this.response = response;
+    this.addons = addons;
   }
 
   getSimpleFilePath() {
@@ -86,7 +87,7 @@ export class PriceCalculator {
       // calculatedPrices["travellers"].push({ calPrice });
       //console.log("Checking calculated price " + JSON.stringify(calculatedPrices));
       //console.log("Checking EMC " + JSON.stringify(this.emcValue) + " and Travellers is primary " + traveller.isPrimary);
-      if (this.emcValue !== undefined && this.emcValue != 0 && traveller.isPrimary == "true") {
+      if (this.emcValue !== undefined && this.emcValue != 0 && traveller.isPrimary == "true" && this.addons == "OnlyEMC") {
         //console.log("thiss scenario have emc");
         const calcData = this.getCalculationData(traveller, "EMC");
         //console.log("Check calcdata " + JSON.stringify(calcData));
