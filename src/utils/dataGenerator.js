@@ -21,22 +21,12 @@ function generateCommonData(identifier, row) {
 
 
     const dateOfBirth = moment().subtract(age, 'years').format('YYYY-MM-DD');
-    //const gender = faker.person.sexType();
-    //const title = gender === 'male' ? 'Mr' : 'Ms';
-    //const firstName = 'Test_' + faker.person.firstName(gender);
-    //const lastName = 'Test_' + faker.person.lastName();
 
     return {
-        //identifier: identifier.toLowerCase(),
         age: age,
         dateOfBirth: dateOfBirth,
         isPrimary: isPrimary,
         treatAsAdult: identifier.toLowerCase().includes('adult')
-        //title: title,
-        //firstName: firstName,
-        //lastName: lastName,
-        //gender: gender,
-        //memberID: isPrimary ? `MC${faker.number.int({ min: 100000, max: 999999 })}` : '',
     };
 }
 
@@ -48,7 +38,6 @@ function generateCommonRefineQouteData(identifier, row) {
     const isAgeOver80 = row.AGECBA && row.AGECBA.toLowerCase() === 'null';
     const isAdult = identifier.toLowerCase().includes('adult');
     const isPrimary = identifier.toLowerCase() === 'adult1';
-    // const age = isAdult ? faker.number.int({ min: 36, max: 50 }) : faker.number.int({ min: 2, max: 19 });
     const age = isAgeOver80
         ? faker.number.int({ min: 81, max: 99 })  // If AGECBA is "yes", age > 80
         : (isAdult
@@ -85,7 +74,6 @@ function generateCommonIssuePolicyData(identifier, row) {
     const isAgeOver80 = row.AGECBA && row.AGECBA.toLowerCase() === 'null';
     const isAdult = identifier.toLowerCase().includes('adult');
     const isPrimary = identifier.toLowerCase() === 'adult1';
-    // const age = isAdult ? faker.number.int({ min: 36, max: 50 }) : faker.number.int({ min: 2, max: 19 });
     const age = isAgeOver80
         ? faker.number.int({ min: 81, max: 99 })  // If AGECBA is "yes", age > 80
         : (isAdult

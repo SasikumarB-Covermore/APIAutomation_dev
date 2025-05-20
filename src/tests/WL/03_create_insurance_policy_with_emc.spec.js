@@ -24,7 +24,6 @@ const { generateTravelDataNTimes,
 const { savePolicyNumber } = require('../../utils/fileReader.js')
 const { generateAustralianAddress, phoneNumbers } = require("../../utils/dataGenerator.js");
 const { saveTestDetails, enhancedTestStep, getOrCreateRunDir } = require("../../utils/errorHandling.js");
-// const { getEMCScore, generateEmcConditions, createSaveEmcPayload } = require('../../utils/emcUtils.js')
 import { PriceCalculator } from '../../pricing/priceCalculator.js';
 import { PriceValidator } from '../../utils/priceValidator.js';
 import { HelpTextValidator } from '../../utils/helpTextValidator.js';
@@ -55,13 +54,9 @@ test.beforeEach(() => {
 
 
 test.describe("", async () => {
-  //console.log("File path " + filePath + " and Sheet name " + sheetName);
   const data = await excelToJson(filePath, sheetName);
-  //console.log("Data " + data);
   const filteredDataSets = filterRowsByExecution(data);
-  //console.log("Row of execution " + filteredDataSets);
   filteredDataSets.forEach((row, index) => {
-    // data.slice(0, 10).forEach((row, index) => {
     if (row.APIKey) {
       defaultHeaders["X-API-KEY"] = row.APIKey;
     }
@@ -147,7 +142,6 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload, responseBody);
           const expectedPrices = priceCalculator.calculatePriceForGetQuote(true);
-          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
@@ -177,7 +171,6 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload, responseBody, "OnlyAddons");
           const expectedPrices = priceCalculator.calculatePrice(true);
-          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, "OnlyAddons");
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
@@ -206,7 +199,6 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload, responseBody, "OnlyEMC");
           const expectedPrices = priceCalculator.calculatePrice(true);
-          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, "OnlyEMC");
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {

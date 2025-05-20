@@ -131,7 +131,6 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload, responseBody);
           const expectedPrices = priceCalculator.calculatePriceForGetQuote(true);
-          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate);
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
@@ -161,7 +160,6 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload, responseBody, "OnlyAddons");
           const expectedPrices = priceCalculator.calculatePrice(true);
-          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, "OnlyAddons");
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
@@ -190,7 +188,6 @@ test.describe("", async () => {
         await test.step(`Then validate the traveller's base price and additional covers price in the API response`, async () => {
           const priceCalculator = new PriceCalculator(row, payload, responseBody, "OnlyEMC");
           const expectedPrices = priceCalculator.calculatePrice(true);
-          //console.log("expected calculated Price " + JSON.stringify(expectedPrices));
           const apiResponse = parseAPIResponse(row, responseBody);
           const priceValidator = new PriceValidator(expectedPrices, apiResponse, row.discount, row.childChargeRate, "OnlyEMC");
           await enhancedTestStep(test, `Then validate total Gross Premium From Actual with API response`, async () => {
@@ -215,7 +212,6 @@ test.describe("", async () => {
             payload,
             response: responseBody,
           });
-          //console.log("Issue Policy response " + JSON.stringify(responseBody));
           console.log("Sending POST request for Issue Policy API for Success");
         }, currentTestDetails, currentTestDetails.testName, `Scenario_4: IssuePolicy for ${row.planCode}`);
       });
