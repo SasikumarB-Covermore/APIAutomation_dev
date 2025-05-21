@@ -86,23 +86,23 @@ async function createQuote(request, payload) {
     //   'X-Correlation-Id': makeCorrelationId('TestGetQuoteCorrelationId', 3)
     // },
     //Preprod Header
-    // headers: {
-    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
-    //   'X-Timestamp': xTimeStamp,
-    //   'X-Signature': (await xSignature).toString(),
-    //   'Content-Type': 'application/json',
-    //   'X-Correlation-Id': makeCorrelationId('TestGetQuoteCorrelationId', 3)
-    // },
-
-    //NewStaging Header
     headers: {
       'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
       'X-Timestamp': xTimeStamp,
       'X-Signature': (await xSignature).toString(),
       'Content-Type': 'application/json',
-      'X-Correlation-Id': makeCorrelationId('TestGetQuoteCorrelationId', 3),
-      'X-ConsumerApp': 'atom'
+      'X-Correlation-Id': makeCorrelationId('TestGetQuoteCorrelationId', 3)
     },
+
+    //NewStaging Header
+    // headers: {
+    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+    //   'X-Timestamp': xTimeStamp,
+    //   'X-Signature': (await xSignature).toString(),
+    //   'Content-Type': 'application/json',
+    //   'X-Correlation-Id': makeCorrelationId('TestGetQuoteCorrelationId', 3),
+    //   'X-ConsumerApp': 'atom'
+    // },
     data: payload,
   });
   return reponse
@@ -120,22 +120,22 @@ async function createRefineQuote(request, payload) {
     //   'X-Correlation-Id': makeCorrelationId('TestRefineQuoteCorrelationId', 3)
     // },
     //Preprod Header
-    // headers: {
-    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
-    //   'X-Timestamp': xTimeStamp,
-    //   'X-Signature': (await xSignature).toString(),
-    //   'Content-Type': 'application/json',
-    //   'X-Correlation-Id':  makeCorrelationId('TestRefineQuoteCorrelationId', 3)
-    // },
-    //NewStaging Header
     headers: {
       'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
       'X-Timestamp': xTimeStamp,
       'X-Signature': (await xSignature).toString(),
       'Content-Type': 'application/json',
-      'X-Correlation-Id': makeCorrelationId('TestRefineQuoteCorrelationId', 3),
-      'X-ConsumerApp': 'atom'
+      'X-Correlation-Id': makeCorrelationId('TestRefineQuoteCorrelationId', 3)
     },
+    //NewStaging Header
+    // headers: {
+    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+    //   'X-Timestamp': xTimeStamp,
+    //   'X-Signature': (await xSignature).toString(),
+    //   'Content-Type': 'application/json',
+    //   'X-Correlation-Id': makeCorrelationId('TestRefineQuoteCorrelationId', 3),
+    //   'X-ConsumerApp': 'atom'
+    // },
     data: payload,  // Send the defined payload
   });
   return reponse
@@ -152,22 +152,22 @@ async function createIssuePolicy(request, payload) {
     //   'X-Correlation-Id': makeCorrelationId('TestIssuePolicyCorrelationId', 3)
     // },
     //Preprod Header
-    // headers: {
-    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
-    //   'X-Timestamp': xTimeStamp,
-    //   'X-Signature': (await xSignature).toString(),
-    //   'Content-Type': 'application/json',
-    //   'X-Correlation-Id': makeCorrelationId('TestIssuePolicyCorrelationId', 3)
-    // },
-    //NewStaging Header
     headers: {
       'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
       'X-Timestamp': xTimeStamp,
       'X-Signature': (await xSignature).toString(),
       'Content-Type': 'application/json',
-      'X-Correlation-Id': makeCorrelationId('TestIssuePolicyCorrelationId', 3),
-      'X-ConsumerApp': 'atom'
+      'X-Correlation-Id': makeCorrelationId('TestIssuePolicyCorrelationId', 3)
     },
+    //NewStaging Header
+    // headers: {
+    //   'X-API-Key': '711b3dc1331b443b81429ec7350443aa',
+    //   'X-Timestamp': xTimeStamp,
+    //   'X-Signature': (await xSignature).toString(),
+    //   'Content-Type': 'application/json',
+    //   'X-Correlation-Id': makeCorrelationId('TestIssuePolicyCorrelationId', 3),
+    //   'X-ConsumerApp': 'atom'
+    // },
     data: payload,  // Send the defined payload
   });
   return reponse

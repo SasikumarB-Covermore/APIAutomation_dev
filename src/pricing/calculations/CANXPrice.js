@@ -98,8 +98,9 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
 
 function calcCANXSellPrice(totalSellingPrice, numAdults) {
   if (totalSellingPrice !== undefined && numAdults) {
-    let canxSellPrice = totalSellingPrice / numAdults;
-    return Math.round(canxSellPrice);
+    // let canxSellPrice = totalSellingPrice / numAdults;
+    // return Math.round(canxSellPrice);
+    return Math.round(totalSellingPrice / numAdults)
   }
 }
 
