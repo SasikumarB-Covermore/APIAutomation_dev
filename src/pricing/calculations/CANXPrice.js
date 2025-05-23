@@ -96,13 +96,24 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
 
 
 
-function calcCANXSellPrice(totalSellingPrice, numAdults) {
-  if (totalSellingPrice !== undefined && numAdults) {
-    // let canxSellPrice = totalSellingPrice / numAdults;
-    // return Math.round(canxSellPrice);
-    return Math.round(totalSellingPrice / numAdults)
+function customRound(num) {
+  const diff = num - Math.floor(num);
+  if (diff === 0.5) {
+    return Math.floor(num);
+  } else {
+    return Math.round(num);
   }
 }
+
+function calcCANXSellPrice(totalSellingPrice, numAdults) {
+  if (totalSellingPrice !== undefined && numAdults) {
+    let canxSellPrice = totalSellingPrice / numAdults;
+    let canxSellPriceRoundOff = customRound(canxSellPrice);
+    return canxSellPriceRoundOff;
+    //return Math.round(totalSellingPrice / numAdults)
+  }
+}
+
 
 
 function calcCANXValue(workbook, row) {
