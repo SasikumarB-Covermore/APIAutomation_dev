@@ -43,7 +43,7 @@ function generateData(numAdults, numChild, row) {
   }
 
   if (numChild > 0) {
-    isPrimary = false;
+    //isPrimary = false;
     addPayloadsForGroup(numChild, 'child', quotePayload, updatePayload, row, isPrimary);
   }
 
@@ -59,7 +59,7 @@ function generateRefineQouteData(numAdults, numChild, row) {
   }
 
   if (numChild > 0) {
-    isPrimary = false;
+    //isPrimary = false;
     addPayloadsForGroupRefineQoute(numChild, 'child', quotePayload, updatePayload, row, isPrimary);
   }
 
@@ -75,7 +75,7 @@ function generateIssuePolicyData(numAdults, numChild, row) {
   }
 
   if (numChild > 0) {
-    isPrimary = false;
+    //isPrimary = false;
     addPayloadsForGroupIssuePolicy(numChild, 'child', quotePayload, updatePayload, row, isPrimary);
   }
 

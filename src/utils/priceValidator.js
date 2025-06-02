@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { readJsonSync } from 'fs-extra';
 export class PriceValidator {
-    constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1, addons) {
+    constructor(expectedCalcPrices, apiResponsePrices, discount = 0, childChargeRate = 1, addons = "", numAdults) {
         this.expectedPriceData = expectedCalcPrices;
         this.actualPriceData = apiResponsePrices;
         this.expectedAdditionalCoverage = expectedCalcPrices.additionalCoverAddons;
@@ -11,6 +11,7 @@ export class PriceValidator {
         this.discountValue = discount;
         this.childChargeRateValue = childChargeRate;
         this.addons = addons;
+        this.numAdults = numAdults;
     }
 
     calculateDiscountedPrice(originalPrice) {
@@ -150,8 +151,17 @@ export class PriceValidator {
         let i = 0;
         expectedPriceData.travellers.forEach(traveller => {
             //base price add to array
-            if (traveller.age >= 18) {
-                expectedPrice.push(traveller.price.gross);
+            // if (traveller.age >= 18) {
+            //     expectedPrice.push(traveller.price.gross);
+            // }
+            if (this.numAdults > 0) {
+                if (traveller.age >= 18) {
+                    expectedPrice.push(traveller.price.gross);
+                }
+            } else if (this.numAdults == 0) {
+                if (traveller.age < 18) {
+                    expectedPrice.push(traveller.price.gross);
+                }
             }
             //EMC price add to array
             if (traveller.emcPrice) {
@@ -177,19 +187,26 @@ export class PriceValidator {
 
                 if (additionalCover.code == actualCover.code) {
                     if (additionalCover.code == "WNTS") {
-                        if (additionalCover.age <= 17) {
-                            wntsByAge = wntsByAge + parseInt(additionalCover.price.gross * this.childChargeRateValue);
+                        if (this.numAdults == 0) {
+                            if (additionalCover.age <= 17) {
+                                wntsByAge = wntsByAge + parseInt(additionalCover.price.gross);
 
-                        } else {
-                            wntsByAge = wntsByAge + parseInt(additionalCover.price.gross);
+                            }
+                        } else if (this.numAdults > 0) {
+                            if (additionalCover.age > 17) {
+                                wntsByAge = wntsByAge + parseInt(additionalCover.price.gross);
+                            }
                         }
 
                     } else if (additionalCover.code == "CRS") {
-                        if (additionalCover.age <= 17) {
-                            crsByAge = crsByAge + parseInt(additionalCover.price.gross * this.childChargeRateValue);
-
-                        } else {
-                            crsByAge = crsByAge + parseInt(additionalCover.price.gross);
+                        if (this.numAdults == 0) {
+                            if (additionalCover.age <= 17) {
+                                crsByAge = crsByAge + parseInt(additionalCover.price.gross);
+                            }
+                        } else if (this.numAdults > 0) {
+                            if (additionalCover.age > 17) {
+                                crsByAge = crsByAge + parseInt(additionalCover.price.gross);
+                            }
                         }
 
                     } else {
@@ -238,16 +255,24 @@ export class PriceValidator {
         expectedPriceData.product.forEach(product => {
             let travelarBasePrice = [];
             let addonsPrice = [];
+            //console.log("Checking Adults " + this.numAdults);
             product.travellers.forEach(traveller => {
-                if (traveller.age >= 18) {
-                    travelarBasePrice.push(traveller.price.gross);
-
+                if (this.numAdults > 0) {
+                    if (traveller.age >= 18) {
+                        travelarBasePrice.push(traveller.price.gross);
+                    }
+                } else if (this.numAdults == 0) {
+                    if (traveller.age < 18) {
+                        travelarBasePrice.push(traveller.price.gross);
+                    }
                 }
             });
+            //console.log("Travelar Base Price " + travelarBasePrice);
             addonsPrice = product.travellers[0].additionalCoverAddons[0].price.gross;
             travelarBasePrice.push(addonsPrice);
             expectedPrice.push(travelarBasePrice);
         });
+        //console.log("Expected Price in validation " + expectedPrice);
         expectedPrice.forEach(index => {
             totalGrossPremiumFromExpected.push(index.reduce((partialSum, a) => partialSum + a, 0));
         });

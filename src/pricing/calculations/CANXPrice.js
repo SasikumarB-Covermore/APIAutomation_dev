@@ -20,6 +20,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     const discount = calcCANX(simpleFileWorkbook, 'CANX_Discount', row);
     const commission = calcCANX(simpleFileWorkbook, 'CANX_Commission', row);
     const value = calcCANXValue(simpleFileWorkbook, row);
+    console.log("Canx rate " + rate + " discount " + discount + " commission " + commission + " value " + value);
     if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
       console.log("Traveller Age", traveller.age)
       console.log("rate:", rate);
@@ -41,7 +42,7 @@ function calculateCANXPrice(simpleFileWorkbook, requestPayload, row) {
     }
     totalSellingPrice += canxSellPriceAdult;
   });
-  const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults);
+  const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults, row.numChild);
   return {
     code: 'CANX',
     price: { gross: canxSellPrice, displayPrice: canxSellPrice, isDiscount: false }
@@ -62,6 +63,7 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
           const discount = calcCANXForGetQuote(simpleFileWorkbook, 'CANX_Discount', row, matrix.excess);
           const commission = calcCANXForGetQuote(simpleFileWorkbook, 'CANX_Commission', row, matrix.excess);
           const value = calcCANXValueForGetQuote(simpleFileWorkbook, row);
+          //console.log("Canx rate " + rate + " discount " + discount + " commission " + commission + " value " + value);
           if ([rate, discount, commission, value].some(val => val === null || val === undefined)) {
             console.log("Traveller Age", traveller.age)
             console.log("rate:", rate);
@@ -81,9 +83,11 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
           } else {
             canxSellPriceAdult = baseCANXPrice;
           }
+          //console.log("check Canx Sell price for Adult " + canxSellPriceAdult);
           totalSellingPrice += canxSellPriceAdult;
         });
-        const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults);
+        const canxSellPrice = calcCANXSellPrice(totalSellingPrice, row.numAdults, row.numChild);
+        //console.log("Checking Canx Sellprice " + canxSellPrice);
         canxAddon = {
           code: 'CANX',
           price: { gross: canxSellPrice, displayPrice: canxSellPrice, isDiscount: false }
@@ -97,7 +101,7 @@ function calculateCANXPriceForGetQuote(simpleFileWorkbook, response, row) {
 
 
 function customRound(num) {
-  const diff = num - Math.floor(num);
+  const diff = num - Math.floor(num); 2
   if (diff === 0.5) {
     return Math.floor(num);
   } else {
@@ -105,9 +109,16 @@ function customRound(num) {
   }
 }
 
-function calcCANXSellPrice(totalSellingPrice, numAdults) {
+function calcCANXSellPrice(totalSellingPrice, numAdults, numChild) {
   if (totalSellingPrice !== undefined && numAdults) {
-    let canxSellPrice = totalSellingPrice / numAdults;
+    console.log("total Selling price " + totalSellingPrice + " and number of adults " + numAdults);
+    let canxSellPrice = 0;
+    if (numAdults > 0) {
+      canxSellPrice = totalSellingPrice / numAdults;
+    } else {
+      canxSellPrice = totalSellingPrice / numChild;
+    }
+
     let canxSellPriceRoundOff = customRound(canxSellPrice);
     return canxSellPriceRoundOff;
     //return Math.round(totalSellingPrice / numAdults)
@@ -130,7 +141,7 @@ function calcCANXValue(workbook, row) {
       break; // Exit if the cell is empty
     } else if (cellValue == "$" + numberWithCommas(row.CANX)) {
       const CANX_VAL_ROW = i + 2; // Adjust for 0-based index
-      if (row.numAdults >= 2) {
+      if (row.numAdults >= 2 || row.numChild >= 2) {
         return sheet[`C${CANX_VAL_ROW}`]?.v; // C column value
       } else {
         return sheet[`B${CANX_VAL_ROW}`]?.v; // B column value
@@ -153,7 +164,7 @@ function calcCANXValueForGetQuote(workbook, row) {
       break; // Exit if the cell is empty
     } else if (cellValue == "$" + numberWithCommas(row.planName.includes("Dom") ? "10000" : "Unlimited")) {
       const CANX_VAL_ROW = i + 2; // Adjust for 0-based index
-      if (row.numAdults >= 2) {
+      if (row.numAdults >= 2 || row.numChild >= 2) {
         return sheet[`C${CANX_VAL_ROW}`]?.v; // C column value
       } else {
         return sheet[`B${CANX_VAL_ROW}`]?.v; // B column value

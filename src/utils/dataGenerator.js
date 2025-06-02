@@ -4,14 +4,14 @@ const moment = require('moment');
 const dynamicDate = require("../utils/apiClient");
 
 function generateCommonData(identifier, row) {
-
     if (!row) {
         throw new Error('row is undefined in generateCommonData');
     }
 
     const isAgeOver80 = row.AGECBA && row.AGECBA.toLowerCase() === 'null';
     const isAdult = identifier.toLowerCase().includes('adult');
-    const isPrimary = identifier.toLowerCase() === 'adult1';
+
+    const isPrimary = row.numAdults > 0 ? identifier.toLowerCase() == 'adult1' : identifier.toLowerCase() == 'child1';
     // const age = isAdult ? faker.number.int({ min: 36, max: 50 }) : faker.number.int({ min: 2, max: 19 });
     const age = isAgeOver80
         ? faker.number.int({ min: 81, max: 99 })  // If AGECBA is "yes", age > 80
@@ -26,7 +26,7 @@ function generateCommonData(identifier, row) {
         age: age,
         dateOfBirth: dateOfBirth,
         isPrimary: isPrimary,
-        treatAsAdult: identifier.toLowerCase().includes('adult')
+        treatAsAdult: row.numAdults > 0 ? identifier.toLowerCase().includes('adult') : identifier.toLowerCase().includes('child')
     };
 }
 

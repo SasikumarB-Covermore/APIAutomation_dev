@@ -267,6 +267,7 @@ export class PriceCalculator {
   }
 
   calculateCoverPriceForGetQuote(product, travellers = '') {
+    console.log("Travaler detail for get quote canx " + JSON.stringify(travellers));
     const additionalCoverageCodes = ['LUGG', 'MTCL'];
     if (additionalCoverageCodes.includes(product.additionalCoverAddons.code)) {
       return calculatePriceByValue(this.simpleFileWorkbook, cover);

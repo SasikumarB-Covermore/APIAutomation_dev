@@ -145,8 +145,9 @@ function calculateWNTSPrice(workbook, row, cover) {
 
       let isAgeMatch = isAgeInRange(row.age, ageBandValue)
       let isExcessMatch = (excessValue === Number(row.excess))
+      console.log("Age band Match check before if ");
       if (isAgeMatch && isExcessMatch) {
-
+        console.log("Age band Match check after if ");
         let dateBucketCol = calculateDateBucket(sheet, row.tripDuration);
         let sellingPrice = sheet[`${dateBucketCol}${areaRowNum}`]?.v;
         if (!isNaN(sellingPrice)) {
